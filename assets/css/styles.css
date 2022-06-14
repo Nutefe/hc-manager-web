@@ -1,0 +1,34 @@
+html {
+  overflow-y: auto !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul,
+li {
+  list-style: none;
+  padding-left: 0 !important;
+}
+
+.ditem {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+#setting {
+  list-style: none;
+}
+
+.item-tile:active {
+  color: yellow;
+}
+
+.bg {
+  background-image: url('/medical-background-green.png');
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
