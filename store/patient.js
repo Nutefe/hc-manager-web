@@ -52,7 +52,7 @@ export const actions = {
             commit("SET_SEARCHED_PATIENTS", data);
         });
     },
-    fetchPatients({ commit }, { page }) {
+    fetchPatients({ commit }, page) {
         return this.$api.selectAllPatientPage(page).then((data) => {
             commit("SET_PATIENTS", data);
         });

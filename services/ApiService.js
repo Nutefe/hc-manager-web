@@ -225,7 +225,7 @@ export default ($axios, $auth) => ({
         if (!$auth.loggedIn) {
             return;
         }
-        return $axios.$get(`/profil`, {
+        return $axios.$get(`/profils`, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             }
@@ -590,6 +590,53 @@ export default ($axios, $auth) => ({
         });
     },
 
+    checkRaisonSocial(nom) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/check/raison/social/${nom}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    checkRaisonSocialUpdate(nom, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/check/raison/social/update/${id}/${nom}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+
+    checkTelephone(telephone) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/check/email/${telephone}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    checkTelephoneUpdate(telephone, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/check/telephone/update/${id}/${telephone}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
     /**
      * end entreprise axios api
      */
@@ -740,6 +787,29 @@ export default ($axios, $auth) => ({
         }
 
         return $axios.$put(`/patient/${id}`, patient, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    checkCodeDossier(codeDossier) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/check/code/${codeDossier}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    checkCodeDossierUpdate(codeDossier, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/check/code/update/${id}/${codeDossier}`, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },

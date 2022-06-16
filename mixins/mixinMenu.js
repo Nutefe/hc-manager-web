@@ -1,6 +1,6 @@
 import { startCase } from "~/helpers/helpers.js";
 
-export const mixinCcom = {
+export const mixinMenu = {
     props: {
         profileRoute: {
             type: Object,

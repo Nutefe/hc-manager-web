@@ -52,7 +52,7 @@ export const actions = {
             commit("SET_SEARCHED_UTILISATEURS", data);
         });
     },
-    fetchUtilisateurs({ commit }, { page }) {
+    fetchUtilisateurs({ commit }, page) {
         return this.$api.selectAllUserPage(page).then((data) => {
             commit("SET_UTILISATEURS", data);
         });

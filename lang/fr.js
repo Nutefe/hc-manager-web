@@ -29,6 +29,11 @@ export default {
     logins: {
         login: "Connexion",
         logout: "Deconnexion",
+        accessDenied: "Accès refusé vous n'avez pas l'autorisation pour accéder à cette application",
+        success: "Connexion effectuer avec succès.",
+        loginFailed: "Nom d'utilisateur ou mot de passe incorrect.",
+        loggedOut: "Déconnexion effectuer avec succès.",
+        errorOccured: "Une erreur est survenue lors de la connexion.",
     },
 
     // Déconnexion
@@ -148,7 +153,6 @@ export default {
             prenom: "Prenom",
             password: "Mot de passe",
             confirmPassword: "Confirmer votre mot de passe",
-            crm: "Crm",
             profil: "Profil",
         },
         table: {
@@ -157,7 +161,6 @@ export default {
             email: "Email",
             nom: "Nom",
             prenom: "Prenom",
-            ccom: "Ccom",
             profil: "Profil",
             action: "Action",
             per_page: "Comptes decodeurs par page",
@@ -241,6 +244,98 @@ export default {
         },
     },
 
+    entreprise: {
+        title: "Entreprises",
+        new: "Nouveau entreprise",
+        edit: "Modifier un entreprise",
+        update: "Modifier",
+        search: "Recherche...",
+        subtitle: "Voir votre entreprise",
+        form: {
+            raisonSocial: "Nom entreprise",
+            nif: "Numéro d'identification fiscale",
+            telephone: "Telephone",
+            adresse: "Adresse",
+        },
+        table: {
+            num: "N°",
+            raisonSocial: "Nom entreprise",
+            nif: "Numéro d'identification fiscale",
+            telephone: "Telephone",
+            adresse: "Adresse",
+            action: "Action",
+            per_page: "Comptes decodeurs par page",
+            page_text: "de",
+        },
+    },
+
+    traitement: {
+        title: "Traitements",
+        new: "Nouveau traitement",
+        edit: "Modifier un traitement",
+        update: "Modifier",
+        search: "Recherche...",
+        subtitle: "Voir votre traitement",
+        form: {
+            libelle: "Libelle",
+            description: "Description",
+            typeTraitement: "Type traitement",
+            typePatient: "Type patient",
+            price: "Prix"
+        },
+        table: {
+            num: "N°",
+            libelle: "Libelle",
+            description: "Description",
+            typeTraitement: "Type traitement",
+            typePatient: "Type patient",
+            price: "Prix",
+            action: "Action",
+            per_page: "Comptes decodeurs par page",
+            page_text: "de",
+        },
+    },
+    patient: {
+        title: "Paients",
+        new: "Nouveau patient",
+        edit: "Modifier un patient",
+        update: "Modifier",
+        search: "Recherche...",
+        subtitle: "Voir votre patient",
+        form: {
+            codeDossier: "Numero de dossier",
+            typePatient: "Type de patient",
+            assurance: "Assurace",
+            entreprise: "Entreprise de travail",
+            nom: "Nom du patient",
+            prenom: "Prenom du patient",
+            dateNaiss: "Date de naissance",
+            sexe: "Genre",
+            telephone: "Numero de telephone",
+            adresse: "Adresse",
+            numeroPiece: "Numero CNI",
+            pieceExp: "Date d'expiration CNI"
+        },
+        table: {
+            num: "N°",
+            codeDossier: "Numero",
+            typePatient: "Type de patient",
+            assurance: "Assurace",
+            entreprise: "Entreprise",
+            nom: "Nom",
+            prenom: "Prenom",
+            dateNaiss: "Date de naissance",
+            sexe: "Sexe",
+            telephone: "Telephone",
+            adresse: "Adresse",
+            numeroPiece: "Numero CNI",
+            pieceExp: "Date d'expiration CNI",
+            action: "Action",
+            per_page: "Comptes decodeurs par page",
+            page_text: "de",
+        },
+    },
+
     // Error Page
     error: {
         pageNotFound: "Page introuvable",
@@ -263,6 +358,7 @@ export default {
             disable: "Désactiver",
             enable: "Activer",
             edit: "Éditer",
+            editPass: "Éditer le mot de passe",
             finish: "Terminer",
             save: "Enregistrer",
             submit: "Valider",
@@ -291,11 +387,11 @@ export default {
             unique: "Ce nom n'est pas disponible.",
         },
         prenom: {
-            required: "Le nom est obligatoire.",
-            min: "Le nom doit contenir au moins {length} caractères.",
-            max: "Le nom doit contenir au plus {length} caractères.",
-            regex: "Ce nom n'est pas valide.",
-            unique: "Ce nom n'est pas disponible.",
+            required: "Le prenom est obligatoire.",
+            min: "Le prenom doit contenir au moins {length} caractères.",
+            max: "Le prenom doit contenir au plus {length} caractères.",
+            regex: "Ce prenom n'est pas valide.",
+            unique: "Ce prenom n'est pas disponible.",
         },
         email: {
             required: "L'adresse email est obligatoire.",
@@ -372,20 +468,7 @@ export default {
             min: "Le montant  doit contenir au moins {length} caractères.",
             max: "Le montant  doit contenir au plus {length} caractères.",
         },
-        intitule: {
-            required: "L'intitule est obligatoire.",
-            min: "L'intitule  doit contenir au moins {length} caractères.",
-            max: "L'intitule doit contenir au plus {length} caractères.",
-        },
-        institution: {
-            required: "L'institution est obligatoire.",
-            min: "L'institution  doit contenir au moins {length} caractères.",
-            max: "L'institution doit contenir au plus {length} caractères.",
-        },
 
-        rubrique: {
-            required: "La rubrique est obligatoire.",
-        },
 
         description: {
             required: "La description est obligatoire.",
@@ -395,6 +478,46 @@ export default {
         fichier: {
             required: "Le fichier est obligatoire.",
             type: "Veuillez choisir un fichier au format .pdf.",
+        },
+        raisonSocial: {
+            required: "Le nom est obligatoire.",
+            unique: "Ce nom n'est pas disponible.",
+            min: "Le nom doit contenir au moins {length} caractères.",
+            max: "Le nom doit contenir au plus {length} caractères.",
+        },
+        nif: {
+            required: "Le nif est obligatoire.",
+            min: "Le nif  doit contenir au moins {length} caractères.",
+            max: "Le nif doit contenir au plus {length} caractères.",
+        },
+
+        typeTraitement: {
+            required: "Le type de traitement est obligatoire.",
+        },
+
+        typePatient: {
+            required: "Le type de patient est obligatoire.",
+        },
+
+        codeDossier: {
+            required: "Le code dossier est obligatoire.",
+            unique: "Ce code dossier n'est pas disponible.",
+            min: "Le code dossier doit contenir au moins {length} caractères.",
+            max: "Le code dossier doit contenir au plus {length} caractères.",
+        },
+        assurance: {
+            required: "L'assurance est obligatoire.",
+        },
+        entreprise: {
+            required: "L'entreprise est obligatoire.",
+        },
+        dateNaiss: {
+            required: "La date de naissance est obligatoire.",
+            min: "La date de naissance  doit contenir au moins {length} caractères.",
+            max: "La date de naissance doit contenir au plus {length} caractères.",
+        },
+        sexe: {
+            required: "Le genre est obligatoire.",
         },
     },
 }

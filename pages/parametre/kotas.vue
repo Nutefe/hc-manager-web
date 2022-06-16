@@ -36,6 +36,9 @@
           showFirstLastPage: true,
         }"
       >
+        <template #[`item.num`]="{ item }">
+          {{ itemPosition(item.id) }}
+        </template>
         <template #[`item.action`]="{ item }">
           <!-- Edit -->
 

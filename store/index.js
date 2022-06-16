@@ -25,8 +25,18 @@ export const mutations = {
 
 export const actions = {
 
-    resetState({ commit }) {
+    resetState({ commit, dispatch }) {
         dispatch("profil/resetState");
+        dispatch("entreprise/resetState");
+        dispatch("assurance/resetState");
+        dispatch("facture/resetState");
+        dispatch("kota/resetState");
+        dispatch("paiement/resetState");
+        dispatch("patient/resetState");
+        dispatch("traitement/resetState");
+        dispatch("typePatient/resetState");
+        dispatch("typeTraitement/resetState");
+        dispatch("utilisateur/resetState");
         commit("RESET_STATE");
     },
 

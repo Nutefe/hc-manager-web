@@ -146,11 +146,11 @@
 </template>
 
 <script>
-import { mixinCcom } from '~/mixins/mixinCcom.js'
+import { mixinMenu } from '~/mixins/mixinMenu.js'
 import { mixinProfils } from '~/mixins/mixinProfils.js'
 
 export default {
-  mixins: [mixinCcom, mixinProfils],
+  mixins: [mixinMenu, mixinProfils],
   methods: {
     closeDrawer() {
       this.$store.dispatch('toggleDrawer', false)

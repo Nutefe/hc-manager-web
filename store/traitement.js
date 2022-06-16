@@ -57,7 +57,7 @@ export const actions = {
             commit("SET_SEARCHED_TRAITEMENTS", data);
         });
     },
-    fetchTraitements({ commit }, { page }) {
+    fetchTraitements({ commit }, page) {
         return this.$api.selectAllTraitementPage(page).then((data) => {
             commit("SET_TRAITEMENTS", data);
         });
