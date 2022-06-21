@@ -1,30 +1,5 @@
 <template>
   <div>
-    <v-tooltip left>
-      <template #activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          class="mr-15 mb-10"
-          color="secondary"
-          elevation="10"
-          dark
-          fixed
-          bottom
-          right
-          fab
-          :aria-label="$t('commoin.add')"
-          @click.stop="dialog = true"
-          v-on="on"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </template>
-
-      <span>
-        {{ $t('commoin.add') }}
-      </span>
-    </v-tooltip>
-
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
@@ -102,20 +77,44 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.dateNaiss"
-                  :label="$t('patient.form.dateNaiss')"
-                  autocomplete="off"
-                  :maxlength="$v.form.dateNaiss.$params.maxLength.max"
-                  :error-messages="dateNaissErrors"
-                  @input="$v.form.dateNaiss.$touch()"
-                  @blur="$v.form.dateNaiss.$touch()"
-                ></v-text-field>
+                <v-menu
+                  ref="menu1"
+                  v-model="menu1"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="auto"
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.dateNaiss"
+                      :label="$t('patient.form.dateNaiss')"
+                      persistent-hint
+                      prepend-icon="mdi-calendar"
+                      v-bind="attrs"
+                      :maxlength="$v.form.dateNaiss.$params.maxLength.max"
+                      :error-messages="dateNaissErrors"
+                      @blur="
+                        dateNais = parseDate(form.dateNaiss)
+                        $v.form.dateNaiss.$touch()
+                      "
+                      @input="$v.form.dateNaiss.$touch()"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="dateNais"
+                    no-title
+                    @input="menu1 = false"
+                  ></v-date-picker>
+                </v-menu>
               </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
                   v-model.trim="form.telephone"
                   :label="$t('patient.form.telephone')"
+                  type="number"
                   autocomplete="off"
                   :maxlength="$v.form.telephone.$params.maxLength.max"
                   :error-messages="telephoneErrors"
@@ -134,7 +133,7 @@
                   @blur="$v.form.adresse.$touch()"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="12">
                 <v-autocomplete
                   v-model.trim.lazy="form.sexe"
                   :items="sexe"
@@ -150,21 +149,6 @@
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.typePatient"
-                  :items="matchedTypePatients"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.typePatient')"
-                  return-object
-                  :error-messages="typePatientErrors"
-                  @input="$v.form.typePatient.$touch()"
-                  @blur="$v.form.typePatient.$touch()"
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
                 <v-text-field
                   v-model.trim="form.numeroPiece"
                   :label="$t('patient.form.numeroPiece')"
@@ -172,35 +156,32 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.pieceExp"
-                  :label="$t('patient.form.pieceExp')"
-                  autocomplete="off"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.assurance"
-                  :items="matchedAssurances"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.assurance')"
-                  return-object
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.entreprise"
-                  :items="matchedEntreprises"
-                  item-text="raisonSocial"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.entreprise')"
-                  return-object
-                ></v-autocomplete>
+                <v-menu
+                  ref="menu2"
+                  v-model="menu2"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="auto"
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.pieceExp"
+                      :label="$t('patient.form.pieceExp')"
+                      persistent-hint
+                      prepend-icon="mdi-calendar"
+                      v-bind="attrs"
+                      @blur="datePiece = parseDate(form.pieceExp)"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="datePiece"
+                    no-title
+                    @input="menu2 = false"
+                  ></v-date-picker>
+                </v-menu>
               </v-col>
             </v-row>
           </v-card-text>
@@ -235,18 +216,24 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
 import { debounce } from '~/helpers/helpers.js'
+import { isDate } from '~/helpers/customValidators.js'
 
 export default {
   data() {
     return {
       dialog: false,
+      dialogNo: false,
       loading: false,
-      menuOptions: {
-        transition: 'slide-y-transition',
-      },
+      dateNais: new Date(new Date().getFullYear(), 0, 1)
+        .toISOString()
+        .substr(0, 10),
+      datePiece: new Date(new Date().getFullYear(), 0, 1)
+        .toISOString()
+        .substr(0, 10),
+      menu1: false,
+      menu2: false,
       sexe: [
         {
           id: 1,
@@ -265,12 +252,16 @@ export default {
         codeDossier: '',
         nom: '',
         prenom: '',
-        dateNaiss: '',
+        dateNaiss: this.formatDate(
+          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
+        ),
         sexe: {},
         telephone: '',
         adresse: '',
         numeroPiece: '',
-        pieceExp: '',
+        pieceExp: this.formatDate(
+          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
+        ),
         typePatient: {},
         assurance: {},
         entreprise: {},
@@ -318,27 +309,7 @@ export default {
       sexe: {
         required,
       },
-      typePatient: {
-        required,
-      },
     },
-  },
-
-  async fetch() {
-    this.loading = true
-    try {
-      await Promise.all([
-        this.$store.dispatch('typePatient/fetchAllTypes'),
-        this.$store.dispatch('assurance/fetchAllAssurances'),
-        this.$store.dispatch('entreprise/fetchAllEntreprises'),
-      ])
-    } catch (err) {
-      this.$nuxt.error({
-        statusCode: 503,
-        message: 'Unable to fetch data.',
-      })
-    }
-    this.loading = false
   },
 
   computed: {
@@ -349,6 +320,11 @@ export default {
         this.isUnique.codeDossier
       )
     },
+
+    computedDateFormatted() {
+      return this.formatDate(this.dateFin)
+    },
+
     codeDossierErrors() {
       const errors = []
 
@@ -510,46 +486,53 @@ export default {
 
       return errors
     },
-    typePatientErrors() {
-      const errors = []
+    // typePatientErrors() {
+    //   const errors = []
 
-      if (!this.$v.form.typePatient.$dirty) return errors
+    //   if (!this.$v.form.typePatient.$dirty) return errors
 
-      !this.$v.form.typePatient.required &&
-        errors.push(this.$t('validations.typePatient.required'))
+    //   !this.$v.form.typePatient.required &&
+    //     errors.push(this.$t('validations.typePatient.required'))
 
-      return errors
-    },
+    //   return errors
+    // },
 
-    matchedTypePatients() {
-      return this.typePatients.map((typePatient) => {
-        const typePatients = typePatient.libelle
-        return Object.assign({}, typePatient, { typePatients })
-      })
-    },
-    matchedAssurances() {
-      return this.assurances.map((assurance) => {
-        const assurances = assurance.libelle
-        return Object.assign({}, assurance, { assurances })
-      })
-    },
-    matchedEntreprises() {
-      return this.entreprises.map((entreprise) => {
-        const entreprises = entreprise.libelle
-        return Object.assign({}, entreprise, { entreprises })
-      })
-    },
+    // matchedTypePatients() {
+    //   return this.typePatients.map((typePatient) => {
+    //     const typePatients = typePatient.libelle
+    //     return Object.assign({}, typePatient, { typePatients })
+    //   })
+    // },
+    // matchedAssurances() {
+    //   return this.assurances.map((assurance) => {
+    //     const assurances = assurance.libelle
+    //     return Object.assign({}, assurance, { assurances })
+    //   })
+    // },
+    // matchedEntreprises() {
+    //   return this.entreprises.map((entreprise) => {
+    //     const entreprises = entreprise.libelle
+    //     return Object.assign({}, entreprise, { entreprises })
+    //   })
+    // },
 
-    ...mapState({
-      typePatients: (state) => state.typePatient.allTypes,
-      assurances: (state) => state.assurance.allAssurances,
-      entreprises: (state) => state.entreprise.allEntreprises,
-    }),
+    // ...mapState({
+    //   typePatients: (state) => state.typePatient.allTypes,
+    //   assurances: (state) => state.assurance.allAssurances,
+    //   entreprises: (state) => state.entreprise.allEntreprises,
+    // }),
   },
   watch: {
     'form.codeDossier'() {
       this.isPending.codeDossier = true
       this.isUnique.codeDossier = false
+    },
+
+    dateNais() {
+      this.form.dateNaiss = this.formatDate(this.dateNais)
+    },
+    datePiece() {
+      this.form.pieceExp = this.formatDate(this.datePiece)
     },
   },
   methods: {
@@ -611,6 +594,44 @@ export default {
       this.loading = false
     },
 
+    openDialog() {
+      this.dialog = true
+
+      this.$v.form.$reset()
+
+      this.form = {
+        codeDossier: '',
+        nom: '',
+        prenom: '',
+        dateNaiss: '',
+        sexe: {},
+        telephone: '',
+        adresse: '',
+        numeroPiece: '',
+        pieceExp: '',
+        typePatient: {},
+        assurance: {},
+        entreprise: {},
+      }
+
+      this.loading = false
+    },
+
+    formatDate(date) {
+      if (!date) return null
+
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
+    },
+    parseDate(date) {
+      if (!date) return null
+
+      if (!isDate(date)) return null
+
+      const [day, month, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
+
     async submitForm() {
       this.$v.form.$touch()
 
@@ -622,15 +643,16 @@ export default {
             codeDossier: this.form.codeDossier,
             nom: this.form.nom,
             prenom: this.form.prenom,
-            dateNaiss: this.form.dateNaiss,
+            dateNaiss: this.parseDate(this.form.dateNaiss),
             genre: this.form.sexe.libelle,
             telephone: this.form.telephone,
             adresse: this.form.adresse,
             numeroPiece: this.form.numeroPiece,
-            pieceExp: this.form.pieceExp,
+            pieceExp: this.parseDate(this.form.pieceExp),
             typePatient: this.form.typePatient,
             assurance: this.form.assurance,
             entreprise: this.form.entreprise,
+            // this.parseDate(this.dateFormatted)
           })
           this.$emit('refreshPage')
 

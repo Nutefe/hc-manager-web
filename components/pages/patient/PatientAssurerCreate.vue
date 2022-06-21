@@ -149,28 +149,13 @@
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.typePatient"
-                  :items="matchedTypePatients"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.typePatient')"
-                  return-object
-                  :error-messages="typePatientErrors"
-                  @input="$v.form.typePatient.$touch()"
-                  @blur="$v.form.typePatient.$touch()"
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
                 <v-text-field
                   v-model.trim="form.numeroPiece"
                   :label="$t('patient.form.numeroPiece')"
                   autocomplete="off"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="12">
                 <v-menu
                   ref="menu2"
                   v-model="menu2"
@@ -185,7 +170,6 @@
                       v-model="form.pieceExp"
                       :label="$t('patient.form.pieceExp')"
                       persistent-hint
-                      autocomplete="null"
                       prepend-icon="mdi-calendar"
                       v-bind="attrs"
                       @blur="datePiece = parseDate(form.pieceExp)"
@@ -201,18 +185,6 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-autocomplete
-                  v-model.trim.lazy="form.assurance"
-                  :items="matchedAssurances"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.assurance')"
-                  return-object
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
                   v-model.trim.lazy="form.entreprise"
                   :items="matchedEntreprises"
                   item-text="raisonSocial"
@@ -222,6 +194,25 @@
                   :label="$t('patient.form.entreprise')"
                   return-object
                 ></v-autocomplete>
+              </v-col>
+              <v-col class="mt-3" cols="12" sm="6" align="left" justify="left">
+                <v-row align-sm="center" justify-sm="center">
+                  <v-col cols="12" sm="2">
+                    <v-btn
+                      color="primary"
+                      dark
+                      fab
+                      small
+                      :aria-label="$t('patient.addEntreprise')"
+                      @click.stop="createItemEntreprise"
+                    >
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12" sm="10">
+                    <span> {{ $t('patient.addEntreprise') }} </span>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card-text>
@@ -251,6 +242,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <entreprise-create ref="createEntepriseForm" />
     </v-row>
   </div>
 </template>
@@ -258,18 +250,17 @@
 <script>
 import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import { debounce, isEqual } from '~/helpers/helpers.js'
+import EntrepriseCreate from './EntrepriseCreate.vue'
+import { debounce } from '~/helpers/helpers.js'
 import { isDate } from '~/helpers/customValidators.js'
 
 export default {
+  components: { EntrepriseCreate },
   data() {
     return {
       dialog: false,
+      dialogNo: false,
       loading: false,
-      menuOptions: {
-        transition: 'slide-y-transition',
-      },
-      disable: false,
       dateNais: new Date(new Date().getFullYear(), 0, 1)
         .toISOString()
         .substr(0, 10),
@@ -292,25 +283,6 @@ export default {
           libelle: 'AUTRE',
         },
       ],
-      id: null,
-      selectedItem: {
-        codeDossier: '',
-        nom: '',
-        prenom: '',
-        dateNaiss: this.formatDate(
-          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-        ),
-        sexe: {},
-        telephone: '',
-        adresse: '',
-        numeroPiece: '',
-        pieceExp: this.formatDate(
-          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-        ),
-        typePatient: {},
-        assurance: {},
-        entreprise: {},
-      },
       form: {
         codeDossier: '',
         nom: '',
@@ -372,17 +344,18 @@ export default {
       sexe: {
         required,
       },
-      typePatient: {
-        required,
-      },
+      // typePatient: {
+      //   required,
+      // },
     },
   },
+
   async fetch() {
     this.loading = true
     try {
       await Promise.all([
-        this.$store.dispatch('typePatient/fetchAllTypes'),
-        this.$store.dispatch('assurance/fetchAllAssurances'),
+        // this.$store.dispatch('typePatient/fetchAllTypes'),
+        // this.$store.dispatch('assurance/fetchAllAssurances'),
         this.$store.dispatch('entreprise/fetchAllEntreprises'),
       ])
     } catch (err) {
@@ -393,171 +366,195 @@ export default {
     }
     this.loading = false
   },
+
   computed: {
     isFormValid() {
-      const isFormEdited = !isEqual(this.selectedItem, this.form)
-
       return (
-        isFormEdited &&
         !this.$v.form.$invalid &&
         !this.$v.form.$pending &&
         this.isUnique.codeDossier
       )
     },
-
     codeDossierErrors() {
       const errors = []
+
       if (!this.$v.form.codeDossier.$dirty) return errors
+
       !this.$v.form.codeDossier.required &&
         errors.push(this.$t('validations.codeDossier.required'))
+
       !this.$v.form.codeDossier.minLength &&
         errors.push(
           this.$t('validations.codeDossier.min', {
             length: this.$v.form.codeDossier.$params.minLength.min,
           })
         )
+
       !this.$v.form.codeDossier.maxLength &&
         errors.push(
           this.$t('validations.codeDossier.max', {
             length: this.$v.form.codeDossier.$params.maxLength.max,
           })
         )
+
       this.form.codeDossier &&
         !this.isPending.codeDossier &&
         !this.isUnique.codeDossier &&
         errors.push(this.$t('validations.codeDossier.unique'))
+
       return errors
     },
+
     nomErrors() {
       const errors = []
+
       if (!this.$v.form.nom.$dirty) return errors
+
       !this.$v.form.nom.required &&
         errors.push(this.$t('validations.nom.required'))
+
       !this.$v.form.nom.minLength &&
         errors.push(
           this.$t('validations.nom.min', {
             length: this.$v.form.nom.$params.minLength.min,
           })
         )
+
       !this.$v.form.nom.maxLength &&
         errors.push(
           this.$t('validations.nom.max', {
             length: this.$v.form.nom.$params.maxLength.max,
           })
         )
+
       return errors
     },
     prenomErrors() {
       const errors = []
+
       if (!this.$v.form.prenom.$dirty) return errors
+
       !this.$v.form.prenom.required &&
         errors.push(this.$t('validations.prenom.required'))
+
       !this.$v.form.prenom.minLength &&
         errors.push(
           this.$t('validations.prenom.min', {
             length: this.$v.form.prenom.$params.minLength.min,
           })
         )
+
       !this.$v.form.prenom.maxLength &&
         errors.push(
           this.$t('validations.prenom.max', {
             length: this.$v.form.prenom.$params.maxLength.max,
           })
         )
+
       return errors
     },
     dateNaissErrors() {
       const errors = []
+
       if (!this.$v.form.dateNaiss.$dirty) return errors
+
       !this.$v.form.dateNaiss.required &&
         errors.push(this.$t('validations.dateNaiss.required'))
+
       !this.$v.form.dateNaiss.minLength &&
         errors.push(
           this.$t('validations.dateNaiss.min', {
             length: this.$v.form.dateNaiss.$params.minLength.min,
           })
         )
+
       !this.$v.form.dateNaiss.maxLength &&
         errors.push(
           this.$t('validations.dateNaiss.max', {
             length: this.$v.form.dateNaiss.$params.maxLength.max,
           })
         )
+
       return errors
     },
     telephoneErrors() {
       const errors = []
+
       if (!this.$v.form.telephone.$dirty) return errors
+
       !this.$v.form.telephone.required &&
         errors.push(this.$t('validations.telephone.required'))
+
       !this.$v.form.telephone.minLength &&
         errors.push(
           this.$t('validations.telephone.min', {
             length: this.$v.form.telephone.$params.minLength.min,
           })
         )
+
       !this.$v.form.telephone.maxLength &&
         errors.push(
           this.$t('validations.telephone.max', {
             length: this.$v.form.telephone.$params.maxLength.max,
           })
         )
+
       return errors
     },
     adresseErrors() {
       const errors = []
+
       if (!this.$v.form.adresse.$dirty) return errors
+
       !this.$v.form.adresse.required &&
         errors.push(this.$t('validations.adresse.required'))
+
       !this.$v.form.adresse.minLength &&
         errors.push(
           this.$t('validations.adresse.min', {
             length: this.$v.form.adresse.$params.minLength.min,
           })
         )
+
       !this.$v.form.adresse.maxLength &&
         errors.push(
           this.$t('validations.adresse.max', {
             length: this.$v.form.adresse.$params.maxLength.max,
           })
         )
+
       return errors
     },
+
     sexeErrors() {
       const errors = []
+
       if (!this.$v.form.sexe.$dirty) return errors
+
       !this.$v.form.sexe.required &&
         errors.push(this.$t('validations.sexe.required'))
+
       return errors
     },
     typePatientErrors() {
       const errors = []
+
       if (!this.$v.form.typePatient.$dirty) return errors
+
       !this.$v.form.typePatient.required &&
         errors.push(this.$t('validations.typePatient.required'))
+
       return errors
     },
-    matchedTypePatients() {
-      return this.typePatients.map((typePatient) => {
-        const typePatients = typePatient.libelle
-        return Object.assign({}, typePatient, { typePatients })
-      })
-    },
-    matchedAssurances() {
-      return this.assurances.map((assurance) => {
-        const assurances = assurance.libelle
-        return Object.assign({}, assurance, { assurances })
-      })
-    },
+
     matchedEntreprises() {
       return this.entreprises.map((entreprise) => {
         const entreprises = entreprise.libelle
         return Object.assign({}, entreprise, { entreprises })
       })
     },
+
     ...mapState({
-      typePatients: (state) => state.typePatient.allTypes,
-      assurances: (state) => state.assurance.allAssurances,
       entreprises: (state) => state.entreprise.allEntreprises,
     }),
   },
@@ -583,14 +580,13 @@ export default {
         ) {
           return
         }
+
         try {
-          const result = await this.$api.checkCodeDossierUpdate(
-            this.form.codeDossier,
-            this.id
-          )
+          const result = await this.$api.checkCodeDossier(this.form.codeDossier)
           this.isUnique.codeDossier = !result
         } catch (err) {
           this.isUnique.codeDossier = false
+
           if (!err.response) {
             this.$nuxt.error({
               statusCode: 503,
@@ -598,50 +594,16 @@ export default {
             })
           }
         }
+
         this.isPending.codeDossier = false
       },
       500,
       -1
     ),
 
-    openDialog(item) {
-      this.id = item.id
-      let date1, date2
-      if (item.pieceExp) {
-        date1 = this.formatDate(
-          new Date(item.pieceExp).toISOString().substr(0, 10)
-        )
-      } else {
-        date1 = ''
-      }
-      if (item.dateNaiss) {
-        date2 = this.formatDate(
-          new Date(item.dateNaiss).toISOString().substr(0, 10)
-        )
-      } else {
-        date2 = ''
-      }
-
-      this.form = {
-        codeDossier: item.codeDossier || '',
-        nom: item.nom || '',
-        prenom: item.prenom || '',
-        dateNaiss: date2 || '',
-        sexe: this.sexe.find((o) => o.libelle === item.genre) || {},
-        telephone: item.telephone || '',
-        adresse: item.adresse || '',
-        numeroPiece: item.numeroPiece || '',
-        pieceExp: date1 || '',
-        typePatient: item.typePatient || {},
-        assurance: item.assurance || {},
-        entreprise: item.entreprise || {},
-      }
-
-      this.selectedItem = Object.assign({}, this.form)
-
-      this.dialog = true
+    createItemEntreprise() {
+      this.$refs.createEntepriseForm.openDialog()
     },
-
     closeDialog() {
       this.dialog = false
       this.isUnique = {
@@ -651,6 +613,7 @@ export default {
         codeDossier: false,
       }
       this.$v.form.$reset()
+
       this.form = {
         codeDossier: '',
         nom: '',
@@ -665,6 +628,30 @@ export default {
         assurance: {},
         entreprise: {},
       }
+
+      this.loading = false
+    },
+
+    openDialog() {
+      this.dialog = true
+
+      this.$v.form.$reset()
+
+      this.form = {
+        codeDossier: '',
+        nom: '',
+        prenom: '',
+        dateNaiss: '',
+        sexe: {},
+        telephone: '',
+        adresse: '',
+        numeroPiece: '',
+        pieceExp: '',
+        typePatient: {},
+        assurance: {},
+        entreprise: {},
+      }
+
       this.loading = false
     },
 
@@ -682,33 +669,35 @@ export default {
       const [day, month, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
+
     async submitForm() {
       this.$v.form.$touch()
+
       if (this.isFormValid) {
         this.loading = true
+
         try {
-          await this.$api.updatePatient(
-            {
-              codeDossier: this.form.codeDossier,
-              nom: this.form.nom,
-              prenom: this.form.prenom,
-              dateNaiss: this.parseDate(this.form.dateNaiss),
-              genre: this.form.sexe.libelle,
-              telephone: this.form.telephone,
-              adresse: this.form.adresse,
-              numeroPiece: this.form.numeroPiece,
-              pieceExp: this.parseDate(this.form.pieceExp),
-              typePatient: this.form.typePatient,
-              assurance: this.form.assurance,
-              entreprise: this.form.entreprise,
-            },
-            this.id
-          )
+          await this.$api.savePatientInam({
+            codeDossier: this.form.codeDossier,
+            nom: this.form.nom,
+            prenom: this.form.prenom,
+            dateNaiss: this.parseDate(this.form.dateNaiss),
+            genre: this.form.sexe.libelle,
+            telephone: this.form.telephone,
+            adresse: this.form.adresse,
+            numeroPiece: this.form.numeroPiece,
+            pieceExp: this.parseDate(this.form.pieceExp),
+            typePatient: this.form.typePatient,
+            assurance: this.form.assurance,
+            entreprise: this.form.entreprise,
+          })
           this.$emit('refreshPage')
+
           this.closeDialog()
           this.$toast.success(this.$t('commoin.saved'))
         } catch (err) {
           this.loading = false
+
           if (err.response) {
             this.$toast.error(this.$t('commoin.errorOccured'))
           } else {

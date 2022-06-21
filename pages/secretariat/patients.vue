@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="ml-0 mr-0">
+  <v-container fluid class="container ml-0 mr-0">
     <v-card class="mt-10 mb-10 pb-3 justify-space-around">
       <v-row class="mb-5 align-middle">
         <v-col class="col-4"> </v-col>
@@ -92,7 +92,99 @@
         @loading="toggleLoading"
       />
     </v-card>
-    <PatientCreate @refreshPage="refreshPage" />
+    <div class="mb-10 mr-10">
+      <div>
+        <v-speed-dial
+          v-model="fab"
+          class="mb-15 mr-15"
+          bottom
+          right
+          direction="top"
+          open-on-hover
+          :transition="transition"
+        >
+          <template #activator>
+            <v-btn v-model="fab" color="secondary" dark fab>
+              <v-icon v-if="fab"> mdi-close </v-icon>
+              <v-icon v-else> mdi-card-account-details </v-icon>
+            </v-btn>
+          </template>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="blue"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('patient.addAss')"
+                @click.stop="createItemAssurer"
+                v-on="on"
+              >
+                <v-icon>mdi-card-account-details-star</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('patient.addAss') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="orange"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('patient.addAssAut')"
+                @click.stop="createItemAssurerAutre"
+                v-on="on"
+              >
+                <v-icon>mdi-card-account-details-star-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('patient.addAssAut') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="green"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('patient.add')"
+                @click.stop="createItem"
+                v-on="on"
+              >
+                <v-icon>mdi-card-account-details-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('patient.add') }}
+            </span>
+          </v-tooltip>
+        </v-speed-dial>
+      </div>
+    </div>
+    <PatientCreate ref="createFormDialog" @refreshPage="refreshPage" />
+    <PatientAssurerCreate
+      ref="createAssurerFormDialog"
+      @refreshPage="refreshPage"
+    />
+    <PatientAssurerAutreCreate
+      ref="createAssurerAutreFormDialog"
+      @refreshPage="refreshPage"
+    />
+    <PatientEdit ref="editFormDialog" @refreshPage="refreshPage" />
   </v-container>
 </template>
 
@@ -100,12 +192,18 @@
 import { mapState } from 'vuex'
 import { debounce, startCase } from '~/helpers/helpers.js'
 import PatientCreate from '~/components/pages/patient/PatientCreate.vue'
+import PatientAssurerCreate from '~/components/pages/patient/PatientAssurerCreate.vue'
+import PatientAssurerAutreCreate from '~/components/pages/patient/PatientAssurerAutreCreate.vue'
+import PatientEdit from '~/components/pages/patient/PatientEdit.vue'
 
 export default {
   name: 'PatientsPage',
 
   components: {
     PatientCreate,
+    PatientAssurerCreate,
+    PatientAssurerAutreCreate,
+    PatientEdit,
   },
 
   layout: 'default',
@@ -115,6 +213,16 @@ export default {
       search: '',
       query: '',
       loading: false,
+      direction: 'top',
+      fab: false,
+      fling: false,
+      hover: false,
+      tabs: null,
+      top: true,
+      right: true,
+      bottom: false,
+      left: false,
+      transition: 'slide-y-reverse-transition',
       headers: [
         {
           text: this.$t('patient.table.num'),
@@ -150,7 +258,7 @@ export default {
         },
         {
           text: this.$t('patient.table.sexe'),
-          value: 'sexe',
+          value: 'genre',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
@@ -162,13 +270,13 @@ export default {
         },
         {
           text: this.$t('patient.table.typePatient'),
-          value: 'typePatient',
+          value: 'typePatient.libelle',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
           text: this.$t('patient.table.assurance'),
-          value: 'assurance',
+          value: 'assurance.libelle',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
@@ -238,6 +346,15 @@ export default {
     },
     editItem(item) {
       this.$refs.editFormDialog.openDialog(item)
+    },
+    createItemAssurer() {
+      this.$refs.createAssurerFormDialog.openDialog()
+    },
+    createItemAssurerAutre() {
+      this.$refs.createAssurerAutreFormDialog.openDialog()
+    },
+    createItem() {
+      this.$refs.createFormDialog.openDialog()
     },
     editPassItem(item) {
       this.$refs.editPassFormDialog.openDialog(item)

@@ -5,7 +5,7 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       persistent
       scrollable
-      max-width="600"
+      max-width="700"
     >
       <v-card :disabled="loading" :loading="loading">
         <v-card-title class="px-3 px-md-5 py-2 py-md-3">
@@ -35,7 +35,7 @@
 
         <v-card-text class="px-3 px-md-5 pt-3">
           <v-row>
-            <v-col cols="12" sm="6">
+            <v-col cols="12" sm="12">
               <v-text-field
                 v-model.trim="form.password"
                 :type="showPassword ? 'text' : 'password'"
@@ -49,7 +49,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="12" sm="12">
               <v-text-field
                 v-model.trim="form.confirmPassword"
                 :type="showConfirmPassword ? 'text' : 'password'"

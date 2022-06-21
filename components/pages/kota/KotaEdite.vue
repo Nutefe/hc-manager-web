@@ -82,6 +82,7 @@
 
 <script>
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
+import { isEqual } from '~/helpers/helpers.js'
 
 export default {
   data() {
@@ -111,8 +112,11 @@ export default {
 
   computed: {
     isFormValid() {
-      return !this.$v.form.$invalid
+      const isFormEdited = !isEqual(this.selectedItem, this.form)
+
+      return isFormEdited && !this.$v.form.$invalid
     },
+
     libelleErrors() {
       const errors = []
 

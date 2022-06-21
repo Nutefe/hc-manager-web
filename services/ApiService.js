@@ -466,6 +466,18 @@ export default ($axios, $auth) => ({
         });
     },
 
+    getAllAssuranceAutre() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/assurances/autre`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
     selectAllAssurancePage(page) {
         if (!$auth.loggedIn) {
             return;
@@ -775,6 +787,30 @@ export default ($axios, $auth) => ({
         }
 
         return $axios.$post(`/patient`, patient, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    savePatientInam(patient) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/patient/assurer/inam`, patient, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    savePatientAutre(patient) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/patient/assurer/autre`, patient, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },

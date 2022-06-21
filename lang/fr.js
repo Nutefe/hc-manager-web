@@ -302,6 +302,10 @@ export default {
         update: "Modifier",
         search: "Recherche...",
         subtitle: "Voir votre patient",
+        add: "Ajouter un patient non assurer",
+        addAss: "Ajouter un patient assurer INAM",
+        addAssAut: "Ajouter un patient assurer autre",
+        addEntreprise: "Ajouter une entreprise s'il n'existe pas",
         form: {
             codeDossier: "Numero de dossier",
             typePatient: "Type de patient",

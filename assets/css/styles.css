@@ -32,3 +32,11 @@ li {
   background-position: center;
   background-size: cover;
 }
+
+.container .v-speed-dial {
+  position: absolute;
+}
+
+.container .v-btn--floating {
+  position: relative;
+}

@@ -38,7 +38,7 @@
             <v-row align="center">
               <v-col cols="9">
                 <span class="text-h6 text-md-h5 font-weight-regular">
-                  {{ $t('user.new') }}
+                  {{ $t('traitement.new') }}
                 </span>
               </v-col>
 
@@ -73,16 +73,6 @@
                   @blur="$v.form.libelle.$touch()"
                 ></v-text-field>
               </v-col>
-
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.description"
-                  :label="$t('traitement.form.description')"
-                  autocomplete="off"
-                  maxlength="100"
-                ></v-text-field>
-              </v-col>
-
               <v-col cols="12" sm="6">
                 <v-autocomplete
                   v-model.trim.lazy="form.typeTraitement"
@@ -117,11 +107,20 @@
                 <v-text-field
                   v-model.trim="form.price"
                   :label="$t('traitement.form.price')"
+                  type="number"
                   autocomplete="off"
                   :maxlength="$v.form.price.$params.maxLength.max"
                   :error-messages="priceErrors"
                   @input="$v.form.price.$touch()"
                   @blur="$v.form.price.$touch()"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12">
+                <v-text-field
+                  v-model.trim="form.description"
+                  :label="$t('traitement.form.description')"
+                  autocomplete="off"
+                  maxlength="100"
                 ></v-text-field>
               </v-col>
             </v-row>

@@ -1,5 +1,6 @@
 const initialState = () => ({
     allAssurances: [],
+    allAssuranceAutres: [],
     assurances: {},
     assurance: null,
 });
@@ -12,6 +13,9 @@ export const mutations = {
     },
     SET_ALL_ASSURANCES(state, allAssurances) {
         state.allAssurances = allAssurances;
+    },
+    SET_ALL_ASSURANCES_AUTRE(state, allAssuranceAutres) {
+        state.allAssuranceAutres = allAssuranceAutres;
     },
     SET_SEARCHED_ASSURANCES(state, assurances) {
         state.assurances = assurances;
@@ -39,7 +43,11 @@ export const actions = {
             commit("SET_ALL_ASSURANCES", data);
         });
     },
-
+    fetchAllAssurancesAutre({ commit }) {
+        return this.$api.getAllAssuranceAutre().then((data) => {
+            commit("SET_ALL_ASSURANCES_AUTRE", data);
+        });
+    },
     searchAssurances({ commit }, { page, s }) {
         if (!s) {
 

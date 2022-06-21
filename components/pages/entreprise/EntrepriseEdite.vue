@@ -123,7 +123,7 @@
 
 <script>
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import { debounce } from '~/helpers/helpers.js'
+import { debounce, isEqual } from '~/helpers/helpers.js'
 
 export default {
   data() {
@@ -155,6 +155,9 @@ export default {
       isPending: {
         raisonSocial: false,
       },
+      isLoaded: {
+        raisonSocial: false,
+      },
     }
   },
   validations: {
@@ -178,12 +181,15 @@ export default {
 
   computed: {
     isFormValid() {
+      const isFormEdited = !isEqual(this.selectedItem, this.form)
       return (
+        isFormEdited &&
         !this.$v.form.$invalid &&
         !this.$v.form.$pending &&
         this.isUnique.raisonSocial
       )
     },
+
     raisonSocialErrors() {
       const errors = []
 
@@ -259,8 +265,11 @@ export default {
   },
   watch: {
     'form.raisonSocial'() {
-      this.isPending.raisonSocial = true
-      this.isUnique.raisonSocial = false
+      if (this.isLoaded.raisonSocial) {
+        this.isPending.raisonSocial = true
+        this.isUnique.raisonSocial = false
+      }
+      this.isLoaded.raisonSocial = true
     },
   },
   methods: {
@@ -275,8 +284,9 @@ export default {
         }
 
         try {
-          const result = await this.$api.checkRaisonSocial(
-            this.form.raisonSocial
+          const result = await this.$api.checkRaisonSocialUpdate(
+            this.form.raisonSocial,
+            this.id
           )
           this.isUnique.raisonSocial = !result
         } catch (err) {
@@ -295,7 +305,7 @@ export default {
       500,
       -1
     ),
-   
+
     openDialog(item) {
       this.id = item.id
 
@@ -307,6 +317,13 @@ export default {
       }
 
       this.selectedItem = Object.assign({}, this.form)
+
+      this.isUnique = {
+        raisonSocial: !!this.form.raisonSocial,
+      }
+      this.isLoaded = {
+        raisonSocial: false,
+      }
 
       this.dialog = true
     },

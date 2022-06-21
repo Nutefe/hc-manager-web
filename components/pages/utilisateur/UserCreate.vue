@@ -124,19 +124,6 @@
               </v-col>
 
               <v-col cols="12" sm="12">
-                <!-- <v-autocomplete
-                  v-model.trim.lazy="form.profil"
-                  :items="matchedProfils"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('user.form.profil')"
-                  return-object
-                  :error-messages="profilErrors"
-                  @input="$v.form.profil.$touch()"
-                  @blur="$v.form.profil.$touch()"
-                ></v-autocomplete> -->
                 <v-select
                   v-model="form.profil"
                   :items="matchedProfils"

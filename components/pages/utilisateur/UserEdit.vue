@@ -5,7 +5,7 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       persistent
       scrollable
-      max-width="600"
+      max-width="700"
     >
       <v-card :disabled="loading" :loading="loading">
         <v-card-title class="px-3 px-md-5 py-2 py-md-3">
@@ -35,7 +35,7 @@
 
         <v-card-text class="px-3 px-md-5 pt-3">
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" sm="6">
               <v-text-field
                 v-model.trim="form.nom"
                 :label="$t('user.form.nom')"
@@ -47,7 +47,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" sm="6">
               <v-text-field
                 v-model.trim="form.prenom"
                 :label="$t('user.form.prenom')"
@@ -59,7 +59,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" sm="6">
               <v-text-field
                 v-model.trim.lazy="form.username"
                 :label="$t('user.form.username')"
@@ -77,7 +77,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" sm="6">
               <v-text-field
                 v-model.trim.lazy="form.email"
                 :label="$t('user.form.email')"
@@ -96,18 +96,6 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <!-- <v-autocomplete
-                v-model.trim.lazy="form.profil"
-                :items="matchedProfils"
-                item-text="libelle"
-                item-value="id"
-                autocomplete="off"
-                :label="$t('user.form.profil')"
-                return-object
-                :error-messages="profilErrors"
-                @input="$v.form.profil.$touch()"
-                @blur="$v.form.profil.$touch()"
-              ></v-autocomplete> -->
               <v-select
                 v-model="form.profil"
                 :items="matchedProfils"

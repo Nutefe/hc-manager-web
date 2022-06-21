@@ -36,3 +36,5 @@ export const isTwitterLink = (value) =>
     !vuelidateHelpers.req(value) || value.includes("twitter.com");
 
 export const isBefore = (dateDebut, dateFin ) => moment(dateDebut).isBefore(dateFin);
+
+export const isDate = (dateDebut ) => moment(dateDebut, "DD/MM/YYYY", true).isValid();
