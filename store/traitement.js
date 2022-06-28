@@ -1,5 +1,7 @@
 const initialState = () => ({
     allTraitements: [],
+    allTraitementsType: [],
+    allTraitementsTypeAssurer: [],
     traitements: {},
     traitement: null,
 });
@@ -12,6 +14,12 @@ export const mutations = {
     },
     SET_ALL_TRAITEMENTS(state, allTraitements) {
         state.allTraitements = allTraitements;
+    },
+    SET_ALL_TRAITEMENTS_TYPE(state, allTraitementsType) {
+        state.allTraitementsType = allTraitementsType;
+    },
+    SET_ALL_TRAITEMENTS_TYPE_ASSURER(state, allTraitementsTypeAssurer) {
+        state.allTraitementsTypeAssurer = allTraitementsTypeAssurer;
     },
     SET_SEARCHED_TRAITEMENTS(state, traitements) {
         state.traitements = traitements;
@@ -41,7 +49,12 @@ export const actions = {
     },
     fetchAllTraitementType({ commit }, id) {
         return this.$api.getAllTraitementTypePatient(id).then((data) => {
-            commit("SET_ALL_TRAITEMENTS", data);
+            commit("SET_ALL_TRAITEMENTS_TYPE", data);
+        });
+    },
+    fetchAllTraitementTypeAssurer({ commit }, id) {
+        return this.$api.getAllTraitementTypePatient(id).then((data) => {
+            commit("SET_ALL_TRAITEMENTS_TYPE_ASSURER", data);
         });
     },
 

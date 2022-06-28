@@ -759,6 +759,30 @@ export default ($axios, $auth) => ({
         });
     },
 
+    getAllPatientNonAssurer() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/patients/non/assurer`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    getAllPatientAssurer() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/patients/assurer`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
     selectAllPatientPage(page) {
         if (!$auth.loggedIn) {
             return;
@@ -976,6 +1000,7 @@ export default ($axios, $auth) => ({
         if (!$auth.loggedIn) {
             return;
         }
+
         return $axios.$get(`/factures/page/${page}`, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
@@ -1038,12 +1063,35 @@ export default ($axios, $auth) => ({
             return;
         }
 
+        console.log(facture)
+
         return $axios.$post(`/facture`, facture, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },
         });
     },
+
+    async saveFacture1(facture) {
+
+        await $axios.$post(`/facture`, facture, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            console.log(response)
+
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            console.log(url)
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
+
 
     updateFacture(facture, id) {
         if (!$auth.loggedIn) {

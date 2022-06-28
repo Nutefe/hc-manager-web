@@ -237,15 +237,15 @@ export default {
       sexe: [
         {
           id: 1,
-          libelle: 'MASCULIN',
+          libelle: this.$t('patient.sexe.masculin'),
         },
         {
           id: 2,
-          libelle: 'FEMININ',
+          libelle: this.$t('patient.sexe.feminin'),
         },
         {
           id: 3,
-          libelle: 'AUTRE',
+          libelle: this.$t('patient.sexe.autre'),
         },
       ],
       form: {
