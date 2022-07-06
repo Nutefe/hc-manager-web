@@ -49,6 +49,7 @@
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
+                v-if="item.fiche.patient.typePatient.id === 3"
                 v-bind="attrs"
                 class="mr-3"
                 small
@@ -56,6 +57,18 @@
                 :aria-label="$t('commoin.actions.edit')"
                 v-on="on"
                 @click.stop="editItem(item)"
+              >
+                <v-icon small> mdi-pencil </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                v-bind="attrs"
+                class="mr-3"
+                small
+                icon
+                :aria-label="$t('commoin.actions.edit')"
+                v-on="on"
+                @click.stop="editItemAssurance(item)"
               >
                 <v-icon small> mdi-pencil </v-icon>
               </v-btn>
@@ -160,19 +173,31 @@
       ref="createAssurerFormDialog"
       @refreshPage="refreshPage"
     />
+    <FactureEdit ref="editFormDialog" @refreshPage="refreshPage" />
+    <FactureAssurerEdit
+      ref="editAssurerFormDialog"
+      @refreshPage="refreshPage"
+    />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import FactureAssurerCreate from '~/components/pages/facture/FactureAssurerCreate.vue'
+import FactureAssurerEdit from '~/components/pages/facture/FactureAssurerEdit.vue'
 import FactureCreate from '~/components/pages/facture/FactureCreate.vue'
+import FactureEdit from '~/components/pages/facture/FactureEdit.vue'
 import { debounce, startCase } from '~/helpers/helpers.js'
 
 export default {
   name: 'FacturesPage',
 
-  components: { FactureCreate, FactureAssurerCreate },
+  components: {
+    FactureCreate,
+    FactureAssurerCreate,
+    FactureEdit,
+    FactureAssurerEdit,
+  },
 
   layout: 'default',
 
@@ -202,7 +227,7 @@ export default {
         {
           text: this.$t('facture.table.patient'),
           align: 'start',
-          value: 'patient',
+          value: 'fiche.patient.nom',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
@@ -226,7 +251,7 @@ export default {
         },
         {
           text: this.$t('facture.table.typePatient'),
-          value: 'typePatient',
+          value: 'fiche.patient.typePatient.libelle',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
@@ -300,14 +325,19 @@ export default {
     itemPosition(itemId) {
       return this.itemsList.findIndex((elm) => elm.id === itemId) + 1
     },
-    editItem(item) {
+    async editItem(item) {
+      await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
       this.$refs.editFormDialog.openDialog(item)
+    },
+    async editItemAssurance(item) {
+      await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
+      this.$refs.editAssurerFormDialog.openDialog(item)
     },
     createItemAssurer() {
       this.$refs.createAssurerFormDialog.openDialog()
     },
-    createItemAssurerAutre() {
-      this.$refs.createAssurerAutreFormDialog.openDialog()
+    createItemInam() {
+      this.$refs.createInamFormDialog.openDialog()
     },
     createItem() {
       this.$refs.createFormDialog.openDialog()
@@ -321,6 +351,19 @@ export default {
       } else {
         return 'n/a'
       }
+    },
+
+    async fetchFiche(id) {
+      this.loading = true
+      try {
+        await this.$store.dispatch('facture/fetchAllFiches', id)
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: 503,
+          message: 'Unable to fetch data.',
+        })
+      }
+      this.loading = false
     },
 
     async fetchData(page) {

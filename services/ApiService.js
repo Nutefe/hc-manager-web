@@ -1037,6 +1037,26 @@ export default ($axios, $auth) => ({
             }
         })
     },
+    selectAllFactureNotSoldePage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/factures/not/solde/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllFactureNotSoldePage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/factures/not/solde/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
     selectAllFactureEncPage(page) {
         if (!$auth.loggedIn) {
             return;
@@ -1063,8 +1083,6 @@ export default ($axios, $auth) => ({
             return;
         }
 
-        console.log(facture)
-
         return $axios.$post(`/facture`, facture, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
@@ -1080,11 +1098,8 @@ export default ($axios, $auth) => ({
             },
             responseType: 'arraybuffer'
         }).then(function (response) {
-            console.log(response)
-
             const blob = new Blob([response], { type: "application/pdf" });
             const url = window.URL.createObjectURL(blob);
-            console.log(url)
             window.open(url);
         })
             .catch({
@@ -1103,6 +1118,23 @@ export default ($axios, $auth) => ({
                 Authorization: `Bearer ${$auth.token}`,
             },
         });
+    },
+
+    async updateFacture1(facture, id) {
+
+        await $axios.$put(`/facture/${id}`, facture, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
     },
 
     /**
@@ -1201,6 +1233,25 @@ export default ($axios, $auth) => ({
 
     /**
      * end paiement axios api
+     */
+
+    /**
+     * start fiche axios api
+     */
+    getFicheTraitement(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/fiche/traitement/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    /**
+     * end fiche axios api
      */
 
 });

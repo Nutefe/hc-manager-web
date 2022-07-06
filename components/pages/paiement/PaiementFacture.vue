@@ -13,7 +13,7 @@
             <v-row align="center">
               <v-col cols="9">
                 <span class="text-h6 text-md-h5 font-weight-regular">
-                  {{ $t('facture.new') }}
+                  {{ $t('paiement.new') }}
                 </span>
               </v-col>
 
@@ -36,53 +36,116 @@
 
           <v-card-text class="px-3 px-md-5 pt-3">
             <v-row>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.patient"
-                  :items="matchedPatients"
-                  :label="$t('facture.form.patient')"
-                  item-text="nom"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  return-object
-                  :error-messages="patientErrors"
-                  @input="$v.form.patient.$touch()"
-                  @blur="$v.form.patient.$touch()"
-                  @change="fetchTraitement()"
-                ></v-autocomplete>
+              <template v-if="form.patient">
+                <v-col cols="12" sm="12">
+                  <v-card class="pl-1 pr-1" elevation="0">
+                    <v-row>
+                      <v-col style="font-size: 16px"
+                        >{{ $t('paiement.form.facture') }}
+                        <v-chip>{{ form.numero }}</v-chip></v-col
+                      >
+                      <v-col class="text-right" style="font-size: 16px">
+                        <v-chip color="primary">{{ form.dateFacture }}</v-chip>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col style="font-size: 16px">
+                        {{ form.patient.nom }}
+                        {{ startCase(form.patient.prenom) }}
+                      </v-col>
+                      <v-col class="text-right" style="font-size: 16px">
+                        <v-chip class="mr-3">
+                          {{ form.patient.telephone }}</v-chip
+                        >
+                        <v-chip
+                          v-if="form.patient.typePatient"
+                          color="green"
+                          text-color="white"
+                        >
+                          {{ form.patient.typePatient.libelle }}
+                        </v-chip>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <v-divider />
+                </v-col>
+              </template>
+              <v-col cols="12" sm="6" class="pr-15">
+                <v-row>
+                  <v-col style="font-size: 16px">{{
+                    $t('paiement.form.total')
+                  }}</v-col>
+                  <v-col class="text-right" style="font-size: 16px">
+                    <b>{{ total }}</b></v-col
+                  >
+                </v-row>
+                <v-row>
+                  <v-col style="font-size: 16px">{{
+                    $t('paiement.form.acompte')
+                  }}</v-col>
+                  <v-col class="text-right" style="font-size: 16px">
+                    <b>{{ form.acompte }}</b></v-col
+                  >
+                </v-row>
+                <v-row>
+                  <v-col style="font-size: 16px">{{
+                    $t('paiement.form.remise')
+                  }}</v-col>
+                  <v-col class="text-right" style="font-size: 16px">
+                    <b>{{ form.remise }}</b></v-col
+                  >
+                </v-row>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.acompte"
-                  :label="$t('facture.form.acompte')"
-                  autocomplete="off"
-                  type="number"
-                  :maxlength="$v.form.acompte.$params.maxLength.max"
-                  :error-messages="acompteErrors"
-                  @input="$v.form.acompte.$touch()"
-                  @blur="$v.form.acompte.$touch()"
-                ></v-text-field>
+                <v-row>
+                  <v-col cols="12" class="pb-0">
+                    <v-text-field
+                      v-model.trim="form.total"
+                      autofocus
+                      outlined
+                      dense
+                      :label="$t('paiement.form.somme')"
+                      autocomplete="off"
+                      type="number"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" class="mt-0 pt-0">
+                    <v-text-field
+                      v-model.trim.lazy="form.montant"
+                      autofocus
+                      outlined
+                      dense
+                      :label="$t('paiement.form.montant')"
+                      autocomplete="off"
+                      type="number"
+                      :maxlength="$v.form.montant.$params.maxLength.max"
+                      :error-messages="montantErrors"
+                      @input="$v.form.montant.$touch()"
+                      @blur="$v.form.montant.$touch()"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
               </v-col>
-              <v-col cols="12" sm="12">
-                <v-autocomplete
-                  v-model.trim.lazy="form.traitement"
-                  :items="matchedTraitements"
-                  :label="$t('facture.form.traitement')"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  multiple
-                  autofocus
-                  return-object
-                  chips
-                  deletable-chips
-                ></v-autocomplete>
+              <v-col cols="12">
+                <v-row @click="show = !show">
+                  <v-chip style="font-size: 16px">
+                    {{ $t('paiement.form.traitement') }}
+                  </v-chip>
+
+                  <v-spacer></v-spacer>
+
+                  <v-btn icon>
+                    <v-icon>{{
+                      show ? 'mdi-chevron-up' : 'mdi-chevron-down'
+                    }}</v-icon>
+                  </v-btn>
+                </v-row>
               </v-col>
               <template v-if="form.traitement.length > 0">
                 <v-col cols="12" sm="12">
                   <v-expand-transition>
                     <v-simple-table
+                      v-show="show"
                       fixed-header
                       height="200px"
                       color="grey darken-1"
@@ -111,29 +174,6 @@
                   </v-expand-transition>
                 </v-col>
               </template>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="total"
-                  autofocus
-                  :label="$t('facture.form.total')"
-                  autocomplete="off"
-                  type="number"
-                  disabled
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim.lazy="form.remise"
-                  autofocus
-                  :label="$t('facture.form.remise')"
-                  autocomplete="off"
-                  type="number"
-                  :maxlength="$v.form.remise.$params.maxLength.max"
-                  :error-messages="remiseErrors"
-                  @input="$v.form.remise.$touch()"
-                  @blur="$v.form.remise.$touch()"
-                ></v-text-field>
-              </v-col>
             </v-row>
           </v-card-text>
 
@@ -169,8 +209,7 @@
 <script>
 import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-// import { debounce } from '~/helpers/helpers.js'
-// import { isDate } from '~/helpers/customValidators.js'
+import { startCase, capitalize } from '~/helpers/helpers.js'
 
 export default {
   data() {
@@ -179,11 +218,17 @@ export default {
       dialogNo: false,
       loading: false,
       itemsList: [],
+      id: null,
+      show: false,
       form: {
         remise: 0,
         acompte: 0,
         patient: {},
         traitement: [],
+        montant: 0,
+        total: 0,
+        numero: '',
+        dateFacture: '',
       },
       headers: [
         {
@@ -211,18 +256,10 @@ export default {
   },
   validations: {
     form: {
-      remise: {
+      montant: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(100),
-      },
-      acompte: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(100),
-      },
-      patient: {
-        required,
       },
     },
   },
@@ -242,67 +279,34 @@ export default {
 
   computed: {
     isFormValid() {
-      const isFormTraitement = this.form.traitement.length > 0
+      // const isFormEdited = !isEqual(this.selectedItem, this.form)
 
-      return isFormTraitement && !this.$v.form.$invalid
+      // const isFormTraitement = this.form.traitement.length > 0
+
+      return !this.$v.form.$invalid
     },
 
-    remiseErrors() {
+    montantErrors() {
       const errors = []
 
-      if (!this.$v.form.remise.$dirty) return errors
+      if (!this.$v.form.montant.$dirty) return errors
 
-      !this.$v.form.remise.required &&
-        errors.push(this.$t('validations.remise.required'))
+      !this.$v.form.montant.required &&
+        errors.push(this.$t('validations.montant.required'))
 
-      !this.$v.form.remise.minLength &&
+      !this.$v.form.montant.minLength &&
         errors.push(
-          this.$t('validations.remise.min', {
-            length: this.$v.form.remise.$params.minLength.min,
+          this.$t('validations.montant.min', {
+            length: this.$v.form.montant.$params.minLength.min,
           })
         )
 
-      !this.$v.form.remise.maxLength &&
+      !this.$v.form.montant.maxLength &&
         errors.push(
-          this.$t('validations.remise.max', {
-            length: this.$v.form.remise.$params.maxLength.max,
+          this.$t('validations.montant.max', {
+            length: this.$v.form.montant.$params.maxLength.max,
           })
         )
-
-      return errors
-    },
-    acompteErrors() {
-      const errors = []
-
-      if (!this.$v.form.acompte.$dirty) return errors
-
-      !this.$v.form.acompte.required &&
-        errors.push(this.$t('validations.acompte.required'))
-
-      !this.$v.form.acompte.minLength &&
-        errors.push(
-          this.$t('validations.acompte.min', {
-            length: this.$v.form.acompte.$params.minLength.min,
-          })
-        )
-
-      !this.$v.form.acompte.maxLength &&
-        errors.push(
-          this.$t('validations.acompte.max', {
-            length: this.$v.form.acompte.$params.maxLength.max,
-          })
-        )
-
-      return errors
-    },
-
-    patientErrors() {
-      const errors = []
-
-      if (!this.$v.form.patient.$dirty) return errors
-
-      !this.$v.form.patient.required &&
-        errors.push(this.$t('validations.patient.required'))
 
       return errors
     },
@@ -313,6 +317,7 @@ export default {
         return Object.assign({}, patient, { patients })
       })
     },
+
     matchedTraitements() {
       return this.traitements.map((traitement) => {
         const traitements = traitement.libelle
@@ -321,20 +326,64 @@ export default {
     },
 
     total() {
-      let somme = 0
-      this.form.traitement.forEach((traitement) => {
-        somme += traitement.price
-      })
-      return somme - this.form.remise
+      if (this.form.traitement.length > 0) {
+        let somme = 0
+        this.form.traitement.forEach((traitement) => {
+          somme += traitement.price
+        })
+        return somme - this.form.remise
+      } else {
+        return 0
+      }
     },
 
     ...mapState({
       patients: (state) => state.patient.allPatientsNonAssurer,
       traitements: (state) => state.traitement.allTraitementsType,
+      fiches: (state) => state.facture.fiches,
     }),
   },
 
   methods: {
+    startCase(str) {
+      if (str) {
+        return startCase(str)
+      } else {
+        return 'n/a'
+      }
+    },
+
+    capitalize(str) {
+      if (str) {
+        return capitalize(str)
+      } else {
+        return 'n/a'
+      }
+    },
+
+    openDialog(item) {
+      this.id = item.id
+
+      const ficheTraitement = []
+      this.fiches.forEach((fiche) => {
+        ficheTraitement.push(fiche.ficheTraitementPK.traitement)
+      })
+
+      this.form = {
+        remise: item.remise || 0,
+        acompte: item.accompte || 0,
+        patient: item.fiche.patient || {},
+        traitement: ficheTraitement || [],
+        total: '',
+        montant: '',
+        numero: item.numero || '',
+        dateFacture: item.dateFacture || '',
+      }
+
+      this.fetchTraitement()
+
+      this.dialog = true
+    },
     closeDialog() {
       this.dialog = false
 
@@ -345,23 +394,23 @@ export default {
         acompte: 0,
         patient: {},
         traitement: [],
+        total: '',
+        montant: '',
       }
 
       this.loading = false
     },
 
-    openDialog() {
-      this.dialog = true
-
-      this.$v.form.$reset()
-
-      this.form = {
-        remise: 0,
-        acompte: 0,
-        patient: {},
-        traitement: [],
+    async fetchFiche(id) {
+      this.loading = true
+      try {
+        await this.$store.dispatch('facture/fetchAllFiches', id)
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: 503,
+          message: 'Unable to fetch data.',
+        })
       }
-
       this.loading = false
     },
 
@@ -404,13 +453,16 @@ export default {
           listTraitement.push(item)
         })
         try {
-          await this.$api.saveFacture1({
-            patient: this.form.patient.id,
-            traitements: listTraitement,
-            unite: false,
-            accompte: this.form.acompte,
-            remise: this.form.remise,
-          })
+          await this.$api.updateFacture1(
+            {
+              patient: this.form.patient.id,
+              traitements: listTraitement,
+              unite: false,
+              accompte: this.form.acompte,
+              remise: this.form.remise,
+            },
+            this.id
+          )
           this.$emit('refreshPage')
 
           this.closeDialog()

@@ -335,6 +335,9 @@ export default {
       isPending: {
         codeDossier: false,
       },
+      isLoaded: {
+        codeDossier: false,
+      },
     }
   },
   validations: {
@@ -563,8 +566,11 @@ export default {
   },
   watch: {
     'form.codeDossier'() {
-      this.isPending.codeDossier = true
-      this.isUnique.codeDossier = false
+      if (this.isLoaded.codeDossier) {
+        this.isPending.codeDossier = true
+        this.isUnique.codeDossier = false
+      }
+      this.isLoaded.codeDossier = true
     },
     dateNais() {
       this.form.dateNaiss = this.formatDate(this.dateNais)
@@ -639,6 +645,13 @@ export default {
 
       this.selectedItem = Object.assign({}, this.form)
 
+      this.isUnique = {
+        codeDossier: !!this.form.codeDossier,
+      }
+      this.isLoaded = {
+        codeDossier: false,
+      }
+
       this.dialog = true
     },
 
@@ -648,6 +661,9 @@ export default {
         codeDossier: false,
       }
       this.isPending = {
+        codeDossier: false,
+      }
+      this.isLoaded = {
         codeDossier: false,
       }
       this.$v.form.$reset()

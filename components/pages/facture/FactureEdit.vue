@@ -13,7 +13,7 @@
             <v-row align="center">
               <v-col cols="9">
                 <span class="text-h6 text-md-h5 font-weight-regular">
-                  {{ $t('patient.new') }}
+                  {{ $t('facture.new') }}
                 </span>
               </v-col>
 
@@ -37,191 +37,102 @@
           <v-card-text class="px-3 px-md-5 pt-3">
             <v-row>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim.lazy="form.codeDossier"
-                  :label="$t('patient.form.codeDossier')"
+                <v-autocomplete
+                  v-model.trim.lazy="form.patient"
+                  :items="matchedPatients"
+                  :label="$t('facture.form.patient')"
+                  item-text="nom"
+                  item-value="id"
                   autocomplete="off"
-                  :maxlength="$v.form.codeDossier.$params.maxLength.max"
-                  :error-messages="codeDossierErrors"
-                  @input="
-                    $v.form.codeDossier.$touch()
-                    checkUniqueCodeDossier()
-                  "
-                  @blur="
-                    $v.form.codeDossier.$touch()
-                    checkUniqueCodeDossier()
-                  "
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.nom"
                   autofocus
-                  :label="$t('patient.form.nom')"
-                  autocomplete="off"
-                  :maxlength="$v.form.nom.$params.maxLength.max"
-                  :error-messages="nomErrors"
-                  @input="$v.form.nom.$touch()"
-                  @blur="$v.form.nom.$touch()"
-                ></v-text-field>
+                  return-object
+                  :error-messages="patientErrors"
+                  @input="$v.form.patient.$touch()"
+                  @blur="$v.form.patient.$touch()"
+                  @change="fetchTraitement()"
+                ></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
-                  v-model.trim="form.prenom"
-                  :label="$t('patient.form.prenom')"
+                  v-model.trim="form.acompte"
+                  :label="$t('facture.form.acompte')"
                   autocomplete="off"
-                  :maxlength="$v.form.prenom.$params.maxLength.max"
-                  :error-messages="prenomErrors"
-                  @input="$v.form.prenom.$touch()"
-                  @blur="$v.form.prenom.$touch()"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="menu1"
-                  v-model="menu1"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="form.dateNaiss"
-                      :label="$t('patient.form.dateNaiss')"
-                      persistent-hint
-                      prepend-icon="mdi-calendar"
-                      v-bind="attrs"
-                      :maxlength="$v.form.dateNaiss.$params.maxLength.max"
-                      :error-messages="dateNaissErrors"
-                      @blur="
-                        dateNais = parseDate(form.dateNaiss)
-                        $v.form.dateNaiss.$touch()
-                      "
-                      @input="$v.form.dateNaiss.$touch()"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateNais"
-                    no-title
-                    @input="menu1 = false"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.telephone"
-                  :label="$t('patient.form.telephone')"
                   type="number"
+                  :maxlength="$v.form.acompte.$params.maxLength.max"
+                  :error-messages="acompteErrors"
+                  @input="$v.form.acompte.$touch()"
+                  @blur="$v.form.acompte.$touch()"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12">
+                <v-autocomplete
+                  v-model.trim.lazy="form.traitement"
+                  :items="matchedTraitements"
+                  :label="$t('facture.form.traitement')"
+                  item-text="libelle"
+                  item-value="id"
                   autocomplete="off"
-                  :maxlength="$v.form.telephone.$params.maxLength.max"
-                  :error-messages="telephoneErrors"
-                  @input="$v.form.telephone.$touch()"
-                  @blur="$v.form.telephone.$touch()"
+                  multiple
+                  autofocus
+                  return-object
+                  chips
+                  deletable-chips
+                ></v-autocomplete>
+              </v-col>
+              <template v-if="form.traitement.length > 0">
+                <v-col cols="12" sm="12">
+                  <v-expand-transition>
+                    <v-simple-table
+                      fixed-header
+                      height="200px"
+                      color="grey darken-1"
+                      class="px-3 px-md-5 pt-3"
+                      dark
+                    >
+                      <thead>
+                        <tr>
+                          <th
+                            v-for="header in headers"
+                            :key="header.text"
+                            class="text-left"
+                          >
+                            {{ header.text }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in form.traitement" :key="item.id">
+                          <td>{{ itemPosition(item.id) }}</td>
+                          <td>{{ item.libelle }}</td>
+                          <td>{{ item.price }}</td>
+                        </tr>
+                      </tbody>
+                    </v-simple-table>
+                  </v-expand-transition>
+                </v-col>
+              </template>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model.trim="total"
+                  autofocus
+                  :label="$t('facture.form.total')"
+                  autocomplete="off"
+                  type="number"
+                  disabled
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
-                  v-model.trim="form.adresse"
-                  :label="$t('patient.form.adresse')"
+                  v-model.trim.lazy="form.remise"
+                  autofocus
+                  :label="$t('facture.form.remise')"
                   autocomplete="off"
-                  :maxlength="$v.form.adresse.$params.maxLength.max"
-                  :error-messages="adresseErrors"
-                  @input="$v.form.adresse.$touch()"
-                  @blur="$v.form.adresse.$touch()"
+                  type="number"
+                  :maxlength="$v.form.remise.$params.maxLength.max"
+                  :error-messages="remiseErrors"
+                  @input="$v.form.remise.$touch()"
+                  @blur="$v.form.remise.$touch()"
                 ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.sexe"
-                  :items="sexe"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.sexe')"
-                  return-object
-                  :error-messages="sexeErrors"
-                  @input="$v.form.sexe.$touch()"
-                  @blur="$v.form.sexe.$touch()"
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.typePatient"
-                  :items="matchedTypePatients"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.typePatient')"
-                  return-object
-                  :error-messages="typePatientErrors"
-                  @input="$v.form.typePatient.$touch()"
-                  @blur="$v.form.typePatient.$touch()"
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.trim="form.numeroPiece"
-                  :label="$t('patient.form.numeroPiece')"
-                  autocomplete="off"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-menu
-                  ref="menu2"
-                  v-model="menu2"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="form.pieceExp"
-                      :label="$t('patient.form.pieceExp')"
-                      persistent-hint
-                      autocomplete="null"
-                      prepend-icon="mdi-calendar"
-                      v-bind="attrs"
-                      @blur="datePiece = parseDate(form.pieceExp)"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="datePiece"
-                    no-title
-                    @input="menu2 = false"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.assurance"
-                  :items="matchedAssurances"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.assurance')"
-                  return-object
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model.trim.lazy="form.entreprise"
-                  :items="matchedEntreprises"
-                  item-text="raisonSocial"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('patient.form.entreprise')"
-                  return-object
-                ></v-autocomplete>
               </v-col>
             </v-row>
           </v-card-text>
@@ -258,133 +169,75 @@
 <script>
 import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import { debounce, isEqual } from '~/helpers/helpers.js'
-import { isDate } from '~/helpers/customValidators.js'
+import { isEqual } from '~/helpers/helpers.js'
+// import { isDate } from '~/helpers/customValidators.js'
 
 export default {
   data() {
     return {
       dialog: false,
+      dialogNo: false,
       loading: false,
-      menuOptions: {
-        transition: 'slide-y-transition',
-      },
-      disable: false,
-      dateNais: new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .substr(0, 10),
-      datePiece: new Date(new Date().getFullYear(), 0, 1)
-        .toISOString()
-        .substr(0, 10),
-      menu1: false,
-      menu2: false,
-      sexe: [
-        {
-          id: 1,
-          libelle: 'MASCULIN',
-        },
-        {
-          id: 2,
-          libelle: 'FEMININ',
-        },
-        {
-          id: 3,
-          libelle: 'AUTRE',
-        },
-      ],
+      itemsList: [],
       id: null,
       selectedItem: {
-        codeDossier: '',
-        nom: '',
-        prenom: '',
-        dateNaiss: this.formatDate(
-          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-        ),
-        sexe: {},
-        telephone: '',
-        adresse: '',
-        numeroPiece: '',
-        pieceExp: this.formatDate(
-          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-        ),
-        typePatient: {},
-        assurance: {},
-        entreprise: {},
+        remise: 0,
+        acompte: 0,
+        patient: {},
+        traitement: [],
       },
       form: {
-        codeDossier: '',
-        nom: '',
-        prenom: '',
-        dateNaiss: this.formatDate(
-          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-        ),
-        sexe: {},
-        telephone: '',
-        adresse: '',
-        numeroPiece: '',
-        pieceExp: this.formatDate(
-          new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-        ),
-        typePatient: {},
-        assurance: {},
-        entreprise: {},
+        remise: 0,
+        acompte: 0,
+        patient: {},
+        traitement: [],
       },
-      isUnique: {
-        codeDossier: false,
-      },
-      isPending: {
-        codeDossier: false,
-      },
+      headers: [
+        {
+          text: this.$t('facture.table.num'),
+          value: 'num',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+          width: 100,
+        },
+        {
+          text: this.$t('facture.table.traitement'),
+          align: 'start',
+          value: 'libelle',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('facture.table.prix'),
+          value: 'prix',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+      ],
     }
   },
   validations: {
     form: {
-      codeDossier: {
+      remise: {
         required,
-        minLength: minLength(4),
-        maxLength: maxLength(20),
-      },
-      nom: {
-        required,
-        minLength: minLength(2),
+        minLength: minLength(1),
         maxLength: maxLength(100),
       },
-      prenom: {
+      acompte: {
         required,
-        minLength: minLength(2),
+        minLength: minLength(1),
         maxLength: maxLength(100),
       },
-      dateNaiss: {
-        required,
-        minLength: minLength(6),
-        maxLength: maxLength(100),
-      },
-      telephone: {
-        required,
-        minLength: minLength(6),
-        maxLength: maxLength(100),
-      },
-      adresse: {
-        required,
-        minLength: minLength(6),
-        maxLength: maxLength(100),
-      },
-      sexe: {
-        required,
-      },
-      typePatient: {
+      patient: {
         required,
       },
     },
   },
+
   async fetch() {
     this.loading = true
     try {
-      await Promise.all([
-        this.$store.dispatch('typePatient/fetchAllTypes'),
-        this.$store.dispatch('assurance/fetchAllAssurances'),
-        this.$store.dispatch('entreprise/fetchAllEntreprises'),
-      ])
+      await this.$store.dispatch('patient/fetchAllPatientsNonAssurer')
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -393,322 +246,213 @@ export default {
     }
     this.loading = false
   },
+
   computed: {
     isFormValid() {
       const isFormEdited = !isEqual(this.selectedItem, this.form)
 
-      return (
-        isFormEdited &&
-        !this.$v.form.$invalid &&
-        !this.$v.form.$pending &&
-        this.isUnique.codeDossier
-      )
+      const isFormTraitement = this.form.traitement.length > 0
+
+      return isFormEdited && isFormTraitement && !this.$v.form.$invalid
     },
 
-    codeDossierErrors() {
+    remiseErrors() {
       const errors = []
-      if (!this.$v.form.codeDossier.$dirty) return errors
-      !this.$v.form.codeDossier.required &&
-        errors.push(this.$t('validations.codeDossier.required'))
-      !this.$v.form.codeDossier.minLength &&
+
+      if (!this.$v.form.remise.$dirty) return errors
+
+      !this.$v.form.remise.required &&
+        errors.push(this.$t('validations.remise.required'))
+
+      !this.$v.form.remise.minLength &&
         errors.push(
-          this.$t('validations.codeDossier.min', {
-            length: this.$v.form.codeDossier.$params.minLength.min,
+          this.$t('validations.remise.min', {
+            length: this.$v.form.remise.$params.minLength.min,
           })
         )
-      !this.$v.form.codeDossier.maxLength &&
+
+      !this.$v.form.remise.maxLength &&
         errors.push(
-          this.$t('validations.codeDossier.max', {
-            length: this.$v.form.codeDossier.$params.maxLength.max,
+          this.$t('validations.remise.max', {
+            length: this.$v.form.remise.$params.maxLength.max,
           })
         )
-      this.form.codeDossier &&
-        !this.isPending.codeDossier &&
-        !this.isUnique.codeDossier &&
-        errors.push(this.$t('validations.codeDossier.unique'))
+
       return errors
     },
-    nomErrors() {
+    acompteErrors() {
       const errors = []
-      if (!this.$v.form.nom.$dirty) return errors
-      !this.$v.form.nom.required &&
-        errors.push(this.$t('validations.nom.required'))
-      !this.$v.form.nom.minLength &&
+
+      if (!this.$v.form.acompte.$dirty) return errors
+
+      !this.$v.form.acompte.required &&
+        errors.push(this.$t('validations.acompte.required'))
+
+      !this.$v.form.acompte.minLength &&
         errors.push(
-          this.$t('validations.nom.min', {
-            length: this.$v.form.nom.$params.minLength.min,
+          this.$t('validations.acompte.min', {
+            length: this.$v.form.acompte.$params.minLength.min,
           })
         )
-      !this.$v.form.nom.maxLength &&
+
+      !this.$v.form.acompte.maxLength &&
         errors.push(
-          this.$t('validations.nom.max', {
-            length: this.$v.form.nom.$params.maxLength.max,
+          this.$t('validations.acompte.max', {
+            length: this.$v.form.acompte.$params.maxLength.max,
           })
         )
+
       return errors
     },
-    prenomErrors() {
+
+    patientErrors() {
       const errors = []
-      if (!this.$v.form.prenom.$dirty) return errors
-      !this.$v.form.prenom.required &&
-        errors.push(this.$t('validations.prenom.required'))
-      !this.$v.form.prenom.minLength &&
-        errors.push(
-          this.$t('validations.prenom.min', {
-            length: this.$v.form.prenom.$params.minLength.min,
-          })
-        )
-      !this.$v.form.prenom.maxLength &&
-        errors.push(
-          this.$t('validations.prenom.max', {
-            length: this.$v.form.prenom.$params.maxLength.max,
-          })
-        )
+
+      if (!this.$v.form.patient.$dirty) return errors
+
+      !this.$v.form.patient.required &&
+        errors.push(this.$t('validations.patient.required'))
+
       return errors
     },
-    dateNaissErrors() {
-      const errors = []
-      if (!this.$v.form.dateNaiss.$dirty) return errors
-      !this.$v.form.dateNaiss.required &&
-        errors.push(this.$t('validations.dateNaiss.required'))
-      !this.$v.form.dateNaiss.minLength &&
-        errors.push(
-          this.$t('validations.dateNaiss.min', {
-            length: this.$v.form.dateNaiss.$params.minLength.min,
-          })
-        )
-      !this.$v.form.dateNaiss.maxLength &&
-        errors.push(
-          this.$t('validations.dateNaiss.max', {
-            length: this.$v.form.dateNaiss.$params.maxLength.max,
-          })
-        )
-      return errors
-    },
-    telephoneErrors() {
-      const errors = []
-      if (!this.$v.form.telephone.$dirty) return errors
-      !this.$v.form.telephone.required &&
-        errors.push(this.$t('validations.telephone.required'))
-      !this.$v.form.telephone.minLength &&
-        errors.push(
-          this.$t('validations.telephone.min', {
-            length: this.$v.form.telephone.$params.minLength.min,
-          })
-        )
-      !this.$v.form.telephone.maxLength &&
-        errors.push(
-          this.$t('validations.telephone.max', {
-            length: this.$v.form.telephone.$params.maxLength.max,
-          })
-        )
-      return errors
-    },
-    adresseErrors() {
-      const errors = []
-      if (!this.$v.form.adresse.$dirty) return errors
-      !this.$v.form.adresse.required &&
-        errors.push(this.$t('validations.adresse.required'))
-      !this.$v.form.adresse.minLength &&
-        errors.push(
-          this.$t('validations.adresse.min', {
-            length: this.$v.form.adresse.$params.minLength.min,
-          })
-        )
-      !this.$v.form.adresse.maxLength &&
-        errors.push(
-          this.$t('validations.adresse.max', {
-            length: this.$v.form.adresse.$params.maxLength.max,
-          })
-        )
-      return errors
-    },
-    sexeErrors() {
-      const errors = []
-      if (!this.$v.form.sexe.$dirty) return errors
-      !this.$v.form.sexe.required &&
-        errors.push(this.$t('validations.sexe.required'))
-      return errors
-    },
-    typePatientErrors() {
-      const errors = []
-      if (!this.$v.form.typePatient.$dirty) return errors
-      !this.$v.form.typePatient.required &&
-        errors.push(this.$t('validations.typePatient.required'))
-      return errors
-    },
-    matchedTypePatients() {
-      return this.typePatients.map((typePatient) => {
-        const typePatients = typePatient.libelle
-        return Object.assign({}, typePatient, { typePatients })
+
+    matchedPatients() {
+      return this.patients.map((patient) => {
+        const patients = patient.nom
+        return Object.assign({}, patient, { patients })
       })
     },
-    matchedAssurances() {
-      return this.assurances.map((assurance) => {
-        const assurances = assurance.libelle
-        return Object.assign({}, assurance, { assurances })
+
+    matchedTraitements() {
+      return this.traitements.map((traitement) => {
+        const traitements = traitement.libelle
+        return Object.assign({}, traitement, { traitements })
       })
     },
-    matchedEntreprises() {
-      return this.entreprises.map((entreprise) => {
-        const entreprises = entreprise.libelle
-        return Object.assign({}, entreprise, { entreprises })
-      })
+
+    total() {
+      if (this.form.traitement.length > 0) {
+        let somme = 0
+        this.form.traitement.forEach((traitement) => {
+          somme += traitement.price
+        })
+        return somme - this.form.remise
+      } else {
+        return 0
+      }
     },
+
     ...mapState({
-      typePatients: (state) => state.typePatient.allTypes,
-      assurances: (state) => state.assurance.allAssurances,
-      entreprises: (state) => state.entreprise.allEntreprises,
+      patients: (state) => state.patient.allPatientsNonAssurer,
+      traitements: (state) => state.traitement.allTraitementsType,
+      fiches: (state) => state.facture.fiches,
     }),
   },
-  watch: {
-    'form.codeDossier'() {
-      this.isPending.codeDossier = true
-      this.isUnique.codeDossier = false
-    },
-    dateNais() {
-      this.form.dateNaiss = this.formatDate(this.dateNais)
-    },
-    datePiece() {
-      this.form.pieceExp = this.formatDate(this.datePiece)
-    },
-  },
-  methods: {
-    checkUniqueCodeDossier: debounce(
-      async function () {
-        if (
-          this.form.codeDossier === '' ||
-          this.form.codeDossier === null ||
-          this.$v.form.codeDossier.$invalid
-        ) {
-          return
-        }
-        try {
-          const result = await this.$api.checkCodeDossierUpdate(
-            this.form.codeDossier,
-            this.id
-          )
-          this.isUnique.codeDossier = !result
-        } catch (err) {
-          this.isUnique.codeDossier = false
-          if (!err.response) {
-            this.$nuxt.error({
-              statusCode: 503,
-              message: 'Unable to fetch data.',
-            })
-          }
-        }
-        this.isPending.codeDossier = false
-      },
-      500,
-      -1
-    ),
 
+  methods: {
     openDialog(item) {
       this.id = item.id
-      let date1, date2
-      if (item.pieceExp) {
-        date1 = this.formatDate(
-          new Date(item.pieceExp).toISOString().substr(0, 10)
-        )
-      } else {
-        date1 = ''
-      }
-      if (item.dateNaiss) {
-        date2 = this.formatDate(
-          new Date(item.dateNaiss).toISOString().substr(0, 10)
-        )
-      } else {
-        date2 = ''
-      }
+
+      // await this.fetchFiche(item.fiche.id)
+      const ficheTraitement = []
+      this.fiches.forEach((fiche) => {
+        ficheTraitement.push(fiche.ficheTraitementPK.traitement)
+      })
 
       this.form = {
-        codeDossier: item.codeDossier || '',
-        nom: item.nom || '',
-        prenom: item.prenom || '',
-        dateNaiss: date2 || '',
-        sexe: this.sexe.find((o) => o.libelle === item.genre) || {},
-        telephone: item.telephone || '',
-        adresse: item.adresse || '',
-        numeroPiece: item.numeroPiece || '',
-        pieceExp: date1 || '',
-        typePatient: item.typePatient || {},
-        assurance: item.assurance || {},
-        entreprise: item.entreprise || {},
+        remise: item.remise || 0,
+        acompte: item.accompte || 0,
+        patient: item.fiche.patient || {},
+        traitement: ficheTraitement || [],
       }
 
       this.selectedItem = Object.assign({}, this.form)
 
+      this.fetchTraitement()
+
       this.dialog = true
     },
-
     closeDialog() {
       this.dialog = false
-      this.isUnique = {
-        codeDossier: false,
-      }
-      this.isPending = {
-        codeDossier: false,
-      }
+
       this.$v.form.$reset()
+
       this.form = {
-        codeDossier: '',
-        nom: '',
-        prenom: '',
-        dateNaiss: '',
-        sexe: {},
-        telephone: '',
-        adresse: '',
-        numeroPiece: '',
-        pieceExp: '',
-        typePatient: {},
-        assurance: {},
-        entreprise: {},
+        remise: 0,
+        acompte: 0,
+        patient: {},
+        traitement: [],
+      }
+
+      this.loading = false
+    },
+
+    async fetchFiche(id) {
+      this.loading = true
+      try {
+        await this.$store.dispatch('facture/fetchAllFiches', id)
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: 503,
+          message: 'Unable to fetch data.',
+        })
       }
       this.loading = false
     },
 
-    formatDate(date) {
-      if (!date) return null
+    async fetchTraitement() {
+      this.loading = true
 
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
+      if (this.form.patient) {
+        try {
+          await this.$store.dispatch(
+            'traitement/fetchAllTraitementType',
+            this.form.patient.typePatient.id
+          )
+        } catch (err) {
+          this.$nuxt.error({
+            statusCode: 503,
+            message: 'Unable to fetch data.',
+          })
+        }
+      }
+
+      this.loading = false
     },
-    parseDate(date) {
-      if (!date) return null
 
-      if (!isDate(date)) return null
-
-      const [day, month, year] = date.split('/')
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    itemPosition(itemId) {
+      return this.form.traitement.findIndex((elm) => elm.id === itemId) + 1
     },
+
     async submitForm() {
       this.$v.form.$touch()
+
       if (this.isFormValid) {
         this.loading = true
+        const listTraitement = []
+        this.form.traitement.forEach((traitement) => {
+          const item = {}
+          item.traitement = traitement
+          item.kota = ''
+          item.baseRembour = 0
+          item.netAssurance = 0
+          listTraitement.push(item)
+        })
         try {
-          await this.$api.updatePatient(
-            {
-              codeDossier: this.form.codeDossier,
-              nom: this.form.nom,
-              prenom: this.form.prenom,
-              dateNaiss: this.parseDate(this.form.dateNaiss),
-              genre: this.form.sexe.libelle,
-              telephone: this.form.telephone,
-              adresse: this.form.adresse,
-              numeroPiece: this.form.numeroPiece,
-              pieceExp: this.parseDate(this.form.pieceExp),
-              typePatient: this.form.typePatient,
-              assurance: this.form.assurance,
-              entreprise: this.form.entreprise,
-            },
-            this.id
-          )
+          await this.$api.updateFacture1({
+            patient: this.form.patient.id,
+            traitements: listTraitement,
+            unite: false,
+            accompte: this.form.acompte,
+            remise: this.form.remise,
+          }, this.id)
           this.$emit('refreshPage')
+
           this.closeDialog()
           this.$toast.success(this.$t('commoin.saved'))
         } catch (err) {
           this.loading = false
+
           if (err.response) {
             this.$toast.error(this.$t('commoin.errorOccured'))
           } else {

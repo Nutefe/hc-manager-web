@@ -34,7 +34,7 @@
 
           <v-divider />
 
-          <v-card-text class="px-3 px-md-5 pt-3">
+          <v-card-text class="px-3 px-md-5 pt-2">
             <v-row align="center">
               <v-col cols="12" sm="4">
                 <v-autocomplete
@@ -86,6 +86,7 @@
                   autocomplete="off"
                   :maxlength="$v.form1.kota.$params.maxLength.max"
                   :error-messages="kotaErrors"
+                  :disabled="disable"
                   @input="$v.form1.kota.$touch()"
                   @blur="$v.form1.kota.$touch()"
                 ></v-text-field>
@@ -110,6 +111,7 @@
                   type="number"
                   :maxlength="$v.form1.netAssurance.$params.maxLength.max"
                   :error-messages="netAssuranceErrors"
+                  :disabled="isVisibleNetAss"
                   @input="$v.form1.netAssurance.$touch()"
                   @blur="$v.form1.netAssurance.$touch()"
                 ></v-text-field>
@@ -167,6 +169,28 @@
                   <span>{{ $t('facture.adds.a2') }}</span>
                 </v-tooltip>
               </v-col>
+              <template
+                v-if="
+                  form.patient.nom &&
+                  form.patient.prenom &&
+                  form.patient.typePatient
+                "
+              >
+                <v-col cols="12" sm="6">
+                  <div style="border: 1px solid grey">
+                    <h4 class="ma-2">
+                      Patient:
+                      <span class="black--text">{{
+                        form.patient.nom + ' ' + form.patient.prenom
+                      }}</span>
+                      <br />Type Assurance:
+                      <span class="black--text">{{
+                        form.patient.typePatient.libelle
+                      }}</span>
+                    </h4>
+                  </div>
+                </v-col>
+              </template>
               <template v-if="itemsList.length > 0">
                 <v-col cols="12" sm="12">
                   <v-expand-transition>
@@ -174,7 +198,7 @@
                       fixed-header
                       height="200px"
                       color="grey darken-1"
-                      class="px-3 px-md-5 pt-3"
+                      class="px-3 px-md-5 pt-2"
                       dark
                     >
                       <thead>
@@ -277,17 +301,18 @@ export default {
       dialog: false,
       dialogNo: false,
       loading: false,
+      disable: false,
       itemsList: [],
       unites: [
         {
           id: 1,
           libelle: this.$t('facture.unite.montant'),
-          value: false,
+          value: true,
         },
         {
           id: 2,
           libelle: this.$t('facture.unite.pourcentage'),
-          value: true,
+          value: false,
         },
       ],
       form: {
@@ -374,7 +399,7 @@ export default {
     form1: {
       kota: {
         required,
-        minLength: minLength(2),
+        minLength: minLength(1),
         maxLength: maxLength(100),
       },
       baseRembour: {
@@ -417,6 +442,14 @@ export default {
     isFormValid1() {
       return !this.$v.form1.$invalid
     },
+    isVisibleNetAss() {
+      if (this.form.unite.libelle) {
+        return !this.form.unite.value
+      } else {
+        return false
+      }
+    },
+
     remiseErrors() {
       const errors = []
 
@@ -584,7 +617,7 @@ export default {
     total() {
       let somme = 0
       this.itemsList.forEach((traitement) => {
-        somme += traitement.price
+        somme += traitement.traitement.price
       })
       return somme - this.form.remise
     },
@@ -637,12 +670,32 @@ export default {
         traitement: {},
       }
 
+      this.itemsList = []
+
       this.loading = false
     },
 
     async fetchTraitement() {
       this.loading = true
+
       if (this.form.patient) {
+        if (isEqual(this.form.patient.typePatient.libelle, 'ASSURER INAM')) {
+          this.disable = true
+          this.form1.kota = '00'
+          this.form.unite = {
+            id: 1,
+            libelle: this.$t('facture.unite.montant'),
+            value: true,
+          }
+        } else {
+          this.disable = false
+          this.form1.kota = ''
+          this.form.unite = {
+            id: 2,
+            libelle: this.$t('facture.unite.pourcentage'),
+            value: false,
+          }
+        }
         try {
           await this.$store.dispatch(
             'traitement/fetchAllTraitementTypeAssurer',
@@ -669,7 +722,7 @@ export default {
 
     addItem() {
       const isPresent = this.itemsList.find((o) =>
-        isEqual(o.traitement, this.form1.traitement)
+        isEqual(o.traitement.id, this.form1.traitement.id)
       )
       if (!isPresent) {
         const item = {}
@@ -687,22 +740,13 @@ export default {
 
       if (this.isFormValid) {
         this.loading = true
-
         try {
-          await this.$api.savePatient({
-            codeDossier: this.form.codeDossier,
-            nom: this.form.nom,
-            prenom: this.form.prenom,
-            dateNaiss: this.parseDate(this.form.dateNaiss),
-            genre: this.form.sexe.libelle,
-            telephone: this.form.telephone,
-            adresse: this.form.adresse,
-            numeroPiece: this.form.numeroPiece,
-            pieceExp: this.parseDate(this.form.pieceExp),
-            typePatient: this.form.typePatient,
-            assurance: this.form.assurance,
-            entreprise: this.form.entreprise,
-            // this.parseDate(this.dateFormatted)
+          await this.$api.saveFacture1({
+            patient: this.form.patient.id,
+            traitements: this.itemsList,
+            unite: this.form.unite.value,
+            accompte: this.form.acompte,
+            remise: this.form.remise,
           })
           this.$emit('refreshPage')
 

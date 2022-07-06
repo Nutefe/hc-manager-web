@@ -2,6 +2,7 @@ const initialState = () => ({
     allFactures: [],
     factures: {},
     facture: null,
+    fiches: [],
 });
 
 export const state = initialState;
@@ -13,6 +14,9 @@ export const mutations = {
     SET_ALL_FACTURES(state, allFactures) {
         state.allFactures = allFactures;
     },
+    SET_ALL_FICHES(state, fiches) {
+        state.fiches = fiches;
+    },
     SET_SEARCHED_FACTURES(state, factures) {
         state.factures = factures;
     },
@@ -23,6 +27,12 @@ export const mutations = {
         state.factures = factures;
     },
     SET_SOLDE_FACTURES(state, factures) {
+        state.factures = factures;
+    },
+    SET_SEARCHED_NOT_SOLDE_FACTURES(state, factures) {
+        state.factures = factures;
+    },
+    SET_NOT_SOLDE_FACTURES(state, factures) {
         state.factures = factures;
     },
     SET_SEARCHED_ENC_FACTURES(state, factures) {
@@ -49,6 +59,12 @@ export const actions = {
     fetchAllFactures({ commit }) {
         return this.$api.getAllFacture().then((data) => {
             commit("SET_ALL_FACTURES", data);
+        });
+    },
+
+    fetchAllFiches({ commit }, id) {
+        return this.$api.getFicheTraitement(id).then((data) => {
+            commit("SET_ALL_FICHES", data);
         });
     },
 
@@ -81,9 +97,26 @@ export const actions = {
             commit("SET_SEARCHED_SOLDE_FACTURES", data);
         });
     },
-    fetchSoldeFactures({ commit }, { page }) {
+    fetchSoldeFactures({ commit }, page) {
         return this.$api.selectAllFactureSoldePage(page).then((data) => {
             commit("SET_SOLDE_FACTURES", data);
+        });
+    },
+    searchNotSoldeFactures({ commit }, { page, s }) {
+        if (!s) {
+
+            commit("SET_SEARCHED_NOT_SOLDE_FACTURES", {});
+            return;
+        }
+
+        return this.$api.searchAllFactureNotSoldePage(page, s).then((data) => {
+
+            commit("SET_SEARCHED_NOT_SOLDE_FACTURES", data);
+        });
+    },
+    fetchNotSoldeFactures({ commit }, page) {
+        return this.$api.selectAllFactureNotSoldePage(page).then((data) => {
+            commit("SET_NOT_SOLDE_FACTURES", data);
         });
     },
     searchEncFactures({ commit }, { page, s }) {
@@ -104,7 +137,7 @@ export const actions = {
         });
     },
     fetchFacture({ commit, getters }, id) {
-        const operation = getters.getTypeById(id);
+        const operation = getters.getFactureById(id);
 
         if (operation) {
             return commit("SET_FACTURE", operation);
