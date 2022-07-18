@@ -100,28 +100,32 @@
                 <v-row>
                   <v-col cols="12" class="pb-0">
                     <v-text-field
-                      v-model.trim="form.total"
+                      v-model.trim="form.totalRemis"
                       autofocus
                       outlined
                       dense
                       :label="$t('paiement.form.somme')"
                       autocomplete="off"
                       type="number"
+                      :maxlength="$v.form.totalRemis.$params.maxLength.max"
+                      :error-messages="totalRemisErrors"
+                      @input="$v.form.totalRemis.$touch()"
+                      @blur="$v.form.totalRemis.$touch()"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" class="mt-0 pt-0">
                     <v-text-field
-                      v-model.trim.lazy="form.montant"
+                      v-model.trim.lazy="form.montantPaye"
                       autofocus
                       outlined
                       dense
                       :label="$t('paiement.form.montant')"
                       autocomplete="off"
                       type="number"
-                      :maxlength="$v.form.montant.$params.maxLength.max"
-                      :error-messages="montantErrors"
-                      @input="$v.form.montant.$touch()"
-                      @blur="$v.form.montant.$touch()"
+                      :maxlength="$v.form.montantPaye.$params.maxLength.max"
+                      :error-messages="montantPayeErrors"
+                      @input="$v.form.montantPaye.$touch()"
+                      @blur="$v.form.montantPaye.$touch()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -225,10 +229,12 @@ export default {
         acompte: 0,
         patient: {},
         traitement: [],
-        montant: 0,
-        total: 0,
+        montantPaye: 0,
+        totalRemis: 0,
+        totalFacture: 0,
         numero: '',
         dateFacture: '',
+        reste: '',
       },
       headers: [
         {
@@ -256,7 +262,12 @@ export default {
   },
   validations: {
     form: {
-      montant: {
+      montantPaye: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(100),
+      },
+      totalRemis: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(100),
@@ -279,34 +290,122 @@ export default {
 
   computed: {
     isFormValid() {
-      // const isFormEdited = !isEqual(this.selectedItem, this.form)
-
-      // const isFormTraitement = this.form.traitement.length > 0
-
-      return !this.$v.form.$invalid
+      return (
+        this.isPaye &&
+        this.isTotal &&
+        this.isAcompte1 &&
+        this.isAcompte &&
+        !this.$v.form.$invalid
+      )
     },
 
-    montantErrors() {
+    isAcompte() {
+      if (this.form.acompte) {
+        const ac = this.form.acompte
+
+        if (ac + '' === this.form.montantPaye) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return true
+      }
+    },
+
+    isAcompte1() {
+      if (this.form.acompte) {
+        const ac = this.form.acompte
+
+        if (ac <= this.form.totalRemis) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return true
+      }
+    },
+    isPaye() {
+      if (this.form.montantPaye) {
+        const ac = this.form.montantPaye
+
+        if (ac <= this.form.totalRemis) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+
+    isTotal() {
+      if (this.form.totalFacture) {
+        const ac = this.form.totalFacture
+
+        if (ac >= this.form.montantPaye) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+
+    montantPayeErrors() {
       const errors = []
 
-      if (!this.$v.form.montant.$dirty) return errors
+      if (!this.$v.form.montantPaye.$dirty) return errors
 
-      !this.$v.form.montant.required &&
+      !this.$v.form.montantPaye.required &&
         errors.push(this.$t('validations.montant.required'))
 
-      !this.$v.form.montant.minLength &&
+      !this.$v.form.montantPaye.minLength &&
         errors.push(
           this.$t('validations.montant.min', {
-            length: this.$v.form.montant.$params.minLength.min,
+            length: this.$v.form.montantPaye.$params.minLength.min,
           })
         )
 
-      !this.$v.form.montant.maxLength &&
+      !this.$v.form.montantPaye.maxLength &&
         errors.push(
           this.$t('validations.montant.max', {
-            length: this.$v.form.montant.$params.maxLength.max,
+            length: this.$v.form.montantPaye.$params.maxLength.max,
           })
         )
+
+      !this.isAcompte && errors.push(this.$t('validations.montant.equal'))
+      !this.isTotal && errors.push(this.$t('validations.montant.equalmore'))
+      !this.isPaye && errors.push(this.$t('validations.totalRemis.equal'))
+      return errors
+    },
+
+    totalRemisErrors() {
+      const errors = []
+
+      if (!this.$v.form.totalRemis.$dirty) return errors
+
+      !this.$v.form.totalRemis.required &&
+        errors.push(this.$t('validations.totalRemis.required'))
+
+      !this.$v.form.totalRemis.minLength &&
+        errors.push(
+          this.$t('validations.totalRemis.min', {
+            length: this.$v.form.totalRemis.$params.minLength.min,
+          })
+        )
+
+      !this.$v.form.totalRemis.maxLength &&
+        errors.push(
+          this.$t('validations.totalRemis.max', {
+            length: this.$v.form.totalRemis.$params.maxLength.max,
+          })
+        )
+
+      !this.isAcompte1 &&
+        errors.push(this.$t('validations.totalRemis.equalmore'))
 
       return errors
     },
@@ -326,14 +425,10 @@ export default {
     },
 
     total() {
-      if (this.form.traitement.length > 0) {
-        let somme = 0
-        this.form.traitement.forEach((traitement) => {
-          somme += traitement.price
-        })
-        return somme - this.form.remise
+      if (this.form.reste > 0) {
+        return this.form.reste
       } else {
-        return 0
+        return this.form.totalFacture
       }
     },
 
@@ -371,13 +466,15 @@ export default {
 
       this.form = {
         remise: item.remise || 0,
-        acompte: item.accompte || 0,
+        acompte: item.acompte || 0,
         patient: item.fiche.patient || {},
         traitement: ficheTraitement || [],
-        total: '',
-        montant: '',
         numero: item.numero || '',
         dateFacture: item.dateFacture || '',
+        totalFacture: item.total || '',
+        reste: item.reste || '',
+        totalRemis: '',
+        montantPaye: '',
       }
 
       this.fetchTraitement()
@@ -394,8 +491,12 @@ export default {
         acompte: 0,
         patient: {},
         traitement: [],
-        total: '',
-        montant: '',
+        totalRemis: '',
+        montantPaye: '',
+        numero: '',
+        dateFacture: '',
+        totalFacture: '',
+        reste: '',
       }
 
       this.loading = false
@@ -443,26 +544,13 @@ export default {
 
       if (this.isFormValid) {
         this.loading = true
-        const listTraitement = []
-        this.form.traitement.forEach((traitement) => {
-          const item = {}
-          item.traitement = traitement
-          item.kota = ''
-          item.baseRembour = 0
-          item.netAssurance = 0
-          listTraitement.push(item)
-        })
+
         try {
-          await this.$api.updateFacture1(
-            {
-              patient: this.form.patient.id,
-              traitements: listTraitement,
-              unite: false,
-              accompte: this.form.acompte,
-              remise: this.form.remise,
-            },
-            this.id
-          )
+          await this.$api.savePaiement1({
+            total: this.form.totalRemis,
+            montant: this.form.montantPaye,
+            facture: this.id,
+          })
           this.$emit('refreshPage')
 
           this.closeDialog()

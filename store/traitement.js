@@ -4,6 +4,7 @@ const initialState = () => ({
     allTraitementsTypeAssurer: [],
     traitements: {},
     traitement: null,
+    countTraitement: 0,
 });
 
 export const state = initialState;
@@ -35,6 +36,9 @@ export const mutations = {
     },
     SET_TRAITEMENT(state, traitement) {
         state.traitement = traitement;
+    },
+    SET_COUNT_TRAITEMENT(state, countTraitement) {
+        state.countTraitement = countTraitement;
     },
 };
 
@@ -86,6 +90,12 @@ export const actions = {
             });
         }
     },
+    fetchCountTraitement({ commit }) {
+        return this.$api.countTraitement().then((data) => {
+            commit("SET_COUNT_TRAITEMENT", data);
+        });
+    },
+
 };
 
 export const getters = {

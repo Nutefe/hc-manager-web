@@ -132,10 +132,13 @@ export default {
     },
 
     dashboard: {
-        recette: "Recettes",
-        depense: "Depenses",
-        banque: "Banques",
-        caisse: "Caisses",
+        factures: "Factures/Jrs",
+        encaissements: "Encaissements/Jrs",
+        patients: "Patients",
+        totalFactures: "Factures Au Total",
+        montantEncaisse: "Encaisser Aujourd'hui",
+        totalPatients: "Patients au total",
+        totalTraitements: "Traitements",
     },
 
 
@@ -295,6 +298,34 @@ export default {
             page_text: "de",
         },
     },
+    etat: {
+        title: "Etats",
+        new: "Nouveau etat",
+        edit: "Modifier un etat",
+        update: "Modifier",
+        search: "Recherche...",
+        subtitle: "Voir votre etat",
+        type: {
+            patient: "Grouper par patient",
+            entreprise: "Grouper par entreprise",
+        },
+        form: {
+            type: "Type",
+            assurance: "Assurance",
+            startDate: "Date debut",
+            endDate: "Date Fin",
+        },
+        table: {
+            num: "N°",
+            type: "Type",
+            assurance: "Assurance",
+            startDate: "Date debut",
+            endDate: "Date Fin",
+            action: "Action",
+            per_page: "Comptes decodeurs par page",
+            page_text: "de",
+        },
+    },
     patient: {
         title: "Paients",
         new: "Nouveau patient",
@@ -306,6 +337,10 @@ export default {
         addAss: "Ajouter un patient assurer INAM",
         addAssAut: "Ajouter un patient assurer autre",
         addEntreprise: "Ajouter une entreprise s'il n'existe pas",
+        year: "ans",
+        age: "Age: ",
+        numDossier: "N°: ",
+        tel: "Tel: ",
         sexe: {
             feminin: "FEMININ",
             masculin: "MASCULIN",
@@ -463,6 +498,9 @@ export default {
             save: "Enregistrer",
             submit: "Valider",
             downloadAttachment: "Telecharger",
+            detail: "Detail",
+            show:"Voir",
+            paid:"Payer",
         },
         saved: "Enregistré avec succès.",
         noData: "Aucune donnée disponible",
@@ -567,9 +605,9 @@ export default {
             required: "Le montant est obligatoire.",
             min: "Le montant  doit contenir au moins {length} caractères.",
             max: "Le montant  doit contenir au plus {length} caractères.",
+            equal: "La somme remi doit etre  egale a l'acompte",
+            equalmore: "La somme remi doit etre inferieur ou egale au montant de la facture",
         },
-
-
         description: {
             required: "La description est obligatoire.",
             min: "Le description  doit contenir au moins {length} caractères.",
@@ -653,5 +691,27 @@ export default {
             min: "Le montant payer par l'assurance  doit contenir au moins {length} caractères.",
             max: "Le montant payer par l'assurance doit contenir au plus {length} caractères.",
         },
+        type: {
+            required: "Le type est obligatoire.",
+        },
+
+        startDate: {
+            required: "La date de debut est obligatoire.",
+            min: "La date de debut  doit contenir au moins {length} caractères.",
+            max: "La date de debut doit contenir au plus {length} caractères.",
+        },
+        endDate: {
+            required: "La date de fin est obligatoire.",
+            min: "La date de fin  doit contenir au moins {length} caractères.",
+            max: "La date de fin doit contenir au plus {length} caractères.",
+        },
+        totalRemis: {
+            required: "La somme remi est obligatoire.",
+            min: "La somme remi  doit contenir au moins {length} caractères.",
+            max: "La somme remi doit contenir au plus {length} caractères.",
+            equalmore: "La somme remi doit etre  superieur ou egale a l'acompte",
+            equal: "La somme remi doit etre  superieur ou egale a l'acompte",
+        },
+
     },
 }

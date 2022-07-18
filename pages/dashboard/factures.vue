@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="ml-0 mr-0">
+  <v-container fluid class="container ml-0 mr-0">
     <v-card class="mt-10 mb-10 pb-3 pt-5 justify-space-around">
       <v-row class="mt-3 mb-7">
         <v-col cols="12" sm="3"></v-col>
@@ -51,7 +51,6 @@
           >|
         </template>
         <template #[`item.action`]="{ item }">
-          <!-- Edit -->
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
@@ -59,35 +58,16 @@
                 class="mr-3"
                 small
                 icon
-                :aria-label="$t('commoin.actions.edit')"
+                :aria-label="$t('commoin.actions.show')"
                 v-on="on"
-                @click.stop="editItem(item)"
+                @click.stop="loardFacture(item.fileName)"
               >
-                <v-icon color="editIcone" small> mdi-pencil </v-icon>
+                <v-icon color="editIcone" small> mdi-eye </v-icon>
               </v-btn>
             </template>
 
             <span>
-              {{ $t('commoin.actions.edit') }}
-            </span>
-          </v-tooltip>
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                class="mr-3"
-                small
-                icon
-                :aria-label="$t('commoin.actions.editPass')"
-                v-on="on"
-                @click.stop="editPassItem(item)"
-              >
-                <v-icon small> mdi-lock-reset </v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('commoin.actions.editPass') }}
+              {{ $t('commoin.actions.show') }}
             </span>
           </v-tooltip>
         </template>
@@ -97,9 +77,9 @@
       <Pagination
         v-if="query"
         :search="query"
-        store="utilisateur"
-        collection="utilisateurs"
-        action="searchUtilisateurs"
+        store="facture"
+        collection="facturesDay"
+        action="searchFacturesDay"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -108,36 +88,24 @@
 
       <Pagination
         v-else
-        store="utilisateur"
-        collection="utilisateurs"
-        action="fetchUtilisateurs"
+        store="facture"
+        collection="facturesDay"
+        action="fetchFacturesDay"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
         @loading="toggleLoading"
       />
     </v-card>
-    <UserCreate @refreshPage="refreshPage" />
-    <UserEdit ref="editFormDialog" @refreshPage="refreshPage" />
-    <UserPasswordEdit ref="editPassFormDialog" @refreshPage="refreshPage" />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import { debounce, startCase } from '~/helpers/helpers.js'
-import UserCreate from '~/components/pages/utilisateur/UserCreate.vue'
-import UserEdit from '~/components/pages/utilisateur/UserEdit.vue'
-import UserPasswordEdit from '~/components/pages/utilisateur/UserPasswordEdit.vue'
 
 export default {
-  name: 'UtilisateurPage',
-
-  components: {
-    UserCreate,
-    UserEdit,
-    UserPasswordEdit,
-  },
+  name: 'FacturesPage',
 
   layout: 'default',
 
@@ -146,47 +114,63 @@ export default {
       search: '',
       query: '',
       loading: false,
+      direction: 'top',
+      fab: false,
+      fling: false,
+      hover: false,
+      tabs: null,
+      top: true,
+      right: true,
+      bottom: false,
+      left: false,
+      transition: 'slide-y-reverse-transition',
       headers: [
         {
-          text: this.$t('user.table.num'),
+          text: this.$t('facture.table.num'),
           value: 'num',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
           width: 100,
         },
         {
-          text: this.$t('user.table.username'),
+          text: this.$t('facture.table.patient'),
           align: 'start',
-          value: 'username',
+          value: 'fiche.patient.nom',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
-          text: this.$t('user.table.nom'),
-          value: 'nom',
+          text: this.$t('facture.table.total'),
+          value: 'total',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
-          text: this.$t('user.table.prenom'),
-          value: 'prenom',
+          text: this.$t('facture.table.acompte'),
+          value: 'acompte',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
-          text: this.$t('user.table.email'),
-          value: 'email',
+          text: this.$t('facture.table.remise'),
+          value: 'remise',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
-          text: this.$t('user.table.profil'),
-          value: 'profils',
+          text: this.$t('facture.table.typePatient'),
+          value: 'fiche.patient.typePatient.libelle',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
-          text: this.$t('user.table.action'),
+          text: this.$t('facture.table.dateFacture'),
+          value: 'dateFacture',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('patient.table.action'),
           value: 'action',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
@@ -200,7 +184,7 @@ export default {
   async fetch() {
     this.loading = true
     try {
-      await this.$store.dispatch('utilisateur/fetchUtilisateurs', 1)
+      await this.$store.dispatch('facture/fetchFacturesDay', 1)
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -212,25 +196,25 @@ export default {
 
   computed: {
     itemsList() {
-      if (this.users && this.users.data) {
-        return this.users.data
+      if (this.factures && this.factures.data) {
+        return this.factures.data
       } else {
         return []
       }
     },
 
     currentPage() {
-      if (this.users) {
-        return this.users.current_page || 1
+      if (this.factures) {
+        return this.factures.current_page || 1
       } else {
         return 1
       }
     },
 
     isDividerVisible() {
-      if (this.users) {
-        const total = this.users.total || 0
-        const perPage = this.users.per_page || 0
+      if (this.factures) {
+        const total = this.factures.total || 0
+        const perPage = this.factures.per_page || 0
         return total > perPage
       } else {
         return false
@@ -238,7 +222,7 @@ export default {
     },
 
     ...mapState({
-      users: (state) => state.utilisateur.utilisateurs,
+      factures: (state) => state.facture.facturesDay,
     }),
   },
 
@@ -249,12 +233,6 @@ export default {
     itemPosition(itemId) {
       return this.itemsList.findIndex((elm) => elm.id === itemId) + 1
     },
-    editItem(item) {
-      this.$refs.editFormDialog.openDialog(item)
-    },
-    editPassItem(item) {
-      this.$refs.editPassFormDialog.openDialog(item)
-    },
     startCase(str) {
       if (str) {
         return startCase(str)
@@ -262,17 +240,28 @@ export default {
         return 'n/a'
       }
     },
+    
+    async loardFacture(filename) {
+      try {
+        await this.$api.loardFacture(filename)
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: 503,
+          message: 'Unable to fetch data.',
+        })
+      }
+    },
 
     async fetchData(page) {
       this.loading = true
       try {
         if (this.query) {
-          await this.$store.dispatch('utilisateur/searchUtilisateurs', {
+          await this.$store.dispatch('facture/searchFacturesDay', {
             page,
             s: this.query,
           })
         } else {
-          await this.$store.dispatch('utilisateur/fetchUtilisateurs', page)
+          await this.$store.dispatch('facture/fetchFacturesDay', page)
         }
       } catch (err) {
         this.$nuxt.error({

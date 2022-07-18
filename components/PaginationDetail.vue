@@ -16,6 +16,11 @@
 export default {
   name: 'PaginationComponent',
   props: {
+    id: {
+      type: [Number],
+      default: null,
+      require: true,
+    },
     search: {
       type: [String, Number],
       default: null,
@@ -111,19 +116,24 @@ export default {
         if (this.search) {
           if (this.store) {
             await this.$store.dispatch(`${this.store}/${this.action}`, {
+              id: this.id,
               page,
               s: this.search,
             })
           } else {
             await this.$store.dispatch(this.action, {
+              id: this.id,
               page,
               s: this.search,
             })
           }
         } else if (this.store) {
-          await this.$store.dispatch(`${this.store}/${this.action}`, { page })
+          await this.$store.dispatch(`${this.store}/${this.action}`, {
+            id: this.id,
+            page,
+          })
         } else {
-          await this.$store.dispatch(this.action, { page })
+          await this.$store.dispatch(this.action, { id: this.id, page })
         }
         this.$emit('loading', false)
       } catch (err) {

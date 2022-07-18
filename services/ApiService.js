@@ -857,7 +857,7 @@ export default ($axios, $auth) => ({
         if (!$auth.loggedIn) {
             return;
         }
-        return $axios.$get(`/check/code/${codeDossier}`, {
+        return $axios.$post(`/check/code`, codeDossier, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },
@@ -869,7 +869,19 @@ export default ($axios, $auth) => ({
             return;
         }
 
-        return $axios.$get(`/check/code/update/${id}/${codeDossier}`, {
+        return $axios.$get(`/check/code/update/${id}`, codeDossier, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    countPatient() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/patient/count`, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },
@@ -960,6 +972,18 @@ export default ($axios, $auth) => ({
         }
 
         return $axios.$put(`/traitement/${id}`, traitement, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    countTraitement() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/traitement/count`, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },
@@ -1077,6 +1101,26 @@ export default ($axios, $auth) => ({
             }
         })
     },
+    selectAllFactureDayPage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/factures/day/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllFactureDayPage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/factures/day/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
 
     saveFacture(facture) {
         if (!$auth.loggedIn) {
@@ -1135,6 +1179,47 @@ export default ($axios, $auth) => ({
             .catch({
                 // console.log(err)
             });
+    },
+
+    async loardFacture(filename) {
+
+        await $axios.$get(`/downloadFile/facture/${filename}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
+
+    countFactureDay() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/facture/count/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    countFacture() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/facture/count`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
     },
 
     /**
@@ -1207,16 +1292,54 @@ export default ($axios, $auth) => ({
         })
     },
 
+    selectAllDayFacturePage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/encaissements/facture/day/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDayFacturePage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/encaissement/facture/day/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
     savePaiement(paiement) {
         if (!$auth.loggedIn) {
             return;
         }
 
-        return $axios.$post(`/paiement`, paiement, {
+        return $axios.$post(`/encaissement`, paiement, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },
         });
+    },
+
+    async savePaiement1(paiement) {
+
+        await $axios.$post(`/encaissement`, paiement, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
     },
 
     updatePaiement(paiement, id) {
@@ -1230,6 +1353,42 @@ export default ($axios, $auth) => ({
             },
         });
     },
+
+    countPaiementDay() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/encaissement/count/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    montantPaiementDay() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/encaissement/montant/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    // countFactureDay() {
+    //     if (!$auth.loggedIn) {
+    //         return;
+    //     }
+
+    //     return $axios.$get(`/encaissement/facture/day`, {
+    //         headers: {
+    //             Authorization: `Bearer ${$auth.token}`,
+    //         },
+    //     });
+    // },
 
     /**
      * end paiement axios api
@@ -1248,6 +1407,124 @@ export default ($axios, $auth) => ({
                 Authorization: `Bearer ${$auth.token}`,
             },
         });
+    },
+
+    /**
+     * end fiche axios api
+     */
+
+    /**
+     * start etat axios api
+     */
+
+    getEtat(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/etat/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    getAllEtat() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/etats`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    selectAllEtatsPage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/etats/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    searchAllEtatsPage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/etats/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    async saveEtatPatient(etat) {
+
+        await $axios.$post(`/etat/patient`, etat, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
+
+    async saveEtatEntreprise(etat) {
+
+        await $axios.$post(`/etat/entreprise`, etat, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
+
+    /**
+     * end etat axios api
+     */
+
+    /**
+     * start fiche axios api
+     */
+
+    selectAllFichePatientPage(id, page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/fiches/page/${id}/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    searchAllFichePatientPage(id, page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/fiches/search/page/${id}/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
     },
 
     /**

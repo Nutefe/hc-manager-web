@@ -1,8 +1,11 @@
 const initialState = () => ({
     allFactures: [],
     factures: {},
+    facturesDay: {},
     facture: null,
     fiches: [],
+    countFacture: 0,
+    countFactureDay: 0,
 });
 
 export const state = initialState;
@@ -41,6 +44,12 @@ export const mutations = {
     SET_ENC_FACTURES(state, factures) {
         state.factures = factures;
     },
+    SET_SEARCHED_FACTURES_DAY(state, facturesDay) {
+        state.facturesDay = facturesDay;
+    },
+    SET_FACTURES_DAY(state, facturesDay) {
+        state.facturesDay = facturesDay;
+    },
     SET_SEARCH_CURRENT_PAGE(state, page) {
         state.factures.current_page = page;
     },
@@ -49,6 +58,12 @@ export const mutations = {
     },
     SET_FACTURE(state, facture) {
         state.facture = facture;
+    },
+    SET_COUNT_FACTURE(state, countFacture) {
+        state.countFacture = countFacture;
+    },
+    SET_COUNT_FACTURE_DAY(state, countFactureDay) {
+        state.countFactureDay = countFactureDay;
     },
 };
 
@@ -131,9 +146,26 @@ export const actions = {
             commit("SET_SEARCHED_ENC_FACTURES", data);
         });
     },
-    fetchEncFactures({ commit }, { page }) {
+    fetchEncFactures({ commit }, page) {
         return this.$api.selectAllFactureEncPage(page).then((data) => {
             commit("SET_ENC_FACTURES", data);
+        });
+    },
+    searchFacturesDay({ commit }, { page, s }) {
+        if (!s) {
+
+            commit("SET_SEARCHED_FACTURES_DAY", {});
+            return;
+        }
+
+        return this.$api.searchAllFactureDayPage(page, s).then((data) => {
+
+            commit("SET_SEARCHED_FACTURES_DAY", data);
+        });
+    },
+    fetchFacturesDay({ commit }, page) {
+        return this.$api.selectAllFactureDayPage(page).then((data) => {
+            commit("SET_FACTURES_DAY", data);
         });
     },
     fetchFacture({ commit, getters }, id) {
@@ -146,6 +178,16 @@ export const actions = {
                 commit("SET_FACTURE", data);
             });
         }
+    },
+    fetchCountFacture({ commit }) {
+        return this.$api.countFacture().then((data) => {
+            commit("SET_COUNT_FACTURE", data);
+        });
+    },
+    fetchCountFactureDay({ commit }) {
+        return this.$api.countFactureDay().then((data) => {
+            commit("SET_COUNT_FACTURE_DAY", data);
+        });
     },
 };
 

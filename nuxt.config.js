@@ -93,6 +93,8 @@ export default {
           info: '#2196F3',
           success: '#4CAF50',
           warning: '#FFC107',
+          editIcone: '#0082ff',
+          cashIcone: '#8d00ff',
         },
         dark: {
           primary: '#00a8a0',
@@ -102,6 +104,8 @@ export default {
           info: '#2196F3',
           success: '#4CAF50',
           warning: '#FFC107',
+          editIcone: '#0082ff',
+          cashIcone: '#8d00ff',
         },
       },
     },

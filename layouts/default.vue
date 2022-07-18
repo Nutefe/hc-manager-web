@@ -58,22 +58,22 @@ export default {
       dashboardRoutes: {
         title: this.$t('navigation.dashboard'),
         path: '/',
-        icon: 'mdi-home',
+        icon: 'mdi-view-dashboard',
       },
       facturesRoutes: {
         title: this.$t('navigation.facture'),
         path: '/secretariat/factures',
-        icon: 'mdi-home',
+        icon: 'mdi-receipt-text-check',
       },
       patientsRoutes: {
         title: this.$t('navigation.patient'),
         path: '/secretariat/patients',
-        icon: 'mdi-home',
+        icon: 'mdi-account-group',
       },
       paiementsRoutes: {
         title: this.$t('navigation.paiement'),
         path: '/paiement/paiements',
-        icon: 'mdi-home',
+        icon: 'mdi-cash',
       },
 
       gestionRoute: {

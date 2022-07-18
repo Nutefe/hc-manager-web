@@ -53,7 +53,7 @@
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="4">
-                <v-autocomplete
+                <v-select
                   v-model.trim.lazy="form.unite"
                   :items="unites"
                   :label="$t('facture.form.unite')"
@@ -65,7 +65,7 @@
                   :error-messages="uniteErrors"
                   @input="$v.form.unite.$touch()"
                   @blur="$v.form.unite.$touch()"
-                ></v-autocomplete>
+                ></v-select>
               </v-col>
               <v-col cols="12" sm="4">
                 <v-text-field
@@ -95,6 +95,7 @@
                 <v-text-field
                   v-model.trim.lazy="form1.baseRembour"
                   :label="$t('facture.form.baseRembour')"
+                  autofocus
                   autocomplete="off"
                   type="number"
                   :maxlength="$v.form1.baseRembour.$params.maxLength.max"
@@ -456,6 +457,32 @@ export default {
         return false
       }
     },
+    isMontant() {
+      if (this.form.unite) {
+        if (this.form.unite.value === true) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+    isPourcentage() {
+      if (this.form.unite.value === false) {
+        if (this.form1.baseRembour) {
+          if (this.form1.baseRembour > 100) {
+            return false
+          } else {
+            return true
+          }
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    },
 
     remiseErrors() {
       const errors = []
@@ -561,7 +588,6 @@ export default {
     },
     baseRembourErrors() {
       const errors = []
-
       if (!this.$v.form1.baseRembour.$dirty) return errors
 
       !this.$v.form1.baseRembour.required &&
@@ -580,6 +606,9 @@ export default {
             length: this.$v.form1.baseRembour.$params.maxLength.max,
           })
         )
+
+      !this.isPourcentage &&
+        errors.push(this.$t('validations.baseRembour.required'))
 
       return errors
     },
@@ -633,6 +662,17 @@ export default {
       traitements: (state) => state.traitement.allTraitementsTypeAssurer,
       fiches: (state) => state.facture.fiches,
     }),
+  },
+  watch: {
+    'form.unite'() {
+      if (this.isMontant) {
+        this.disable = true
+        this.form1.kota = '00'
+      } else {
+        this.disable = false
+        this.form1.kota = ''
+      }
+    },
   },
 
   methods: {

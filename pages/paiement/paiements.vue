@@ -1,9 +1,9 @@
 <template>
   <v-container fluid class="container ml-0 mr-0">
-    <v-card class="mt-10 mb-10 pb-3 justify-space-around">
-      <v-row class="mb-5 align-middle">
-        <v-col class="col-4"> </v-col>
-        <v-col class="col-8">
+    <v-card class="mt-10 mb-10 pb-3 pt-5 justify-space-around">
+      <v-row class="mt-3 mb-7">
+        <v-col cols="12" sm="3"></v-col>
+        <v-col cols="12" sm="6">
           <v-text-field
             v-model.lazy.trim="query"
             append-icon="mdi-magnify"
@@ -13,10 +13,16 @@
             clearable
             single-line
             hide-details
+            rounded
+            outlined
+            filled
+            solo
+            dense
             @input="filter"
             @click:append="filter"
           ></v-text-field>
         </v-col>
+        <v-col cols="12" sm="3"></v-col>
       </v-row>
       <v-data-table
         :headers="headers"
@@ -53,16 +59,35 @@
                 class="mr-3"
                 small
                 icon
-                :aria-label="$t('commoin.actions.edit')"
+                :aria-label="$t('commoin.actions.paid')"
                 v-on="on"
                 @click.stop="editItem(item)"
               >
-                <v-icon small> mdi-cash-register </v-icon>
+                <v-icon color="cashIcone" small> mdi-cash-register </v-icon>
               </v-btn>
             </template>
 
             <span>
-              {{ $t('commoin.actions.edit') }}
+              {{ $t('commoin.actions.paid') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                class="mr-3"
+                small
+                icon
+                :aria-label="$t('commoin.actions.show')"
+                v-on="on"
+                @click.stop="loardFacture(item.fileName)"
+              >
+                <v-icon color="editIcone" small> mdi-eye </v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('commoin.actions.show') }}
             </span>
           </v-tooltip>
         </template>
@@ -71,7 +96,7 @@
       <v-divider v-if="isDividerVisible" />
       <Pagination
         v-if="query"
-        :by-id="query"
+        :search="query"
         store="facture"
         collection="factures"
         action="searchNotSoldeFactures"
@@ -244,6 +269,17 @@ export default {
         return startCase(str)
       } else {
         return 'n/a'
+      }
+    },
+
+    async loardFacture(filename) {
+      try {
+        await this.$api.loardFacture(filename)
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: 503,
+          message: 'Unable to fetch data.',
+        })
       }
     },
 

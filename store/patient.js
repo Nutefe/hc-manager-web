@@ -4,6 +4,7 @@ const initialState = () => ({
     allPatientsNonAssurer: [],
     patients: {},
     patient: null,
+    countPatient: 0,
 });
 
 export const state = initialState;
@@ -36,6 +37,9 @@ export const mutations = {
     SET_PATIENT(state, patient) {
         state.patient = patient;
     },
+    SET_COUNT_PATIENT(state, countPatient) {
+        state.countPatient = countPatient;
+    },
 };
 
 export const actions = {
@@ -65,7 +69,6 @@ export const actions = {
         }
 
         return this.$api.searchAllPatientPage(page, s).then((data) => {
-
             commit("SET_SEARCHED_PATIENTS", data);
         });
     },
@@ -84,6 +87,11 @@ export const actions = {
                 commit("SET_PATIENT", data);
             });
         }
+    },
+    fetchCountPatient({ commit }) {
+        return this.$api.countPatient().then((data) => {
+            commit("SET_COUNT_PATIENT", data);
+        });
     },
 };
 

@@ -1,23 +1,29 @@
 <template>
   <v-container class="pt-0" fluid>
     <!-- <PageTitle :title="$t('transfert.title')" /> -->
-    <v-card class="mt-10 mb-10 pb-3 justify-space-around">
-      <v-row class="mb-5 align-middle">
-        <v-col class="col-4"> </v-col>
-        <v-col class="col-8">
+    <v-card class="mt-10 mb-10 pb-3 pt-5 justify-space-around">
+      <v-row class="mt-3 mb-7">
+        <v-col cols="12" sm="3"></v-col>
+        <v-col cols="12" sm="6">
           <v-text-field
             v-model.lazy.trim="query"
             append-icon="mdi-magnify"
-            :placeholder="$t('profils.search')"
+            :placeholder="$t('user.search')"
             autocomplete="off"
             type="search"
             clearable
             single-line
             hide-details
+            rounded
+            outlined
+            filled
+            solo
+            dense
             @input="filter"
             @click:append="filter"
           ></v-text-field>
         </v-col>
+        <v-col cols="12" sm="3"></v-col>
       </v-row>
       <v-data-table
         :headers="headers"
@@ -53,7 +59,7 @@
                 v-on="on"
                 @click.stop="editItem(item)"
               >
-                <v-icon small> mdi-pencil </v-icon>
+                <v-icon color="editIcone" small> mdi-pencil </v-icon>
               </v-btn>
             </template>
 
@@ -67,7 +73,7 @@
       <v-divider v-if="isDividerVisible" />
       <pagination
         v-if="query"
-        :by-id="query"
+        :search="query"
         store="traitement"
         collection="traitements"
         action="searchTraitements"

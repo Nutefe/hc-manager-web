@@ -591,7 +591,7 @@ export default {
         }
         try {
           const result = await this.$api.checkCodeDossierUpdate(
-            this.form.codeDossier,
+            { code: this.form.codeDossier },
             this.id
           )
           this.isUnique.codeDossier = !result

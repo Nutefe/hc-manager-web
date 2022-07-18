@@ -619,7 +619,10 @@ export default {
         }
 
         try {
-          const result = await this.$api.checkCodeDossier(this.form.codeDossier)
+          
+          const result = await this.$api.checkCodeDossier({
+            code: this.form.codeDossier,
+          })
           this.isUnique.codeDossier = !result
         } catch (err) {
           this.isUnique.codeDossier = false

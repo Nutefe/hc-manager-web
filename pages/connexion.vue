@@ -2,7 +2,8 @@
   <v-main>
     <v-container class="fill-height py-8 py-sm-10">
       <v-row align="center" justify="space-around">
-        <v-col cols="12" sm="8" md="5">
+        
+        <v-col cols="12" sm="8">
           <!-- Header -->
 
           <!-- Form -->
