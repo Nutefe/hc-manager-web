@@ -45,29 +45,7 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
-        <template #[`item.action`]="{ item }">
-          <!-- Edit -->
-
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                class="mr-3"
-                small
-                icon
-                :aria-label="$t('commoin.actions.edit')"
-                v-on="on"
-                @click.stop="editItem(item)"
-              >
-                <v-icon color="editIcone" small> mdi-pencil </v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('commoin.actions.edit') }}
-            </span>
-          </v-tooltip>
-        </template>
+        <!--  -->
       </v-data-table>
 
       <v-divider v-if="isDividerVisible" />
@@ -138,24 +116,16 @@ export default {
         {
           text: this.$t('etat.table.startDate'),
           align: 'start',
-          value: 'start',
+          value: 'dateDebut',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
           text: this.$t('etat.table.endDate'),
           align: 'start',
-          value: 'end',
+          value: 'dateFin',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
-        },
-        {
-          text: this.$t('types.table.action'),
-          value: 'action',
-          class: 'text-subtitle-2 text-uppercase font-weight-bold',
-          cellClass: 'py-3',
-          sortable: false,
-          width: 150,
         },
       ],
     }

@@ -6,7 +6,7 @@
         :fullscreen="$vuetify.breakpoint.xsOnly"
         persistent
         scrollable
-        max-width="900"
+        max-width="800"
       >
         <v-card :disabled="loading" :loading="loading">
           <v-card-title class="px-3 px-md-5 py-2 py-md-3">
@@ -36,7 +36,7 @@
 
           <v-card-text class="px-3 px-md-5 pt-2">
             <v-row align="center">
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="12" class="pb-0">
                 <v-autocomplete
                   v-model.trim.lazy="form.patient"
                   :items="matchedPatients"
@@ -52,7 +52,26 @@
                   @change="fetchTraitement()"
                 ></v-autocomplete>
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="12" class="pb-0">
+                <v-autocomplete
+                  v-model.trim.lazy="form1.traitement"
+                  :items="matchedTraitements"
+                  :label="$t('facture.form.traitement')"
+                  item-text="libelle"
+                  item-value="id"
+                  autocomplete="off"
+                  :suffix="prixTraitement"
+                  autofocus
+                  return-object
+                  chips
+                  deletable-chips
+                  :error-messages="traitementErrors"
+                  @input="$v.form1.traitement.$touch()"
+                  @blur="$v.form1.traitement.$touch()"
+                ></v-autocomplete>
+              </v-col>
+
+              <v-col cols="12" sm="4" class="pb-0">
                 <v-select
                   v-model.trim.lazy="form.unite"
                   :items="unites"
@@ -67,31 +86,7 @@
                   @blur="$v.form.unite.$touch()"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="4">
-                <v-text-field
-                  v-model.trim.lazy="form.acompte"
-                  :label="$t('facture.form.acompte')"
-                  autocomplete="off"
-                  type="number"
-                  :maxlength="$v.form.acompte.$params.maxLength.max"
-                  :error-messages="acompteErrors"
-                  @input="$v.form.acompte.$touch()"
-                  @blur="$v.form.acompte.$touch()"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4">
-                <v-text-field
-                  v-model.trim.lazy="form1.kota"
-                  :label="$t('facture.form.kota')"
-                  autocomplete="off"
-                  :maxlength="$v.form1.kota.$params.maxLength.max"
-                  :error-messages="kotaErrors"
-                  :disabled="disable"
-                  @input="$v.form1.kota.$touch()"
-                  @blur="$v.form1.kota.$touch()"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="4" class="pb-0">
                 <v-text-field
                   v-model.trim.lazy="form1.baseRembour"
                   :label="$t('facture.form.baseRembour')"
@@ -103,7 +98,7 @@
                   @blur="$v.form1.baseRembour.$touch()"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="4" class="pb-0">
                 <v-text-field
                   v-model.trim.lazy="form1.netAssurance"
                   :label="$t('facture.form.netAssurance')"
@@ -116,24 +111,41 @@
                   @blur="$v.form1.netAssurance.$touch()"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="11">
-                <v-autocomplete
-                  v-model.trim.lazy="form1.traitement"
-                  :items="matchedTraitements"
-                  :label="$t('facture.form.traitement')"
-                  item-text="libelle"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  return-object
-                  chips
-                  deletable-chips
-                  :error-messages="traitementErrors"
-                  @input="$v.form1.traitement.$touch()"
-                  @blur="$v.form1.traitement.$touch()"
-                ></v-autocomplete>
+              <v-col cols="12" sm="7" class="pb-0 pt-1">
+                <template
+                  v-if="
+                    form.patient.nom &&
+                    form.patient.prenom &&
+                    form.patient.typePatient
+                  "
+                >
+                  <v-col cols="12" sm="12">
+                    <v-card>
+                      <v-card-text>
+                        <h4 class="">
+                          Patient:
+                          <span class="black--text">{{
+                            form.patient.nom + ' ' + form.patient.prenom
+                          }}</span>
+                          <br />Type Assurance:
+                          <span class="black--text">{{
+                            form.patient.typePatient.libelle
+                          }}</span>
+                        </h4>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </template>
               </v-col>
-              <v-col cols="12" sm="1" class="d-flex justify-center">
+
+              <v-col cols="12" sm="3" class="pb-0 pt-1 d-flex justify-center">
+                <h4 class="black--text text-center">
+                  {{ $t('facture.montant') }}:
+                  <v-chip>XOF {{ numberFormat(total) }}</v-chip>
+                </h4>
+              </v-col>
+
+              <v-col cols="12" sm="2" class="pb-0 pt-1 d-flex justify-center">
                 <v-tooltip v-if="isFormValid1" left>
                   <template #activator="{ on, attrs }">
                     <v-avatar
@@ -169,30 +181,9 @@
                   <span>{{ $t('facture.adds.a2') }}</span>
                 </v-tooltip>
               </v-col>
-              <template
-                v-if="
-                  form.patient.nom &&
-                  form.patient.prenom &&
-                  form.patient.typePatient
-                "
-              >
-                <v-col cols="12" sm="6">
-                  <div style="border: 1px solid grey">
-                    <h4 class="ma-2">
-                      Patient:
-                      <span class="black--text">{{
-                        form.patient.nom + ' ' + form.patient.prenom
-                      }}</span>
-                      <br />Type Assurance:
-                      <span class="black--text">{{
-                        form.patient.typePatient.libelle
-                      }}</span>
-                    </h4>
-                  </div>
-                </v-col>
-              </template>
+
               <template v-if="itemsList.length > 0">
-                <v-col cols="12" sm="12">
+                <v-col cols="12" sm="12" class="pb-0">
                   <v-expand-transition>
                     <v-simple-table
                       fixed-header
@@ -219,8 +210,8 @@
                         >
                           <td>{{ itemPosition(item.traitement.id) }}</td>
                           <td>{{ item.traitement.libelle }}</td>
-                          <td>{{ item.traitement.price }}</td>
-                          <td>{{ item.kota }}</td>
+                          <td>{{ numberFormat(item.traitement.price) }}</td>
+                          <!-- <td>{{ item.kota }}</td> -->
                           <td>{{ item.baseRembour }}</td>
                           <td>{{ item.netAssurance }}</td>
                           <td>
@@ -234,17 +225,19 @@
                   </v-expand-transition>
                 </v-col>
               </template>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="6" class="pb-0">
                 <v-text-field
-                  v-model.trim="total"
-                  autofocus
-                  :label="$t('facture.form.total')"
+                  v-model.trim.lazy="form.acompte"
+                  :label="$t('facture.form.acompte')"
                   autocomplete="off"
                   type="number"
-                  disabled
+                  :maxlength="$v.form.acompte.$params.maxLength.max"
+                  :error-messages="acompteErrors"
+                  @input="$v.form.acompte.$touch()"
+                  @blur="$v.form.acompte.$touch()"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="6" class="pb-0">
                 <v-text-field
                   v-model.trim.lazy="form.remise"
                   autofocus
@@ -292,8 +285,7 @@
 <script>
 import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import { isEqual } from '~/helpers/helpers.js'
-// import { isDate } from '~/helpers/customValidators.js'
+import { isEqual, numberFormat } from '~/helpers/helpers.js'
 
 export default {
   data() {
@@ -322,7 +314,6 @@ export default {
         patient: {},
       },
       form1: {
-        kota: '',
         baseRembour: 0,
         netAssurance: 0,
         traitement: {},
@@ -345,12 +336,6 @@ export default {
         {
           text: this.$t('facture.table.prix'),
           value: 'prix',
-          class: 'text-subtitle-2 text-uppercase font-weight-bold',
-          cellClass: 'py-3',
-        },
-        {
-          text: this.$t('facture.table.kota'),
-          value: 'kota',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
@@ -397,11 +382,6 @@ export default {
       },
     },
     form1: {
-      kota: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(100),
-      },
       baseRembour: {
         required,
         minLength: minLength(1),
@@ -523,30 +503,6 @@ export default {
 
       return errors
     },
-    kotaErrors() {
-      const errors = []
-
-      if (!this.$v.form1.kota.$dirty) return errors
-
-      !this.$v.form1.kota.required &&
-        errors.push(this.$t('validations.kota.required'))
-
-      !this.$v.form1.kota.minLength &&
-        errors.push(
-          this.$t('validations.kota.min', {
-            length: this.$v.form1.kota.$params.minLength.min,
-          })
-        )
-
-      !this.$v.form1.kota.maxLength &&
-        errors.push(
-          this.$t('validations.kota.max', {
-            length: this.$v.form1.kota.$params.maxLength.max,
-          })
-        )
-
-      return errors
-    },
     patientErrors() {
       const errors = []
 
@@ -641,6 +597,16 @@ export default {
       })
     },
 
+    prixTraitement() {
+      if (this.form1.traitement) {
+        if (this.form1.traitement !== undefined)
+          return 'XOF ' + this.numberFormat(this.form1.traitement.price)
+        else return 'XOF ' + 0
+      } else {
+        return 'XOF ' + 0
+      }
+    },
+
     total() {
       let somme = 0
       this.itemsList.forEach((traitement) => {
@@ -658,10 +624,8 @@ export default {
     'form.unite'() {
       if (this.isMontant) {
         this.disable = true
-        this.form1.kota = '00'
       } else {
         this.disable = false
-        this.form1.kota = ''
       }
     },
   },
@@ -680,11 +644,12 @@ export default {
       }
 
       this.form1 = {
-        kota: '',
         baseRembour: 0,
         netAssurance: 0,
         traitement: {},
       }
+
+      this.initTraitement()
 
       this.loading = false
     },
@@ -702,7 +667,6 @@ export default {
       }
 
       this.form1 = {
-        kota: '',
         baseRembour: 0,
         netAssurance: 0,
         traitement: {},
@@ -713,13 +677,21 @@ export default {
       this.loading = false
     },
 
+    numberFormat(str) {
+      if (str) {
+        return numberFormat(str)
+      } else {
+        return numberFormat(0)
+      }
+    },
+
     async fetchTraitement() {
       this.loading = true
 
       if (this.form.patient) {
         if (isEqual(this.form.patient.typePatient.libelle, 'ASSURER INAM')) {
           this.disable = true
-          this.form1.kota = '00'
+          // this.form1.kota = '00'
           this.form.unite = {
             id: 1,
             libelle: this.$t('facture.unite.montant'),
@@ -727,7 +699,7 @@ export default {
           }
         } else {
           this.disable = false
-          this.form1.kota = ''
+          // this.form1.kota = ''
           this.form.unite = {
             id: 2,
             libelle: this.$t('facture.unite.pourcentage'),
@@ -750,6 +722,17 @@ export default {
       this.loading = false
     },
 
+    async initTraitement() {
+      try {
+        await this.$store.dispatch('traitement/resetStateTraitement')
+      } catch (err) {
+        this.$nuxt.error({
+          statusCode: 503,
+          message: 'Unable to fetch data.',
+        })
+      }
+    },
+
     itemPosition(itemId) {
       return this.itemsList.findIndex((elm) => elm.traitement.id === itemId) + 1
     },
@@ -766,7 +749,7 @@ export default {
         const item = {}
 
         item.traitement = this.form1.traitement
-        item.kota = this.form1.kota
+        item.kota = '00'
         item.baseRembour = this.form1.baseRembour
         item.netAssurance = this.form1.netAssurance
         this.itemsList.push(item)

@@ -121,9 +121,9 @@ export default {
             })
           }
         } else if (this.store) {
-          await this.$store.dispatch(`${this.store}/${this.action}`, { page })
+          await this.$store.dispatch(`${this.store}/${this.action}`, page)
         } else {
-          await this.$store.dispatch(this.action, { page })
+          await this.$store.dispatch(this.action, page)
         }
         this.$emit('loading', false)
       } catch (err) {

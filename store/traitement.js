@@ -13,6 +13,9 @@ export const mutations = {
     RESET_STATE(state) {
         Object.assign(state, initialState());
     },
+    RESET_STATE_TRAITEMENT(state) {
+        Object.assign(state.allTraitementsTypeAssurer = []);
+    },
     SET_ALL_TRAITEMENTS(state, allTraitements) {
         state.allTraitements = allTraitements;
     },
@@ -46,6 +49,9 @@ export const actions = {
     resetState({ commit }) {
         commit("RESET_STATE");
     },
+    resetStateTraitement({ commit }) {
+        commit("RESET_STATE_TRAITEMENT");
+    },
     fetchAllTraitements({ commit }) {
         return this.$api.getAllTraitement().then((data) => {
             commit("SET_ALL_TRAITEMENTS", data);
@@ -57,6 +63,7 @@ export const actions = {
         });
     },
     fetchAllTraitementTypeAssurer({ commit }, id) {
+        // if
         return this.$api.getAllTraitementTypePatient(id).then((data) => {
             commit("SET_ALL_TRAITEMENTS_TYPE_ASSURER", data);
         });

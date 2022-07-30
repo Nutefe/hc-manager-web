@@ -75,3 +75,8 @@ export function upperFirst(str) {
     str = str.trim().toLowerCase();
     return _.upperFirst(str);
 }
+
+export function convertToDouble(value) {
+    value = parseInteger(value);
+    return value;
+}

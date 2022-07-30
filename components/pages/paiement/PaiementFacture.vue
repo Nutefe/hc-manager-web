@@ -213,7 +213,7 @@
 <script>
 import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import { startCase, capitalize } from '~/helpers/helpers.js'
+import { startCase, capitalize, convertToDouble } from '~/helpers/helpers.js'
 
 export default {
   data() {
@@ -224,6 +224,10 @@ export default {
       itemsList: [],
       id: null,
       show: false,
+      isEqualAcompteRemise: false,
+      isEqualAcomptePaye: false,
+      isEqualRemisePaye: false,
+      isEqualFacturePaye: false,
       form: {
         remise: 0,
         acompte: 0,
@@ -291,19 +295,22 @@ export default {
   computed: {
     isFormValid() {
       return (
-        this.isPaye &&
         this.isTotal &&
-        this.isAcompte1 &&
         this.isAcompte &&
+        this.isAcompte1 &&
+        this.isPaye &&
         !this.$v.form.$invalid
       )
     },
 
     isAcompte() {
       if (this.form.acompte) {
-        const ac = this.form.acompte
+        // const ac = this.form.acompte
 
-        if (ac + '' === this.form.montantPaye) {
+        if (
+          this.convertToDouble(this.form.acompte) ===
+          this.convertToDouble(this.form.montantPaye)
+        ) {
           return true
         } else {
           return false
@@ -314,23 +321,23 @@ export default {
     },
 
     isAcompte1() {
-      if (this.form.acompte) {
-        const ac = this.form.acompte
-
-        if (ac <= this.form.totalRemis) {
-          return true
-        } else {
-          return false
-        }
-      } else {
+      if (
+        this.convertToDouble(this.form.acompte) <=
+        this.convertToDouble(this.form.totalRemis)
+      ) {
         return true
+      } else {
+        return false
       }
     },
     isPaye() {
       if (this.form.montantPaye) {
-        const ac = this.form.montantPaye
+        // const ac = this.form.montantPaye
 
-        if (ac <= this.form.totalRemis) {
+        if (
+          this.convertToDouble(this.form.montantPaye) <=
+          this.convertToDouble(this.form.totalRemis)
+        ) {
           return true
         } else {
           return false
@@ -341,14 +348,11 @@ export default {
     },
 
     isTotal() {
-      if (this.form.totalFacture) {
-        const ac = this.form.totalFacture
-
-        if (ac >= this.form.montantPaye) {
-          return true
-        } else {
-          return false
-        }
+      if (
+        this.convertToDouble(this.form.totalFacture) >=
+        this.convertToDouble(this.form.montantPaye)
+      ) {
+        return true
       } else {
         return false
       }
@@ -439,6 +443,47 @@ export default {
     }),
   },
 
+  watch: {
+    // 'form.montantPaye'() {
+    //   if (this.convertToDouble(this.form.montantPaye)) {
+    //     if (
+    //       this.convertToDouble(this.form.totalFacture) <=
+    //       this.convertToDouble(this.form.montantPaye)
+    //     ) {
+    //       this.isEqualFacturePaye = true
+    //     } else {
+    //       this.isEqualFacturePaye = false
+    //     }
+    //     if (
+    //       this.convertToDouble(this.form.acompte) ===
+    //       this.convertToDouble(this.form.montantPaye)
+    //     ) {
+    //       // console.log('cool')
+    //       this.isEqualAcompteRemise = true
+    //       this.isEqualAcomptePaye = true
+    //     } else {
+    //       console.log('no')
+    //       // this.isEqualFacturePaye = false
+    //       this.isEqualAcomptePaye = false
+    //     }
+    //   }
+    // },
+    // 'form.totalRemis'() {
+    //   // console.log(this.form.totalRemis)
+    //   if (this.convertToDouble(this.form.totalRemis)) {
+    //     console.log(this.form.totalRemis)
+    //     if (
+    //       this.convertToDouble(this.form.montantPaye) <=
+    //       this.convertToDouble(this.form.totalRemis)
+    //     ) {
+    //       this.isEqualAcompteRemise = true
+    //     } else {
+    //       this.isEqualAcompteRemise = false
+    //     }
+    //   }
+    // },
+  },
+
   methods: {
     startCase(str) {
       if (str) {
@@ -456,6 +501,14 @@ export default {
       }
     },
 
+    convertToDouble(str) {
+      if (str) {
+        return convertToDouble(str)
+      } else {
+        return 0.0
+      }
+    },
+
     openDialog(item) {
       this.id = item.id
 
@@ -464,6 +517,8 @@ export default {
         ficheTraitement.push(fiche.ficheTraitementPK.traitement)
       })
 
+      // console.log(item.total)
+
       this.form = {
         remise: item.remise || 0,
         acompte: item.acompte || 0,
@@ -471,8 +526,8 @@ export default {
         traitement: ficheTraitement || [],
         numero: item.numero || '',
         dateFacture: item.dateFacture || '',
-        totalFacture: item.total || '',
-        reste: item.reste || '',
+        totalFacture: item.total || 0,
+        reste: item.reste || 0,
         totalRemis: '',
         montantPaye: '',
       }
@@ -491,11 +546,11 @@ export default {
         acompte: 0,
         patient: {},
         traitement: [],
-        totalRemis: '',
+        totalRemis: 0,
         montantPaye: '',
         numero: '',
         dateFacture: '',
-        totalFacture: '',
+        totalFacture: 0,
         reste: '',
       }
 

@@ -45,6 +45,9 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
+        <template #[`item.price`]="{ item }">
+          {{ numberFormat(item.price) }}
+        </template>
         <template #[`item.action`]="{ item }">
           <!-- Edit -->
 
@@ -104,7 +107,7 @@ import { mapState } from 'vuex'
 import TraitementCreate from '~/components/pages/traitement/TraitementCreate.vue'
 import TraitementEdit from '~/components/pages/traitement/TraitementEdit.vue'
 
-import { debounce, startCase } from '~/helpers/helpers.js'
+import { debounce, startCase, numberFormat } from '~/helpers/helpers.js'
 
 export default {
   name: 'TraitementPage',
@@ -231,6 +234,14 @@ export default {
         return startCase(str)
       } else {
         return 'n/a'
+      }
+    },
+
+    numberFormat(str) {
+      if (str) {
+        return numberFormat(str)
+      } else {
+        return numberFormat(0)
       }
     },
     async fetchData(pages) {

@@ -49,7 +49,7 @@ export default {
       profileRoute: {
         title: this.$t('profil.title'),
         subtitle: this.$t('profil.subtitle'),
-        path: '/profil',
+        path: '/users/profil',
       },
       logout: {
         title: this.$t('logout.action'),

@@ -44,11 +44,34 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
-
-        <template #[`item.profils`]="{ item }">
-          <span v-for="p in item.profils" :key="p.id">
-            | {{ startCase(`${p.libelle}`) }} </span
-          >|
+        <template #[`item.fiche.patient.nom`]="{ item }">
+          <span>
+            {{ item.fiche.patient.nom }}
+            {{ startCase(item.fiche.patient.prenom) }}</span
+          >
+        </template>
+        <template #[`item.total`]="{ item }">
+          <span> {{ numberFormat(item.total) }} </span>
+        </template>
+        <template #[`item.acompte`]="{ item }">
+          <span> {{ numberFormat(item.acompte) }} </span>
+        </template>
+        <template #[`item.remise`]="{ item }">
+          <span> {{ numberFormat(item.remise) }} </span>
+        </template>
+        <template #[`item.reste`]="{ item }">
+          <span> {{ numberFormat(item.reste) }} </span>
+        </template>
+        <template #[`item.solde`]="{ item }">
+          <v-chip v-if="item.solde" color="blue" text-color="white"
+            >{{ $t('facture.solde.yes') }}
+          </v-chip>
+          <v-chip v-else color="red" text-color="white">
+            {{ $t('facture.solde.no') }}
+          </v-chip>
+        </template>
+        <template #[`item.encaisse`]="{ item }">
+          <v-chip v-if="item" color="primary"> {{ isEncaisser(item) }} </v-chip>
         </template>
         <template #[`item.action`]="{ item }">
           <!-- Edit -->
@@ -212,7 +235,12 @@ import FactureAssurerCreate from '~/components/pages/facture/FactureAssurerCreat
 import FactureAssurerEdit from '~/components/pages/facture/FactureAssurerEdit.vue'
 import FactureCreate from '~/components/pages/facture/FactureCreate.vue'
 import FactureEdit from '~/components/pages/facture/FactureEdit.vue'
-import { debounce, startCase } from '~/helpers/helpers.js'
+import {
+  debounce,
+  startCase,
+  numberFormat,
+  capitalize,
+} from '~/helpers/helpers.js'
 
 export default {
   name: 'FacturesPage',
@@ -275,8 +303,26 @@ export default {
           cellClass: 'py-3',
         },
         {
+          text: this.$t('facture.table.reste'),
+          value: 'reste',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
           text: this.$t('facture.table.typePatient'),
           value: 'fiche.patient.typePatient.libelle',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('facture.table.solde'),
+          value: 'solde',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('facture.table.encaisse'),
+          value: 'encaisse',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
@@ -347,6 +393,15 @@ export default {
     toggleLoading(value) {
       this.loading = value
     },
+    isEncaisser(item) {
+      if (item.solde && item.encaisse) {
+        return this.$t('facture.encaisse.total')
+      } else if (!item.solde && item.encaisse) {
+        return this.$t('facture.encaisse.partially')
+      } else {
+        return this.$t('facture.encaisse.no')
+      }
+    },
     itemPosition(itemId) {
       return this.itemsList.findIndex((elm) => elm.id === itemId) + 1
     },
@@ -370,11 +425,28 @@ export default {
     editPassItem(item) {
       this.$refs.editPassFormDialog.openDialog(item)
     },
+
     startCase(str) {
       if (str) {
         return startCase(str)
       } else {
         return 'n/a'
+      }
+    },
+
+    capitalize(str) {
+      if (str) {
+        return capitalize(str)
+      } else {
+        return 'n/a'
+      }
+    },
+
+    numberFormat(str) {
+      if (str) {
+        return numberFormat(str)
+      } else {
+        return numberFormat(0)
       }
     },
 
