@@ -127,11 +127,11 @@ export default {
             path: '/parametre/type/traitements',
             icon: 'mdi-file-chart-outline',
           },
-          {
-            title: this.$t('navigation.kota'),
-            path: '/parametre/kotas',
-            icon: 'mdi-file-chart-outline',
-          },
+          // {
+          //   title: this.$t('navigation.kota'),
+          //   path: '/parametre/kotas',
+          //   icon: 'mdi-file-chart-outline',
+          // },
         ],
       },
     }

@@ -328,7 +328,9 @@ export default {
     },
     patient: {
         title: "Paients",
-        new: "Nouveau patient",
+        new: "Nouveau patient non assurer",
+        newInam: "Nouveau patient INAM",
+        newAutre: "Nouveau patient assurer autre",
         edit: "Modifier un patient",
         update: "Modifier",
         search: "Recherche...",
@@ -408,6 +410,7 @@ export default {
             unite: "Unite",
             kota: "Kota",
             baseRembour: "Base de remboursement",
+            baseRembourInam: "Base de remboursement inam",
             netAssurance: "Net paye par l'assurance",
             total: "Total",
         },
@@ -517,7 +520,7 @@ export default {
         saved: "Enregistré avec succès.",
         noData: "Aucune donnée disponible",
         errorOccured: "Une erreur est survenue. Veuillez réessayer.",
-        copyright: "Blue`Rizon tous droits réservés",
+        copyright: "InnoS`Digital tous droits réservés",
 
     },
 

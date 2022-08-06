@@ -1,6 +1,6 @@
 <template>
   <v-container class="pt-0" fluid>
-    <v-card class="mt-10 mb-10 pb-3 pt-5  justify-space-around">
+    <v-card class="mt-5 mb-10 pb-3 pt-5  justify-space-around">
       <v-row class="mt-3 mb-7">
         <v-col cols="12" sm="3"></v-col>
         <v-col cols="12" sm="6">
@@ -44,8 +44,7 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
-        <template #[`item.action`]="{ item }">
-          <!-- Edit -->
+        <!-- <template #[`item.action`]="{ item }">
 
           <v-tooltip top>
             <template #activator="{ on, attrs }">
@@ -66,7 +65,7 @@
               {{ $t('commoin.actions.edit') }}
             </span>
           </v-tooltip>
-        </template>
+        </template> -->
       </v-data-table>
 
       <v-divider v-if="isDividerVisible" />
@@ -93,20 +92,20 @@
         @loading="toggleLoading"
       />
     </v-card>
-    <ProfilCreate @refreshPage="refreshPage" />
-    <ProfilEdite ref="profilFormDialog" @refreshPage="refreshPage" />
+    <!-- <ProfilCreate @refreshPage="refreshPage" />
+    <ProfilEdite ref="profilFormDialog" @refreshPage="refreshPage" /> -->
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import ProfilCreate from '~/components/pages/profil/ProfilCreate.vue'
-import ProfilEdite from '~/components/pages/profil/ProfilEdite.vue'
+// import ProfilCreate from '~/components/pages/profil/ProfilCreate.vue'
+// import ProfilEdite from '~/components/pages/profil/ProfilEdite.vue'
 import { debounce, startCase } from '~/helpers/helpers.js'
 
 export default {
   name: 'ProfilsPage',
-  components: { ProfilCreate, ProfilEdite },
+  // components: { ProfilCreate, ProfilEdite },
   layout: 'default',
 
   data() {
@@ -129,14 +128,14 @@ export default {
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
-        {
-          text: this.$t('profils.table.action'),
-          value: 'action',
-          class: 'text-subtitle-2 text-uppercase font-weight-bold',
-          cellClass: 'py-3',
-          sortable: false,
-          width: 150,
-        },
+        // {
+        //   text: this.$t('profils.table.action'),
+        //   value: 'action',
+        //   class: 'text-subtitle-2 text-uppercase font-weight-bold',
+        //   cellClass: 'py-3',
+        //   sortable: false,
+        //   width: 150,
+        // },
       ],
     }
   },

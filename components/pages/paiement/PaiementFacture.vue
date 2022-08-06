@@ -228,6 +228,7 @@ export default {
       isEqualAcomptePaye: false,
       isEqualRemisePaye: false,
       isEqualFacturePaye: false,
+      encaisse: false,
       form: {
         remise: 0,
         acompte: 0,
@@ -429,10 +430,14 @@ export default {
     },
 
     total() {
-      if (this.form.reste > 0) {
-        return this.form.reste
+      if (!this.encaisse) {
+        if (this.form.reste > 0) {
+          return this.form.totalFacture 
+        } else {
+          return this.form.totalFacture
+        }
       } else {
-        return this.form.totalFacture
+        return this.form.reste
       }
     },
 
@@ -511,6 +516,7 @@ export default {
 
     openDialog(item) {
       this.id = item.id
+      this.encaisse = item.encaisse
 
       const ficheTraitement = []
       this.fiches.forEach((fiche) => {

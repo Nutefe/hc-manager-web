@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="container ml-0 mr-0">
-    <v-card class="mt-10 mb-10 pb-3 pt-5 justify-space-around">
+  <v-container fluid class="container ml-0 mr-0 mb-10">
+    <v-card class="mt-5 mb-15 pb-3 pt-5 justify-space-around">
       <v-row class="mt-3 mb-7">
         <v-col cols="12" sm="3"></v-col>
         <v-col cols="12" sm="6">
@@ -75,38 +75,40 @@
         </template>
         <template #[`item.action`]="{ item }">
           <!-- Edit -->
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-if="item.fiche.patient.typePatient.id === 3"
-                v-bind="attrs"
-                class="mr-3"
-                small
-                icon
-                :aria-label="$t('commoin.actions.edit')"
-                v-on="on"
-                @click.stop="editItem(item)"
-              >
-                <v-icon color="editIcone" small> mdi-pencil </v-icon>
-              </v-btn>
-              <v-btn
-                v-else
-                v-bind="attrs"
-                class="mr-3"
-                small
-                icon
-                :aria-label="$t('commoin.actions.edit')"
-                v-on="on"
-                @click.stop="editItemAssurance(item)"
-              >
-                <v-icon color="editIcone" small> mdi-pencil </v-icon>
-              </v-btn>
-            </template>
+          <template v-if="!item.encaisse">
+            <v-tooltip top>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  v-if="item.fiche.patient.typePatient.id === 3"
+                  v-bind="attrs"
+                  class="mr-3"
+                  small
+                  icon
+                  :aria-label="$t('commoin.actions.edit')"
+                  v-on="on"
+                  @click.stop="editItem(item)"
+                >
+                  <v-icon color="editIcone" small> mdi-pencil </v-icon>
+                </v-btn>
+                <v-btn
+                  v-else
+                  v-bind="attrs"
+                  class="mr-3"
+                  small
+                  icon
+                  :aria-label="$t('commoin.actions.edit')"
+                  v-on="on"
+                  @click.stop="editItemAssurance(item)"
+                >
+                  <v-icon color="editIcone" small> mdi-pencil </v-icon>
+                </v-btn>
+              </template>
 
-            <span>
-              {{ $t('commoin.actions.edit') }}
-            </span>
-          </v-tooltip>
+              <span>
+                {{ $t('commoin.actions.edit') }}
+              </span>
+            </v-tooltip>
+          </template>
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn

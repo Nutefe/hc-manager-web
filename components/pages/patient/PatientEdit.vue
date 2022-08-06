@@ -13,7 +13,7 @@
             <v-row align="center">
               <v-col cols="9">
                 <span class="text-h6 text-md-h5 font-weight-regular">
-                  {{ $t('patient.new') }}
+                  {{ $t('patient.edit') }}
                 </span>
               </v-col>
 

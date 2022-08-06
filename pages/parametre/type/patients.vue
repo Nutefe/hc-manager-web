@@ -1,6 +1,6 @@
 <template>
-  <v-container class="pt-0" fluid>
-    <v-card class="mt-10 mb-10 pb-3 pt-5 justify-space-around">
+  <v-container class="pt-0 mb-10" fluid>
+    <v-card class="mt-5 mb-15 pb-3 pt-5 justify-space-around">
       <v-row class="mt-3 mb-7">
         <v-col cols="12" sm="3"></v-col>
         <v-col cols="12" sm="6">
