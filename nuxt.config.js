@@ -1,6 +1,6 @@
 // import colors from 'vuetify/es5/util/colors'
-// const BASE_URL = "http://localhost:8687/api";
-const BASE_URL = "http://192.168.1.153:8080/hc-manager/api";
+const BASE_URL = "http://localhost:8687/api";
+// const BASE_URL = "http://192.168.1.153:8080/hc-manager/api";
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -16,7 +16,18 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.png' }],
+    link:
+      [
+        { rel: 'icon', type: 'image/x-icon', href: '/icon.png' },
+        {
+          rel: "stylesheet",
+          href: "https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css",
+        },
+      ],
   },
 
   loading: {
@@ -83,33 +94,36 @@ export default {
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/scss/variables.scss'],
-    theme: {
-      light: true,
-      themes: {
-        light: {
-          primary: '#00a8a0',
-          secondary: '#137b76',
-          accent: '#82B1FF',
-          error: '#FF5252',
-          info: '#2196F3',
-          success: '#4CAF50',
-          warning: '#FFC107',
-          editIcone: '#0082ff',
-          cashIcone: '#8d00ff',
-        },
-        dark: {
-          primary: '#00a8a0',
-          secondary: '#137b76',
-          accent: '#82B1FF',
-          error: '#FF5252',
-          info: '#2196F3',
-          success: '#4CAF50',
-          warning: '#FFC107',
-          editIcone: '#0082ff',
-          cashIcone: '#8d00ff',
-        },
-      },
-    },
+    defaultAssets: false,
+    optionsPath: "~/vuetify/options.js",
+    treeShake: true,
+    // theme: {
+    //   light: true,
+    //   themes: {
+    //     light: {
+    //       primary: '#00a8a0',
+    //       secondary: '#137b76',
+    //       accent: '#82B1FF',
+    //       error: '#FF5252',
+    //       info: '#2196F3',
+    //       success: '#4CAF50',
+    //       warning: '#FFC107',
+    //       editIcone: '#0082ff',
+    //       cashIcone: '#8d00ff',
+    //     },
+    //     dark: {
+    //       primary: '#00a8a0',
+    //       secondary: '#137b76',
+    //       accent: '#82B1FF',
+    //       error: '#FF5252',
+    //       info: '#2196F3',
+    //       success: '#4CAF50',
+    //       warning: '#FFC107',
+    //       editIcone: '#0082ff',
+    //       cashIcone: '#8d00ff',
+    //     },
+    //   },
+    // },
   },
 
   // Auth module

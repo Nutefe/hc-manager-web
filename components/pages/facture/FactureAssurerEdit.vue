@@ -94,6 +94,7 @@
                   type="number"
                   :maxlength="$v.form1.baseRembour.$params.maxLength.max"
                   :error-messages="baseRembourErrors"
+                  :disabled="!isVisibleNetAss"
                   @input="$v.form1.baseRembour.$touch()"
                   @blur="$v.form1.baseRembour.$touch()"
                 ></v-text-field>
