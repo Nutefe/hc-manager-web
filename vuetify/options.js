@@ -1,3 +1,4 @@
+import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
 import fr from "vuetify/src/locale/fr.ts";
 
 export default {
@@ -7,6 +8,9 @@ export default {
     },
     theme: {
         light: true,
+        icons: {
+            iconfont: 'mdi', // default - only for display purposes
+        },
         themes: {
             light: {
                 primary: '#00a8a0',

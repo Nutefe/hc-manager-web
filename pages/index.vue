@@ -13,7 +13,7 @@
             <StatCard :stat="stat" />
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="isDirecteur || isSys">
           <v-col
             v-for="stat in stats.second"
             :key="`first-${stat.title}`"
