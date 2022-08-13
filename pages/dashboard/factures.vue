@@ -104,6 +104,7 @@
         store="facture"
         collection="facturesDay"
         action="searchFacturesDay"
+        page-mutation="SET_CURRENT_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -115,6 +116,7 @@
         store="facture"
         collection="facturesDay"
         action="fetchFacturesDay"
+        page-mutation="SET_CURRENT_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -259,6 +261,7 @@ export default {
     },
 
     isDividerVisible() {
+      // console.log(this.factures)
       if (this.factures) {
         const total = this.factures.total || 0
         const perPage = this.factures.per_page || 0

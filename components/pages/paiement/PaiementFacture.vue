@@ -432,9 +432,9 @@ export default {
     total() {
       if (!this.encaisse) {
         if (this.form.reste > 0) {
-          return this.form.totalFacture 
+          return this.form.totalFacture - this.form.remise
         } else {
-          return this.form.totalFacture
+          return this.form.totalFacture - this.form.remise
         }
       } else {
         return this.form.reste
