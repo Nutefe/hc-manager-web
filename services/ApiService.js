@@ -887,7 +887,17 @@ export default ($axios, $auth) => ({
             },
         });
     },
+    countPatientDay() {
+        if (!$auth.loggedIn) {
+            return;
+        }
 
+        return $axios.$get(`/patient/count/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
     /**
      * end patient axios api
      */
@@ -1366,6 +1376,20 @@ export default ($axios, $auth) => ({
         });
     },
 
+
+
+    countPatientEncDay() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/encaissement/patient/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
     montantPaiementDay() {
         if (!$auth.loggedIn) {
             return;
@@ -1376,6 +1400,27 @@ export default ($axios, $auth) => ({
                 Authorization: `Bearer ${$auth.token}`,
             },
         });
+    },
+
+    selectAllPaiementDatePage(page, date) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/encaissements/etat/date/page/${page}/${date}/`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllPaiementDatePage(page, date, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/encaissement/etat/date/search/page/${page}/${date}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
     },
 
     // countFactureDay() {

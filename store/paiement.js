@@ -2,6 +2,8 @@ const initialState = () => ({
     allPaiements: [],
     paiements: {},
     factures: {},
+    paiementDates: {},
+    paiementDate: {},
     paiement: null,
     countPaiementDay: 0,
     montantPaiementDay: 0,
@@ -35,6 +37,17 @@ export const mutations = {
     SET_DAY_FACTURES(state, factures) {
         state.factures = factures;
     },
+
+    SET_SEARCHED_DATE_PAIEMENTS(state, paiementDates) {
+        state.paiementDates = paiementDates;
+    },
+    SET_DATE_PAIEMENTS(state, paiementDates) {
+        state.paiementDates = paiementDates;
+    },
+    SET_DATE_PAIEMENTS_NO(state, paiementDate) {
+        state.paiementDate = paiementDate;
+    },
+
     SET_SEARCH_CURRENT_PAGE(state, page) {
         state.paiements.current_page = page;
     },
@@ -52,6 +65,9 @@ export const mutations = {
     },
     SET_COUNT_FACTURE_DAY(state, countFactureDay) {
         state.countFactureDay = countFactureDay;
+    },
+    SET_COUNT_DATE_PAIEMENTS(state, page) {
+        state.paiementDates.current_page = page;
     },
 };
 
@@ -116,6 +132,43 @@ export const actions = {
             commit("SET_DAY_FACTURES", data);
         });
     },
+
+    searchDatePaiement({ commit }, { date, page, s }) {
+        if (!s) {
+
+            commit("SET_SEARCHED_DATE_PAIEMENTS", {});
+            commit("SET_DATE_PAIEMENTS_NO", {});
+
+            return;
+        }
+
+        return this.$api.searchAllPaiementDatePage(page, date, s).then((data) => {
+
+            commit("SET_SEARCHED_DATE_PAIEMENTS", data.page);
+
+            commit("SET_DATE_PAIEMENTS_NO", data);
+
+        });
+    },
+    fetchDatePaiement({ commit }, { date, page }) {
+        // console.log("test")
+        return this.$api.selectAllPaiementDatePage(page, date).then((data) => {
+            // console.log(data)
+
+            commit("SET_DATE_PAIEMENTS", data.page);
+            commit("SET_DATE_PAIEMENTS_NO", data);
+        });
+    },
+    //  SET_SEARCHED_DATE_PAIEMENTS(state, paiementDate) {
+    //     state.paiementDate = paiementDate;
+    // },
+    // SET_DATE_PAIEMENTS(state, paiementDate) {
+    //     state.paiementDate = paiementDate;
+    // },
+    // SET_DATE_PAIEMENTS_NO(state, paiementDate) {
+    //     state.paiementDate = paiementDate;
+    // },
+
     fetchPaiement({ commit, getters }, id) {
         const operation = getters.getPaiementById(id);
 
@@ -142,6 +195,7 @@ export const actions = {
             commit("SET_COUNT_FACTURE_DAY", data);
         });
     },
+
 };
 
 export const getters = {

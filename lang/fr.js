@@ -15,6 +15,7 @@ export default {
         traitement: "Traitement",
         typePatient: "Types patients",
         typeTraitement: "Types traitements",
+        etatEnc: "Etat encaissement",
         profil: "Profils",
         kota: "Kotas",
         assurance: "Assurances",
@@ -454,6 +455,8 @@ export default {
         search: "Recherche...",
         subtitle: "Voir votre facture",
         add: "Payer une facture",
+        etat: "Etats d'encaissements",
+        calcul: "Calculer les etats d'encaissements",
         form: {
             facture: "FACTURE NUMERO:",
             nom: "Nom",
@@ -464,6 +467,7 @@ export default {
             total: "Total",
             montant: "Montant à payer",
             somme: "Somme reçu",
+            date: "Date calcul",
         },
         table: {
             num: "N°",
@@ -668,6 +672,11 @@ export default {
             required: "La date de naissance est obligatoire.",
             min: "La date de naissance  doit contenir au moins {length} caractères.",
             max: "La date de naissance doit contenir au plus {length} caractères.",
+        },
+        dateEtat: {
+            required: "La date de l'etat est obligatoire.",
+            min: "La date de de l'etat  doit contenir au moins {length} caractères.",
+            max: "La date de de l'etat doit contenir au plus {length} caractères.",
         },
         sexe: {
             required: "Le genre est obligatoire.",

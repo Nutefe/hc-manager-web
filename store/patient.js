@@ -5,6 +5,7 @@ const initialState = () => ({
     patients: {},
     patient: null,
     countPatient: 0,
+    countPatientDay: 0,
 });
 
 export const state = initialState;
@@ -39,6 +40,9 @@ export const mutations = {
     },
     SET_COUNT_PATIENT(state, countPatient) {
         state.countPatient = countPatient;
+    },
+    SET_COUNT_PATIENT_DAY(state, countPatientDay) {
+        state.countPatientDay = countPatientDay;
     },
 };
 
@@ -91,6 +95,12 @@ export const actions = {
     fetchCountPatient({ commit }) {
         return this.$api.countPatient().then((data) => {
             commit("SET_COUNT_PATIENT", data);
+        });
+    },
+    fetchCountPatientDay({ commit }) {
+        return this.$api.countPatientDay().then((data) => {
+            console.log(data)
+            commit("SET_COUNT_PATIENT_DAY", data);
         });
     },
 };

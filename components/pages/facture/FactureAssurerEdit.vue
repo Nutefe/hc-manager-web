@@ -83,6 +83,7 @@
                   :error-messages="uniteErrors"
                   @input="$v.form.unite.$touch()"
                   @blur="$v.form.unite.$touch()"
+                  @change="changeUnite"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="4" class="pb-0">
@@ -719,7 +720,10 @@ export default {
       this.dialog = true
       this.loading = false
     },
-
+    changeUnite() {
+      this.form1.baseRembour = 0
+      this.form1.netAssurance = 0
+    },
     numberFormat(str) {
       if (str) {
         return numberFormat(str)
@@ -791,6 +795,7 @@ export default {
 
         item.traitement = this.form1.traitement
         item.kota = '00'
+        item.unite = this.form.unite.value
         item.baseRembour = this.form1.baseRembour
         item.netAssurance = this.form1.netAssurance
         this.itemsList.push(item)
@@ -807,7 +812,7 @@ export default {
             {
               patient: this.form.patient.id,
               traitements: this.itemsList,
-              unite: this.form.unite.value,
+              // unite: this.form.unite.value,
               accompte: this.form.acompte,
               remise: this.form.remise,
             },

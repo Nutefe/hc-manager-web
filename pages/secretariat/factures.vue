@@ -75,7 +75,7 @@
         </template>
         <template #[`item.action`]="{ item }">
           <!-- Edit -->
-          <template v-if="!item.encaisse">
+          <template v-if="!item.encaisse && (isDirecteur || isSys)">
             <v-tooltip top>
               <template #activator="{ on, attrs }">
                 <v-btn
@@ -237,6 +237,8 @@ import FactureAssurerCreate from '~/components/pages/facture/FactureAssurerCreat
 import FactureAssurerEdit from '~/components/pages/facture/FactureAssurerEdit.vue'
 import FactureCreate from '~/components/pages/facture/FactureCreate.vue'
 import FactureEdit from '~/components/pages/facture/FactureEdit.vue'
+import { mixinProfils } from '~/mixins/mixinProfils.js'
+
 import {
   debounce,
   startCase,
@@ -253,6 +255,8 @@ export default {
     FactureEdit,
     FactureAssurerEdit,
   },
+
+  mixins: [mixinProfils],
 
   layout: 'default',
 

@@ -407,7 +407,7 @@ export default {
           await this.$api.saveFacture1({
             patient: this.form.patient.id,
             traitements: listTraitement,
-            unite: false,
+            // unite: this.form.,
             accompte: this.form.acompte,
             remise: this.form.remise,
           })
