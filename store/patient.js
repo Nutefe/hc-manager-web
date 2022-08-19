@@ -99,7 +99,7 @@ export const actions = {
     },
     fetchCountPatientDay({ commit }) {
         return this.$api.countPatientDay().then((data) => {
-            console.log(data)
+            // console.log(data)
             commit("SET_COUNT_PATIENT_DAY", data);
         });
     },
