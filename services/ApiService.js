@@ -168,7 +168,16 @@ export default ($axios, $auth) => ({
             }
         })
     },
-
+    selectAllUserCaisse() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/utilisateurs/caisse`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
     selectAllUserPage(page) {
         if (!$auth.loggedIn) {
             return;
@@ -1576,4 +1585,527 @@ export default ($axios, $auth) => ({
      * end fiche axios api
      */
 
+
+    /**
+     * start caisse axios api
+     */
+
+    getCaisse(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/caisse/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    getAllCaisses() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/caisses`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    selectAllCaissePage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/caisses/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllCaissePage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/caisses/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    saveCaisse(caisse) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/caisse`, caisse, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+
+    saveCaisseLigne(caisse) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/ligne/caisse`, caisse, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    updateCaisse(caisse, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$put(`/caisse/${id}`, caisse, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    /**
+     * end caisse axios api
+     */
+
+    /**
+     * start reserve axios api
+     */
+
+    getReserve(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/reserve/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    getAllReserves() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/reserves`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    selectAllReservePage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/reserves/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllReservePage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/reserves/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    saveReserve(reserve) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/reserve`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    updateReserve(reserve, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$put(`/reserve/${id}`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    /**
+     * end reserve axios api
+     */
+
+    /**
+     * start depense reserve axios api
+     */
+
+     getDepenseReserve(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/depense/reserve/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    getAllDepenseReserves() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/depense/reserves`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    selectAllDepenseReservePage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/depense/reserves/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDepenseReservePage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/depense/reserves/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    saveDepenseReserve(reserve) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/depense/reserve`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    updateDepenseReserve(reserve, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$put(`/depense/reserve/${id}`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    montantDepenseReserve() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/depense/reserve/montant`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    
+    montantTodayDepenseReserve() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/depense/reserve/montant/today`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    montantDateDepenseReserve(date) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/depense/reserve/montant/date/${date}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    /**
+     * end depense reserve axios api
+     */
+
+    /**
+     * start decaissement axios api
+     */
+
+     getDecaissement(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    getAllDecaissements() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissements`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    selectAllDecaissementPage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDecaissementPage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    selectAllDecaissementTodayPage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/today/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDecaissementTodayPage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/today/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    
+    selectAllDecaissementDatePage(date, page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/date/page/${date}/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDecaissementDatePage(date, page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/date/search/page/${date}/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    selectAllDecaissementCaissePage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/caisse/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDecaissementCaissePage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/caisse/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    selectAllDecaissementCaisseTodayPage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/caisse/today/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDecaissementCaisseTodayPage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/caisse/today/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    selectAllDecaissementCaisseDatePage(date, page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/caisse/date/page/${date}/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+    searchAllDecaissementCaisseDatePage(date, page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/decaissements/caisse/date/search/page/${date}/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    saveDecaissement(reserve) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/decaissement`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    updateDecaissement(reserve, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$put(`/decaissement/${id}`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    montantDecaissement() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/montant`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    
+    montantTodayDecaissement() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/montant/today`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    montantDateDecaissement(date) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/montant/date/${date}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    montantDecaissementCaisse() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/caisse/montant`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    
+    montantTodayDecaissementCaisse() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/caisse/montant/today`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    montantDateDecaissementCaisse(date) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/decaissement/caisse/montant/date/${date}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    /**
+     * end decaissement axios api
+     */
 });

@@ -63,20 +63,32 @@
             <v-list-item-title v-text="patientsRoutes.title" />
           </v-list-item-content>
         </v-list-item>
+      </v-list-item-group>
+      <v-list-group
+        v-if="isCaisse"
+        v-model="paiementsRoutes.active"
+        :prepend-icon="paiementsRoutes.icon"
+        no-action
+      >
+        <template slot="activator">
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="paiementsRoutes.title"
+            ></v-list-item-title>
+          </v-list-item-content>
+        </template>
+
         <v-list-item
-          v-if="isCaisse"
-          :to="localePath(paiementsRoutes.path)"
+          v-for="child in paiementsRoutes.paths"
+          :key="`${child.title}-drawer-route`"
+          :to="localePath(child.path)"
           nuxt
         >
-          <v-list-item-action class="mr-3">
-            <v-icon left v-text="paiementsRoutes.icon" />
-          </v-list-item-action>
-
           <v-list-item-content>
-            <v-list-item-title v-text="paiementsRoutes.title" />
+            <v-list-item-title v-text="child.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list-item-group>
+      </v-list-group>
     </v-list>
     <v-divider />
     <v-list>

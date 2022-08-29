@@ -392,13 +392,22 @@ export default {
       }
     },
 
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
     async fetchData(page) {
       this.loading = true
       try {
         if (this.query) {
           await this.$store.dispatch('patient/searchPatients', {
             page,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('patient/fetchPatients', page)

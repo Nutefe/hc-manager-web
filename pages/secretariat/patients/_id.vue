@@ -55,7 +55,7 @@
           <div v-if="patient.assurance">
             <v-card-title>{{ patient.assurance.libelle }}</v-card-title>
 
-            <v-card-title>{{ patient.entreprise.raisonSocial }}</v-card-title>
+            <v-card-title v-if="patient.entreprise">{{ patient.entreprise.raisonSocial }}</v-card-title>
           </div>
         </v-card>
       </v-col>
@@ -291,6 +291,15 @@ export default {
       }
     },
 
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
     async fetchData(page) {
       this.loading = true
 
@@ -299,7 +308,7 @@ export default {
           await this.$store.dispatch('fiche/searchFiches', {
             id: this.patientId,
             page,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('fiche/fetchFiches', {

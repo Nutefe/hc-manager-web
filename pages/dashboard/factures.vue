@@ -104,7 +104,7 @@
         store="facture"
         collection="facturesDay"
         action="searchFacturesDay"
-        page-mutation="SET_CURRENT_DAY_PAGE"
+        page-mutation="SET_CURRENT_SEARCH_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -307,6 +307,16 @@ export default {
       }
     },
 
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
+
     numberFormat(str) {
       if (str) {
         return numberFormat(str)
@@ -331,7 +341,7 @@ export default {
         if (this.query) {
           await this.$store.dispatch('facture/searchFacturesDay', {
             page,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('facture/fetchFacturesDay', page)

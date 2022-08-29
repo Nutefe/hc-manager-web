@@ -41,7 +41,7 @@
                   v-model.trim.lazy="form.patient"
                   :items="matchedPatients"
                   :label="$t('facture.form.patient')"
-                  item-text="nom"
+                  :item-text="getItemText"
                   item-value="id"
                   autocomplete="off"
                   autofocus
@@ -386,7 +386,9 @@ export default {
 
       this.loading = false
     },
-
+    getItemText(item) {
+      return `${item.nom} ${item.prenom}`
+    },
     async fetchFiche(id) {
       this.loading = true
       try {
@@ -439,13 +441,16 @@ export default {
           listTraitement.push(item)
         })
         try {
-          await this.$api.updateFacture1({
-            patient: this.form.patient.id,
-            traitements: listTraitement,
-            unite: false,
-            accompte: this.form.acompte,
-            remise: this.form.remise,
-          }, this.id)
+          await this.$api.updateFacture1(
+            {
+              patient: this.form.patient.id,
+              traitements: listTraitement,
+              unite: false,
+              accompte: this.form.acompte,
+              remise: this.form.remise,
+            },
+            this.id
+          )
           this.$emit('refreshPage')
 
           this.closeDialog()

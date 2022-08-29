@@ -343,6 +343,15 @@ export default {
       }
     },
 
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
     async loardFacture(filename) {
       try {
         await this.$api.loardFacture(filename)
@@ -373,7 +382,7 @@ export default {
         if (this.query) {
           await this.$store.dispatch('facture/searchNotSoldeFactures', {
             page,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('facture/fetchNotSoldeFactures', page)

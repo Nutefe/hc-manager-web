@@ -37,6 +37,10 @@ export const actions = {
         dispatch("typePatient/resetState");
         dispatch("typeTraitement/resetState");
         dispatch("utilisateur/resetState");
+        dispatch("caisse/resetState");
+        dispatch("decaissement/resetState");
+        dispatch("depenseReserve/resetState");
+        dispatch("reserve/resetState");
         commit("RESET_STATE");
     },
 

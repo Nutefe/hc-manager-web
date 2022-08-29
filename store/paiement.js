@@ -69,6 +69,13 @@ export const mutations = {
     SET_COUNT_DATE_PAIEMENTS(state, page) {
         state.paiementDates.current_page = page;
     },
+    
+    SET_CURRENT_DAY_PAGE(state, page) {
+        state.factures.current_page = page;
+    },
+    SET_CURRENT_SEARCH_DAY_PAGE(state, page) {
+        state.factures.current_page = page;
+    },
 };
 
 export const actions = {

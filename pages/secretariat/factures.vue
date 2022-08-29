@@ -448,6 +448,16 @@ export default {
       }
     },
 
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
+
     numberFormat(str) {
       if (str) {
         return numberFormat(str)
@@ -486,7 +496,7 @@ export default {
         if (this.query) {
           await this.$store.dispatch('facture/searchFactures', {
             page,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('facture/fetchFactures', page)

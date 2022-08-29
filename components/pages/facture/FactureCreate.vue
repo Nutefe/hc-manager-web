@@ -41,7 +41,7 @@
                   v-model.trim.lazy="form.patient"
                   :items="matchedPatients"
                   :label="$t('facture.form.patient')"
-                  item-text="nom"
+                  :item-text="getItemText"
                   item-value="id"
                   autocomplete="off"
                   autofocus
@@ -309,7 +309,7 @@ export default {
 
     matchedPatients() {
       return this.patients.map((patient) => {
-        const patients = patient.nom
+        const patients = patient.nom + ' ' + patient.prenom
         return Object.assign({}, patient, { patients })
       })
     },
@@ -363,6 +363,10 @@ export default {
       }
 
       this.loading = false
+    },
+
+    getItemText(item) {
+      return `${item.nom} ${item.prenom}`
     },
 
     async fetchTraitement() {

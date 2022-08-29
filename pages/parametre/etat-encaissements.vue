@@ -624,6 +624,16 @@ export default {
         return numberFormat(0)
       }
     },
+
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
     async loardFacture(filename) {
       try {
         await this.$api.loardFacture(filename)
@@ -642,7 +652,7 @@ export default {
           await this.$store.dispatch('paiement/searchDatePaiement', {
             page,
             date: this.parseDate(this.form.dateEtat),
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('paiement/fetchDatePaiement', {

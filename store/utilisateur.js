@@ -1,5 +1,6 @@
 const initialState = () => ({
     allUtilisateurs: [],
+    allUtilisateursCaisse: [],
     utilisateurs: {},
     utilisateur: null,
 });
@@ -12,6 +13,9 @@ export const mutations = {
     },
     SET_ALL_UTILISATEURS(state, allUtilisateurs) {
         state.allUtilisateurs = allUtilisateurs;
+    },
+    SET_ALL_UTILISATEURS_CAISSE(state, allUtilisateursCaisse) {
+        state.allUtilisateursCaisse = allUtilisateursCaisse;
     },
     SET_SEARCHED_UTILISATEURS(state, utilisateurs) {
         state.utilisateurs = utilisateurs;
@@ -39,7 +43,11 @@ export const actions = {
             commit("SET_ALL_UTILISATEURS", data);
         });
     },
-
+    fetchAllUtilisateursCaisse({ commit }) {
+        return this.$api.selectAllUserCaisse().then((data) => {
+            commit("SET_ALL_UTILISATEURS_CAISSE", data);
+        });
+    },
     searchUtilisateurs({ commit }, { page, s }) {
         if (!s) {
 

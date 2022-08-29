@@ -74,6 +74,23 @@ export default {
         title: this.$t('navigation.paiement'),
         path: '/paiement/paiements',
         icon: 'mdi-cash',
+        paths: [
+          {
+            title: this.$t('navigation.paiement'),
+            path: '/paiement/paiements',
+            icon: 'mdi-file-chart-outline',
+          },
+          {
+            title: this.$t('navigation.decaissements'),
+            path: '/paiement/decaissements',
+            icon: 'mdi-account-multiple',
+          },
+          {
+            title: this.$t('navigation.depense'),
+            path: '/paiement/depenses',
+            icon: 'mdi-file-chart-outline',
+          },
+        ],
       },
 
       gestionRoute: {
@@ -118,6 +135,11 @@ export default {
             icon: 'mdi-file-chart-outline',
           },
           {
+            title: this.$t('navigation.caisses'),
+            path: '/parametre/caisses',
+            icon: 'mdi-file-chart-outline',
+          },
+          {
             title: this.$t('navigation.typePatient'),
             path: '/parametre/type/patients',
             icon: 'mdi-file-chart-outline',
@@ -131,6 +153,11 @@ export default {
             title: this.$t('navigation.etatEnc'),
             path: '/parametre/etat-encaissements',
             icon: 'mdi-state-machine',
+          },
+          {
+            title: this.$t('navigation.reserves'),
+            path: '/parametre/reserves',
+            icon: 'mdi-file-chart-outline',
           },
         ],
       },

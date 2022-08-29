@@ -41,7 +41,7 @@
                   v-model.trim.lazy="form.patient"
                   :items="matchedPatients"
                   :label="$t('facture.form.patient')"
-                  item-text="nom"
+                  :item-text="getItemText"
                   item-value="id"
                   autocomplete="off"
                   autofocus
@@ -719,6 +719,9 @@ export default {
 
       this.dialog = true
       this.loading = false
+    },
+    getItemText(item) {
+      return `${item.nom} ${item.prenom}`
     },
     changeUnite() {
       this.form1.baseRembour = 0

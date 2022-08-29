@@ -103,6 +103,7 @@
         store="paiement"
         collection="factures"
         action="searchDayFactures"
+        page-mutation="SET_CURRENT_SEARCH_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -114,6 +115,7 @@
         store="paiement"
         collection="factures"
         action="fetchDayFactures"
+        page-mutation="SET_CURRENT_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -311,6 +313,15 @@ export default {
       }
     },
 
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
     async loardFacture(filename) {
       try {
         await this.$api.loardFacture(filename)
@@ -328,7 +339,7 @@ export default {
         if (this.query) {
           await this.$store.dispatch('paiement/searchDayFactures', {
             page,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
           await this.$store.dispatch('paiement/fetchDayFactures', page)

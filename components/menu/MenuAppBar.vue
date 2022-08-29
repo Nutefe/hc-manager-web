@@ -78,7 +78,40 @@
           <v-icon left v-text="paiementsRoutes.icon" />
           {{ paiementsRoutes.title }}
         </v-btn>
-
+        <!-- <v-btn
+          v-if="isGestionnaire"
+          id="rapport"
+          text
+          nuxt
+          class="white--text mr-1"
+          active-class="yello"
+          :to="localePath('')"
+        >
+          <v-icon left v-text="gestionRoutes.icon" />
+          {{ gestionRoutes.title }}
+        </v-btn> -->
+        <v-menu
+          activator="#paiements"
+          bottom
+          attach="#navBar"
+          right
+          offset-y
+          origin="top right"
+          transition="slide-y-transition"
+          active-class="primary--text"
+        >
+          <v-list>
+            <v-list-item
+              v-for="item in paiementsRoutes.paths"
+              :key="`${item.title}-drawer-route`"
+              :to="localePath(item.path)"
+              link
+              color="primary"
+            >
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
         <v-btn
           v-if="isGestionnaire"
           id="rapport"

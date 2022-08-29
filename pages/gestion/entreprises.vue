@@ -226,16 +226,26 @@ export default {
         return 'n/a'
       }
     },
+
+    replace(str) {
+      if (str) {
+        if (str.includes('/')) return str.replaceAll('/', '-')
+        else if (str.includes('-')) return str.replaceAll('-', '&&')
+        else return str
+      } else {
+        return 'n/a'
+      }
+    },
     async fetchData(pages) {
       this.loading = true
       try {
         if (this.query) {
           await this.$store.dispatch('entreprise/searchEntreprises', {
             page: pages,
-            s: this.query,
+            s: this.replace(this.query),
           })
         } else {
-          await this.$store.dispatch('entreprise/fetchEntreprises', 1)
+          await this.$store.dispatch('entreprise/fetchEntreprises', pages)
         }
       } catch (err) {
         this.$nuxt.error({

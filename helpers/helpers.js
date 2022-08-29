@@ -42,6 +42,11 @@ export function replace(str, pattern, replacement) {
     return _.replace(str, pattern, replacement);
 }
 
+
+export function replaceAll(str, pattern, replacement) {
+    return _.replaceAll(str, pattern, replacement);
+}
+
 export function replacePhone(str) {
     return replace(str, /\s+/g, "");
 }

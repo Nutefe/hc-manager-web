@@ -65,8 +65,11 @@ export const mutations = {
     SET_COUNT_FACTURE_DAY(state, countFactureDay) {
         state.countFactureDay = countFactureDay;
     },
-    
+
     SET_CURRENT_DAY_PAGE(state, page) {
+        state.facturesDay.current_page = page;
+    },
+    SET_CURRENT_SEARCH_DAY_PAGE(state, page) {
         state.facturesDay.current_page = page;
     },
 };
@@ -93,7 +96,6 @@ export const actions = {
             commit("SET_SEARCHED_FACTURES", {});
             return;
         }
-
         return this.$api.searchAllFacturePage(page, s).then((data) => {
 
             commit("SET_SEARCHED_FACTURES", data);

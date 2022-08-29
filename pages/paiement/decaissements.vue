@@ -1,26 +1,26 @@
 <template>
-  <v-container class="pt-0" fluid>
-    <v-card class="mt-5 mb-10 pb-3 pt-5  justify-space-around">
+  <v-container class="pt-0 mb-10" fluid>
+    <v-card class="mt-5 mb-15 pb-3 pt-5 justify-space-around">
       <v-row class="mt-3 mb-7">
         <v-col cols="12" sm="3"></v-col>
         <v-col cols="12" sm="6">
           <v-text-field
-          v-model.lazy.trim="query"
-          append-icon="mdi-magnify"
-          :placeholder="$t('user.search')"
-          autocomplete="off"
-          type="search"
-          clearable
-          single-line
-          hide-details
-          rounded
-          outlined
-          filled
-          solo
-          dense
-          @input="filter"
-          @click:append="filter"
-        ></v-text-field>
+            v-model.lazy.trim="query"
+            append-icon="mdi-magnify"
+            :placeholder="$t('decaissement.search')"
+            autocomplete="off"
+            type="search"
+            clearable
+            single-line
+            hide-details
+            rounded
+            outlined
+            filled
+            solo
+            dense
+            @input="filter"
+            @click:append="filter"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3"></v-col>
       </v-row>
@@ -44,7 +44,8 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
-        <!-- <template #[`item.action`]="{ item }">
+        <template #[`item.action`]="{ item }">
+          <!-- Edit -->
 
           <v-tooltip top>
             <template #activator="{ on, attrs }">
@@ -65,16 +66,16 @@
               {{ $t('commoin.actions.edit') }}
             </span>
           </v-tooltip>
-        </template> -->
+        </template>
       </v-data-table>
 
       <v-divider v-if="isDividerVisible" />
       <pagination
         v-if="query"
         :search="query"
-        store="profil"
-        collection="profils"
-        action="searchProfils"
+        store="decaissement"
+        collection="decaissements"
+        action="searchDecaissements"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -83,29 +84,30 @@
 
       <pagination
         v-else
-        store="profil"
-        collection="profils"
-        action="fetchProfils"
+        store="decaissement"
+        collection="decaissements"
+        action="fetchDecaissements"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
         @loading="toggleLoading"
       />
     </v-card>
-    <!-- <ProfilCreate @refreshPage="refreshPage" />
-    <ProfilEdite ref="profilFormDialog" @refreshPage="refreshPage" /> -->
+    <!-- <DepenseCreate @refreshPage="refreshPage" />
+    <DepenseEdite ref="depenseFormDialog" @refreshPage="refreshPage" /> -->
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-// import ProfilCreate from '~/components/pages/profil/ProfilCreate.vue'
-// import ProfilEdite from '~/components/pages/profil/ProfilEdite.vue'
+// import DepenseCreate from '~/components/pages/depense/DepenseCreate.vue'
+// import DepenseEdite from '~/components/pages/depense/DepenseEdite.vue'
 import { debounce, startCase } from '~/helpers/helpers.js'
 
 export default {
-  name: 'ProfilsPage',
-  // components: { ProfilCreate, ProfilEdite },
+  // components: {  },
+  name: 'DecaissementPage',
+  // components: { DepenseCreate, DepenseEdite },
   layout: 'default',
 
   data() {
@@ -115,36 +117,49 @@ export default {
       loading: false,
       headers: [
         {
-          text: this.$t('profils.table.num'),
+          text: this.$t('decaissement.table.num'),
           value: 'id',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
           width: 100,
         },
         {
-          text: this.$t('profils.table.libelle'),
+          text: this.$t('decaissement.table.motif'),
           align: 'start',
-          value: 'libelle',
+          value: 'motif',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
-        // {
-        //   text: this.$t('profils.table.action'),
-        //   value: 'action',
-        //   class: 'text-subtitle-2 text-uppercase font-weight-bold',
-        //   cellClass: 'py-3',
-        //   sortable: false,
-        //   width: 150,
-        // },
+        {
+          text: this.$t('decaissement.table.montant'),
+          align: 'start',
+          value: 'montant',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('decaissement.table.dateDecaissement'),
+          align: 'start',
+          value: 'dateDecaissement',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('decaissement.table.action'),
+          value: 'action',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+          sortable: false,
+          width: 150,
+        },
       ],
     }
   },
 
   async fetch() {
     this.loading = true
-    // console.log(ids)
     try {
-      await this.$store.dispatch('profil/fetchProfils', 1)
+      await this.$store.dispatch('decaissement/fetchDecaissements', 1)
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -156,26 +171,26 @@ export default {
 
   computed: {
     itemsList() {
-      if (this.profils && this.profils.data) {
+      if (this.decaissements && this.decaissements.data) {
         // console.log(this.profils)
-        return this.profils.data
+        return this.decaissements.data
       } else {
         return []
       }
     },
 
     currentPage() {
-      if (this.profils) {
-        return this.profils.current_page || 1
+      if (this.decaissements) {
+        return this.decaissements.current_page || 1
       } else {
         return 1
       }
     },
 
     isDividerVisible() {
-      if (this.profils) {
-        const total = this.profils.total || 0
-        const perPage = this.profils.per_page || 0
+      if (this.decaissements) {
+        const total = this.decaissements.total || 0
+        const perPage = this.decaissements.per_page || 0
         return total > perPage
       } else {
         return false
@@ -183,7 +198,7 @@ export default {
     },
 
     ...mapState({
-      profils: (state) => state.profil.profils,
+      decaissements: (state) => state.decaissement.decaissements,
     }),
   },
 
@@ -195,7 +210,7 @@ export default {
       return this.itemsList.findIndex((elm) => elm.id === itemId) + 1
     },
     editItem(item) {
-      this.$refs.profilFormDialog.openDialog(item)
+      this.$refs.depenseFormDialog.openDialog(item)
     },
     startCase(str) {
       if (str) {
@@ -204,6 +219,7 @@ export default {
         return 'n/a'
       }
     },
+
     replace(str) {
       if (str) {
         if (str.includes('/')) return str.replaceAll('/', '-')
@@ -217,12 +233,12 @@ export default {
       this.loading = true
       try {
         if (this.query) {
-          await this.$store.dispatch('profil/searchProfils', {
+          await this.$store.dispatch('decaissement/searchDecaissements', {
             page: pages,
             s: this.replace(this.query),
           })
         } else {
-          await this.$store.dispatch('profil/fetchProfils', pages)
+          await this.$store.dispatch('decaissement/fetchDecaissements', pages)
         }
       } catch (err) {
         this.$nuxt.error({
