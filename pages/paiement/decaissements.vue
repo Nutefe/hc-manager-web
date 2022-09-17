@@ -44,7 +44,7 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
-        <template #[`item.action`]="{ item }">
+        <template v-if="isCaissier" #[`item.action`]="{ item }">
           <!-- Edit -->
 
           <v-tooltip top>
@@ -93,21 +93,20 @@
         @loading="toggleLoading"
       />
     </v-card>
-    <!-- <DepenseCreate @refreshPage="refreshPage" />
-    <DepenseEdite ref="depenseFormDialog" @refreshPage="refreshPage" /> -->
+    <DecaissementCreate v-if="isCaissier" @refreshPage="refreshPage" />
+    <DecaissementEdite v-if="isCaissier" ref="depenseFormDialog" @refreshPage="refreshPage" />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-// import DepenseCreate from '~/components/pages/depense/DepenseCreate.vue'
-// import DepenseEdite from '~/components/pages/depense/DepenseEdite.vue'
+import DecaissementCreate from '~/components/pages/decaissement/DecaissementCreate.vue'
+import DecaissementEdite from '~/components/pages/decaissement/DecaissementEdite.vue'
 import { debounce, startCase } from '~/helpers/helpers.js'
 
 export default {
-  // components: {  },
   name: 'DecaissementPage',
-  // components: { DepenseCreate, DepenseEdite },
+  components: { DecaissementCreate, DecaissementEdite },
   layout: 'default',
 
   data() {
@@ -138,6 +137,13 @@ export default {
           cellClass: 'py-3',
         },
         {
+          text: this.$t('decaissement.table.caisse'),
+          align: 'start',
+          value: 'ligneCaisse.caissePK.caisse.libelle',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
           text: this.$t('decaissement.table.dateDecaissement'),
           align: 'start',
           value: 'dateDecaissement',
@@ -159,7 +165,10 @@ export default {
   async fetch() {
     this.loading = true
     try {
-      await this.$store.dispatch('decaissement/fetchDecaissements', 1)
+      await Promise.all([
+        this.$store.dispatch('decaissement/fetchDecaissements', 1),
+        this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
+      ])
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -172,7 +181,7 @@ export default {
   computed: {
     itemsList() {
       if (this.decaissements && this.decaissements.data) {
-        // console.log(this.profils)
+        //  console.log(this.decaissements)
         return this.decaissements.data
       } else {
         return []
@@ -197,8 +206,17 @@ export default {
       }
     },
 
+    isCaissier() {
+      if (this.caisseUser) {
+        return true
+      } else {
+        return false
+      }
+    },
+
     ...mapState({
       decaissements: (state) => state.decaissement.decaissements,
+      caisseUser: (state) => state.caisse.caisseUtilisateur,
     }),
   },
 

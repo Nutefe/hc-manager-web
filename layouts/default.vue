@@ -10,6 +10,8 @@
       :paiements-routes="paiementsRoutes"
       :gestion-routes="gestionRoute"
       :parameter-routes="parameterRoute"
+      :document="document"
+      :helpe="helpe"
     />
     <MenuAppBar
       :profile-route="profileRoute"
@@ -20,6 +22,8 @@
       :paiements-routes="paiementsRoutes"
       :gestion-routes="gestionRoute"
       :parameter-routes="parameterRoute"
+      :document="document"
+      :helpe="helpe"
     />
     <v-main>
       <v-container fluid>
@@ -55,6 +59,18 @@ export default {
         title: this.$t('logout.action'),
         icon: 'mdi-logout',
       },
+
+      document: {
+        title: this.$t('navigation.document'),
+        icon: 'mdi-file-document-outline',
+        path: '/users/documents',
+      },
+
+      helpe: {
+        title: this.$t('navigation.helpe'),
+        icon: 'mdi-help-circle',
+        path: '/users/aides',
+      },
       dashboardRoutes: {
         title: this.$t('navigation.dashboard'),
         path: '/',
@@ -72,7 +88,7 @@ export default {
       },
       paiementsRoutes: {
         title: this.$t('navigation.paiement'),
-        path: '/paiement/paiements',
+        // path: '/paiement/paiements',
         icon: 'mdi-cash',
         paths: [
           {
@@ -113,7 +129,7 @@ export default {
             icon: 'mdi-file-chart-outline',
           },
           {
-            title: this.$t('navigation.etatRecap'),
+            title: this.$t('navigation.etats.recapitulatif'),
             path: '/gestion/etat',
             icon: 'mdi-cart-arrow-down',
           },
@@ -140,19 +156,38 @@ export default {
             icon: 'mdi-file-chart-outline',
           },
           {
-            title: this.$t('navigation.typePatient'),
+            title: this.$t('navigation.types.title'),
             path: '/parametre/type/patients',
             icon: 'mdi-file-chart-outline',
+            child: [
+              {
+                title: this.$t('navigation.types.patient'),
+                path: '/parametre/type/patients',
+                icon: 'mdi-file-chart-outline',
+              },
+              {
+                title: this.$t('navigation.types.traitement'),
+                path: '/parametre/type/traitements',
+                icon: 'mdi-file-chart-outline',
+              },
+            ],
           },
           {
-            title: this.$t('navigation.typeTraitement'),
-            path: '/parametre/type/traitements',
+            title: this.$t('navigation.etats.title'),
+            path: '',
             icon: 'mdi-file-chart-outline',
-          },
-          {
-            title: this.$t('navigation.etatEnc'),
-            path: '/parametre/etat-encaissements',
-            icon: 'mdi-state-machine',
+            child: [
+              {
+                title: this.$t('navigation.etats.encaissement'),
+                path: '/parametre/etat-encaissements',
+                icon: 'mdi-file-chart-outline',
+              },
+              {
+                title: this.$t('navigation.etats.recette'),
+                path: '/parametre/etat-recettes',
+                icon: 'mdi-file-chart-outline',
+              },
+            ],
           },
           {
             title: this.$t('navigation.reserves'),

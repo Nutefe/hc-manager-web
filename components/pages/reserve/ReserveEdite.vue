@@ -37,6 +37,21 @@
           <v-card-text class="px-3 px-md-5 pt-3">
             <v-row>
               <v-col cols="12">
+                <v-autocomplete
+                  v-model.trim.lazy="form.caisse"
+                  :items="matchedCaisses"
+                  item-text="libelle"
+                  item-value="id"
+                  autocomplete="off"
+                  autofocus
+                  :label="$t('reserve.form.caisse')"
+                  return-object
+                  :error-messages="caisseErrors"
+                  @input="$v.form.caisse.$touch()"
+                  @blur="$v.form.caisse.$touch()"
+                ></v-autocomplete>
+              </v-col>
+              <v-col cols="12">
                 <v-text-field
                   v-model.trim="form.libelle"
                   autofocus
@@ -129,7 +144,7 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
 import { isEqual } from '~/helpers/helpers.js'
 
@@ -146,11 +161,13 @@ export default {
         libelle: '',
         montantDefini: '',
         time: null,
+        caisse: null,
       },
       form: {
         libelle: '',
         montantDefini: '',
         time: null,
+        caisse: null,
       },
     }
   },
@@ -171,15 +188,28 @@ export default {
         minLength: minLength(1),
         maxLength: maxLength(6),
       },
+      caisse: {
+        required,
+      },
     },
+  },
+  async fetch() {
+    this.loading = true
+    try {
+      await this.$store.dispatch('caisse/fetchAllCaisses')
+    } catch (err) {
+      this.$nuxt.error({
+        statusCode: 503,
+        message: 'Unable to fetch data.',
+      })
+    }
+    this.loading = false
   },
   computed: {
     isFormValid() {
       const isFormEdited = !isEqual(this.selectedItem, this.form)
-
       return isFormEdited && !this.$v.form.$invalid
     },
-
     libelleErrors() {
       const errors = []
 
@@ -252,12 +282,32 @@ export default {
 
       return errors
     },
+    caisseErrors() {
+      const errors = []
+
+      if (!this.$v.form.caisse.$dirty) return errors
+
+      !this.$v.form.caisse.required &&
+        errors.push(this.$t('validations.caisse.required'))
+
+      return errors
+    },
+    matchedCaisses() {
+      return this.caisses.map((caisse) => {
+        const caisses = caisse.libelle
+        return Object.assign({}, caisse, { caisses })
+      })
+    },
+    ...mapState({
+      caisses: (state) => state.caisse.allCaisses,
+    }),
   },
   methods: {
     openDialog(item) {
       this.id = item.id
 
       this.form = {
+        caisse: item.caisse || null,
         libelle: item.libelle || '',
         montantDefini: item.montantDefini || '',
         time: item.heure || null,
@@ -273,11 +323,13 @@ export default {
       this.$v.form.$reset()
       this.id = null
       this.form = {
+        caisse: null,
         libelle: '',
         montantDefini: '',
         time: null,
       }
       this.selectedItem = {
+        caisse: null,
         libelle: '',
         montantDefini: '',
         time: null,
@@ -294,6 +346,7 @@ export default {
         try {
           await this.$api.updateReserve(
             {
+              caisse: this.form.caisse,
               libelle: this.form.libelle,
               montantDefini: this.form.montantDefini,
               heure: this.form.time,

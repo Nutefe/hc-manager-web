@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class=" text-center">
+  <v-container fluid class="text-center">
     <v-row justify="center" align="center">
       <v-col cols="10">
         <v-row>
@@ -26,131 +26,6 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-card class="mt-5 mb-15 pb-3 pt-5 justify-space-around">
-      <v-row class="mt-3 mb-7">
-        <v-col cols="12" sm="3"></v-col>
-        <v-col cols="12" sm="6">
-          <v-text-field
-            v-model.lazy.trim="query"
-            append-icon="mdi-magnify"
-            :placeholder="$t('user.search')"
-            autocomplete="off"
-            type="search"
-            clearable
-            single-line
-            hide-details
-            rounded
-            outlined
-            filled
-            solo
-            dense
-            @input="filter"
-            @click:append="filter"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3"></v-col>
-      </v-row>
-      <v-data-table
-        :headers="headers"
-        :items="itemsList"
-        item-key="id"
-        :loading="loading"
-        :mobile-breakpoint="960"
-        disable-filtering
-        disable-pagination
-        disable-sort
-        hide-default-footer
-        :items-per-page="-1"
-        :footer-props="{
-          itemsPerPageOptions: [],
-          showCurrentPage: true,
-          showFirstLastPage: true,
-        }"
-      >
-        <template #[`item.num`]="{ item }">
-          {{ itemPosition(item.id) }}
-        </template>
-
-        <template #[`item.fiche.patient.nom`]="{ item }">
-          <span>
-            {{ item.fiche.patient.nom }}
-            {{ startCase(item.fiche.patient.prenom) }}</span
-          >
-        </template>
-        <template #[`item.total`]="{ item }">
-          <span> {{ numberFormat(item.total) }} </span>
-        </template>
-        <template #[`item.acompte`]="{ item }">
-          <span> {{ numberFormat(item.acompte) }} </span>
-        </template>
-        <template #[`item.remise`]="{ item }">
-          <span> {{ numberFormat(item.remise) }} </span>
-        </template>
-        <template #[`item.reste`]="{ item }">
-          <span> {{ numberFormat(item.reste) }} </span>
-        </template>
-        <template #[`item.solde`]="{ item }">
-          <v-chip v-if="item.solde" color="blue" text-color="white"
-            >{{ $t('facture.solde.yes') }}
-          </v-chip>
-          <v-chip v-else color="red" text-color="white">
-            {{ $t('facture.solde.no') }}
-          </v-chip>
-        </template>
-        <template #[`item.encaisse`]="{ item }">
-          <v-chip v-if="item" color="primary"> {{ isEncaisser(item) }} </v-chip>
-        </template>
-        <template #[`item.action`]="{ item }">
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                class="mr-3"
-                small
-                icon
-                :aria-label="$t('commoin.actions.show')"
-                v-on="on"
-                @click.stop="loardFacture(item.fileName)"
-              >
-                <v-icon color="editIcone" small> mdi-eye </v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('commoin.actions.show') }}
-            </span>
-          </v-tooltip>
-        </template>
-      </v-data-table>
-
-      <v-divider v-if="isDividerVisible" />
-      <PaginationEtat
-        v-if="query"
-        :id="parseDate(form.dateEtat)"
-        :search="query"
-        store="paiement"
-        collection="paiementDates"
-        action="searchDatePaiement"
-        page-mutation="SET_COUNT_DATE_PAIEMENTS"
-        :disabled="loading"
-        class="mb-2 mt-2"
-        align="right"
-        @loading="toggleLoading"
-      />
-
-      <PaginationEtat
-        v-else
-        :id="parseDate(form.dateEtat)"
-        store="paiement"
-        collection="paiementDates"
-        action="fetchDatePaiement"
-        page-mutation="SET_COUNT_DATE_PAIEMENTS"
-        :disabled="loading"
-        class="mb-2 mt-2"
-        align="right"
-        @loading="toggleLoading"
-      />
-    </v-card>
     <v-tooltip left>
       <template #activator="{ on, attrs }">
         <v-btn
@@ -244,6 +119,40 @@
                 ></v-date-picker>
               </v-menu>
             </v-col>
+            <v-col cols="12">
+              <v-menu
+                ref="menu2"
+                v-model="menu2"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="form.dateEnd"
+                    :label="$t('paiement.form.date')"
+                    persistent-hint
+                    prepend-icon="mdi-calendar"
+                    v-bind="attrs"
+                    :maxlength="$v.form.dateEnd.$params.maxLength.max"
+                    :error-messages="dateEndErrors"
+                    @blur="
+                      dateCalcul = parseDate(form.dateEnd)
+                      $v.form.dateEnd.$touch()
+                    "
+                    @input="$v.form.dateEnd.$touch()"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dateCalcul"
+                  no-title
+                  @input="menu2 = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
           </v-row>
         </v-card-text>
 
@@ -278,12 +187,7 @@
 <script>
 import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import {
-  debounce,
-  startCase,
-  numberFormat,
-  capitalize,
-} from '~/helpers/helpers.js'
+import { startCase, numberFormat, capitalize } from '~/helpers/helpers.js'
 import { isDate } from '~/helpers/customValidators.js'
 
 export default {
@@ -311,8 +215,14 @@ export default {
         .toISOString()
         .substr(0, 10),
       menu1: false,
+      menu2: false,
       form: {
         dateEtat: this.formatDate(
+          new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+            .toISOString()
+            .substr(0, 10)
+        ),
+        dateEnd: this.formatDate(
           new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
             .toISOString()
             .substr(0, 10)
@@ -395,19 +305,10 @@ export default {
 
   async fetch() {
     try {
-      await Promise.all([
-        // this.$store.dispatch('paiement/fetchCountPaiementDay'),
-        // this.$store.dispatch('paiement/fetchMontantPaiementDay'),
-        // this.$store.dispatch('patient/fetchCountPatient'),
-        // this.$store.dispatch('patient/fetchCountPatientDay'),
-        // this.$store.dispatch('facture/fetchCountFacture'),
-        // this.$store.dispatch('facture/fetchCountFactureDay'),
-        // this.$store.dispatch('traitement/fetchCountTraitement'),
-        await this.$store.dispatch('paiement/fetchDatePaiement', {
-          page: 1,
-          date: this.parseDate(this.form.dateEtat),
-        }),
-      ])
+      await this.$store.dispatch('paiement/fetchEtatPaiements', {
+        start: this.parseDate(this.form.dateEtat),
+        end: this.parseDate(this.form.dateEnd),
+      })
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -419,6 +320,11 @@ export default {
   validations: {
     form: {
       dateEtat: {
+        required,
+        minLength: minLength(6),
+        maxLength: maxLength(100),
+      },
+      dateEnd: {
         required,
         minLength: minLength(6),
         maxLength: maxLength(100),
@@ -437,19 +343,43 @@ export default {
       if (!this.$v.form.dateEtat.$dirty) return errors
 
       !this.$v.form.dateEtat.required &&
-        errors.push(this.$t('validations.dateEtat.required'))
+        errors.push(this.$t('validations.date.required'))
 
       !this.$v.form.dateEtat.minLength &&
         errors.push(
-          this.$t('validations.dateEtat.min', {
+          this.$t('validations.date.min', {
             length: this.$v.form.dateEtat.$params.minLength.min,
           })
         )
 
       !this.$v.form.dateEtat.maxLength &&
         errors.push(
-          this.$t('validations.dateEtat.max', {
+          this.$t('validations.date.max', {
             length: this.$v.form.dateEtat.$params.maxLength.max,
+          })
+        )
+
+      return errors
+    },
+    dateEndErrors() {
+      const errors = []
+
+      if (!this.$v.form.dateEnd.$dirty) return errors
+
+      !this.$v.form.dateEnd.required &&
+        errors.push(this.$t('validations.date.required'))
+
+      !this.$v.form.dateEnd.minLength &&
+        errors.push(
+          this.$t('validations.date.min', {
+            length: this.$v.form.dateEnd.$params.minLength.min,
+          })
+        )
+
+      !this.$v.form.dateEnd.maxLength &&
+        errors.push(
+          this.$t('validations.date.max', {
+            length: this.$v.form.dateEnd.$params.maxLength.max,
           })
         )
 
@@ -460,14 +390,14 @@ export default {
         first: [
           {
             title: this.$t('dashboard.factures'),
-            value: this.itemsEtat.facture,
+            value: this.itemsEtat.montantRecette,
             color: 'blue lighten-1',
             icon: 'mdi-receipt-text-plus',
             to: '/dashboard/factures',
           },
           {
             title: this.$t('dashboard.encaissements'),
-            value: this.itemsEtat.encaisse,
+            value: this.itemsEtat.montantDecaissement,
             color: 'red lighten-2',
             icon: 'mdi-cash-fast',
             to: '/paiement/factures',
@@ -476,81 +406,34 @@ export default {
         second: [
           {
             title: this.$t('dashboard.patients'),
-            value: this.itemsEtat.patient,
+            value: this.itemsEtat.montantReserve,
             color: 'orange lighten-2',
             icon: 'mdi-account-group',
             to: '/secretariat/patients',
           },
-          // {
-          //   title: this.$t('dashboard.totalFactures'),
-          //   value: this.countFacture,
-          //   color: 'blue lighten-1',
-          //   icon: 'mdi-receipt-text-check',
-          //   to: '/secretariat/factures',
-          // },
           {
             title: this.$t('dashboard.montantEncaisse'),
-            value: this.itemsEtat.montant,
+            value: this.itemsEtat.montantDepense,
             color: 'orange lighten-2',
             icon: 'mdi-cash-multiple',
             to: '/paiement/factures',
           },
-          // {
-          //   title: this.$t('dashboard.totalTraitements'),
-          //   value: this.countTraitement,
-          //   color: 'red lighten-2',
-          //   icon: 'mdi-apps-box',
-          //   to: '/gestion/traitements',
-          // },
         ],
       }
 
       return stats
     },
-    itemsList() {
-      if (this.paiementDates && this.paiementDates.data) {
-        return this.paiementDates.data
-      } else {
-        return []
-      }
-    },
+
     itemsEtat() {
-      if (this.paiementDate) {
-        return this.paiementDate
+      if (this.etatRecette) {
+        return this.etatRecette
       } else {
-        return []
-      }
-    },
-
-    currentPage() {
-      if (this.paiementDates) {
-        return this.paiementDates.current_page || 1
-      } else {
-        return 1
-      }
-    },
-
-    isDividerVisible() {
-      if (this.paiementDates) {
-        const total = this.paiementDates.total || 0
-        const perPage = this.paiementDates.per_page || 0
-        return total > perPage
-      } else {
-        return false
+        return {}
       }
     },
 
     ...mapState({
-      paiementDates: (state) => state.paiement.paiementDates,
-      paiementDate: (state) => state.paiement.paiementDate,
-
-      // countPaiementDay: (state) => state.paiement.countPaiementDay,
-      // montantPaiementDay: (state) => state.paiement.montantPaiementDay,
-      // countFactureDay: (state) => state.facture.countFactureDay,
-      // countTraitement: (state) => state.traitement.countTraitement,
-      // countPatient: (state) => state.patient.countPatient,
-      // countPatientDay: (state) => state.patient.countPatientDay,
-      // countFacture: (state) => state.facture.countFacture,
+      etatRecette: (state) => state.paiement.etatRecette,
     }),
   },
 
@@ -568,22 +451,7 @@ export default {
       this.dialog = false
       this.$v.form.$reset()
 
-      // this.form = {
-      //   dateEtat: this.formatDate(
-      //     new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10)
-      //   ),
-      // }
-
       this.loading = false
-    },
-    isEncaisser(item) {
-      if (item.solde && item.encaisse) {
-        return this.$t('facture.encaisse.total')
-      } else if (!item.solde && item.encaisse) {
-        return this.$t('facture.encaisse.partially')
-      } else {
-        return this.$t('facture.encaisse.no')
-      }
     },
     formatDate(date) {
       if (!date) return null
@@ -598,9 +466,6 @@ export default {
 
       const [day, month, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-    },
-    itemPosition(itemId) {
-      return this.itemsList.findIndex((elm) => elm.id === itemId) + 1
     },
     startCase(str) {
       if (str) {
@@ -625,71 +490,15 @@ export default {
       }
     },
 
-    replace(str) {
-      if (str) {
-        if (str.includes('/')) return str.replaceAll('/', '-')
-        else if (str.includes('-')) return str.replaceAll('-', '&&')
-        else return str
-      } else {
-        return 'n/a'
-      }
-    },
-    async loardFacture(filename) {
-      try {
-        await this.$api.loardFacture(filename)
-      } catch (err) {
-        this.$nuxt.error({
-          statusCode: 503,
-          message: 'Unable to fetch data.',
-        })
-      }
-    },
-
-    async fetchData(page) {
-      this.loading = true
-      try {
-        if (this.query) {
-          await this.$store.dispatch('paiement/searchDatePaiement', {
-            page,
-            date: this.parseDate(this.form.dateEtat),
-            s: this.replace(this.query),
-          })
-        } else {
-          await this.$store.dispatch('paiement/fetchDatePaiement', {
-            page,
-            date: this.parseDate(this.form.dateEtat),
-          })
-        }
-      } catch (err) {
-        this.$nuxt.error({
-          statusCode: 503,
-          message: 'Unable to fetch data.',
-        })
-      }
-      this.loading = false
-    },
-
-    refreshPage(payload) {
-      let page = 1
-      if (payload === 1) {
-        page = this.currentPage
-      }
-      this.fetchData(page)
-    },
-
-    filter: debounce(function () {
-      this.fetchData(1)
-    }),
-
     async submitForm() {
       this.$v.form.$touch()
 
       if (this.isFormValid) {
         this.loading = true
         try {
-          await this.$store.dispatch('paiement/fetchDatePaiement', {
-            page: 1,
-            date: this.parseDate(this.form.dateEtat),
+          await this.$store.dispatch('paiement/fetchEtatPaiements', {
+            start: this.parseDate(this.form.dateEtat),
+            end: this.parseDate(this.form.dateEnd),
           })
 
           this.closeDialog()

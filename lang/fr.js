@@ -22,11 +22,23 @@ export default {
         users: "Utilisateurs",
         caisses: "Caisses",
         reserves: "Reserves",
+        helpe: "Aide",
+        document: "Documents",
         decaissements: "Decaissements",
-        depense:"Depense reserve",
+        depense: "Depense reserve",
         gestion: "Gestion",
         rapport: "Rapports",
-        etatRecap: "Etat recapitulatif",
+        etats: {
+            title: "Etats",
+            recapitulatif: "Etat recapitulatif",
+            recette: "Recette",
+            encaissement: "Encaissement par date"
+        },
+        types: {
+            title: "Types",
+            patient: "Patient",
+            traitement: "Traitement",
+        },
         setting: "Parametre",
     },
 
@@ -144,6 +156,10 @@ export default {
         montantEncaisse: "Encaisser Aujourd'hui",
         totalPatients: "Patients au total",
         totalTraitements: "Traitements",
+        totalRecette: "Total recettes",
+        totalDecaissement: "Montant décaisser",
+        totalReserve: "Total reserve",
+        totalDepenseReserve: "Retrait sur reserve"
     },
 
 
@@ -459,8 +475,12 @@ export default {
         search: "Recherche...",
         subtitle: "Voir votre facture",
         add: "Payer une facture",
+        addDec: "Faire un decaissement",
+        addDep: "Faire un retrait sur reserve",
+        addRes: "Faire la reserve",
         etat: "Etats d'encaissements",
         calcul: "Calculer les etats d'encaissements",
+        reserve: "Prêt pour faire la reserve",
         form: {
             facture: "FACTURE NUMERO:",
             nom: "Nom",
@@ -504,13 +524,13 @@ export default {
         form: {
             libelle: "Libelle",
             montant: "Montant",
-            utilisateur: "Utilisateur",
+            utilisateur: "Utilisateurs",
         },
         table: {
             num: "N°",
             libelle: "Libelle",
             montant: "Montant",
-            utilisateur: "Utilisateur",
+            utilisateur: "Utilisateurs",
             action: "Action",
             per_page: "caisse par page",
             page_text: "de",
@@ -578,6 +598,7 @@ export default {
         add: "Ajouter un reserve",
         form: {
             libelle: "Libelle",
+            caisse: "Caisse",
             montantDefini: "Montant Defini",
             montantReserve: "Montant Reserve",
             montantSuivant: "Montant Suivant",
@@ -587,6 +608,7 @@ export default {
         table: {
             num: "N°",
             libelle: "Libelle",
+            caisse: "Caisse",
             montantDefini: "Montant",
             montantReserve: "Montant total Reserve",
             montantSuivant: "Montant Suivant",
@@ -603,6 +625,9 @@ export default {
             "La page que vous recherchez est temporairement indisponible.",
         otherError: "Erreur inattendue",
         otherErrorMessage: "Une erreur inattendue s'est produite.",
+    },
+    document: {
+        explore: "Explorer",
     },
 
     commoin: {
@@ -785,8 +810,13 @@ export default {
         },
         dateEtat: {
             required: "La date de l'etat est obligatoire.",
-            min: "La date de de l'etat  doit contenir au moins {length} caractères.",
-            max: "La date de de l'etat doit contenir au plus {length} caractères.",
+            min: "La date de l'etat  doit contenir au moins {length} caractères.",
+            max: "La date de l'etat doit contenir au plus {length} caractères.",
+        },
+        date: {
+            required: "La date est obligatoire.",
+            min: "La date de doit contenir au moins {length} caractères.",
+            max: "La date de l'etat doit contenir au plus {length} caractères.",
         },
         sexe: {
             required: "Le genre est obligatoire.",
@@ -801,6 +831,9 @@ export default {
         },
         traitement: {
             required: "Le traitement est obligatoire.",
+        },
+        caisse: {
+            required: "La caisse est obligatoire.",
         },
         remise: {
             required: "La remise est obligatoire.",

@@ -44,7 +44,7 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
-        <template #[`item.action`]="{ item }">
+        <template v-if="isCaissier" #[`item.action`]="{ item }">
           <!-- Edit -->
 
           <v-tooltip top>
@@ -93,8 +93,12 @@
         @loading="toggleLoading"
       />
     </v-card>
-    <DepenseCreate @refreshPage="refreshPage" />
-    <DepenseEdite ref="depenseFormDialog" @refreshPage="refreshPage" />
+    <DepenseCreate v-if="isCaissier" @refreshPage="refreshPage" />
+    <DepenseEdite
+      v-if="isCaissier"
+      ref="depenseFormDialog"
+      @refreshPage="refreshPage"
+    />
   </v-container>
 </template>
 
@@ -102,12 +106,9 @@
 import { mapState } from 'vuex'
 import DepenseCreate from '~/components/pages/depense/DepenseCreate.vue'
 import DepenseEdite from '~/components/pages/depense/DepenseEdite.vue'
-// import CaisseCreate from '~/components/pages/caisse/CaisseCreate.vue'
-// import CaisseEdite from '~/components/pages/caisse/CaisseEdite.vue'
 import { debounce, startCase } from '~/helpers/helpers.js'
 
 export default {
-  // components: {  },
   name: 'DepenseReservePage',
   components: { DepenseCreate, DepenseEdite },
   layout: 'default',
@@ -161,7 +162,10 @@ export default {
   async fetch() {
     this.loading = true
     try {
-      await this.$store.dispatch('depenseReserve/fetchDepenseReserves', 1)
+      await Promise.all([
+        this.$store.dispatch('depenseReserve/fetchDepenseReserves', 1),
+        this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
+      ])
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -199,8 +203,16 @@ export default {
       }
     },
 
+    isCaissier() {
+      if (this.caisseUser) {
+        return true
+      } else {
+        return false
+      }
+    },
     ...mapState({
       depenses: (state) => state.depenseReserve.depenseReserves,
+      caisseUser: (state) => state.caisse.caisseUtilisateur,
     }),
   },
 

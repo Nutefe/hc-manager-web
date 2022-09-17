@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-tooltip left>
+    <!-- <v-tooltip left>
       <template #activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
@@ -23,7 +23,7 @@
       <span>
         {{ $t('commoin.add') }}
       </span>
-    </v-tooltip>
+    </v-tooltip> -->
 
     <v-row justify="center">
       <v-dialog
@@ -61,7 +61,7 @@
 
           <v-card-text class="px-3 px-md-5 pt-3">
             <v-row>
-              <v-col cols="12">
+              <!-- <v-col cols="12">
                 <v-autocomplete
                   v-model.trim.lazy="form.caisse"
                   :items="matchedCaisses"
@@ -75,8 +75,8 @@
                   @input="$v.form.caisse.$touch()"
                   @blur="$v.form.caisse.$touch()"
                 ></v-autocomplete>
-              </v-col>
-              <v-col cols="12">
+              </v-col> -->
+              <!-- <v-col cols="12">
                 <v-text-field
                   v-model.trim="form.libelle"
                   autofocus
@@ -87,7 +87,7 @@
                   @input="$v.form.libelle.$touch()"
                   @blur="$v.form.libelle.$touch()"
                 ></v-text-field>
-              </v-col>
+              </v-col> -->
 
               <v-col cols="12">
                 <v-text-field
@@ -103,7 +103,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12">
+              <!-- <v-col cols="12">
                 <v-menu
                   ref="menu"
                   v-model="menu2"
@@ -136,7 +136,7 @@
                     @click:minute="$refs.menu.save(form.time)"
                   ></v-time-picker>
                 </v-menu>
-              </v-col>
+              </v-col> -->
             </v-row>
           </v-card-text>
 
@@ -171,7 +171,7 @@
 
 <script>
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -191,66 +191,66 @@ export default {
   },
   validations: {
     form: {
-      libelle: {
-        required,
-        minLength: minLength(2),
-        maxLength: maxLength(100),
-      },
+      // libelle: {
+      //   required,
+      //   minLength: minLength(2),
+      //   maxLength: maxLength(100),
+      // },
       montantDefini: {
         required,
         minLength: minLength(1),
         maxLength: maxLength(100),
       },
-      time: {
-        required,
-        minLength: minLength(1),
-        maxLength: maxLength(6),
-      },
-      caisse: {
-        required,
-      },
+      // time: {
+      //   required,
+      //   minLength: minLength(1),
+      //   maxLength: maxLength(6),
+      // },
+      // caisse: {
+      //   required,
+      // },
     },
   },
-  async fetch() {
-    this.loading = true
-    try {
-      await this.$store.dispatch('caisse/fetchAllCaisses')
-    } catch (err) {
-      this.$nuxt.error({
-        statusCode: 503,
-        message: 'Unable to fetch data.',
-      })
-    }
-    this.loading = false
-  },
+  // async fetch() {
+  //   this.loading = true
+  //   try {
+  //     await this.$store.dispatch('caisse/fetchAllCaisses')
+  //   } catch (err) {
+  //     this.$nuxt.error({
+  //       statusCode: 503,
+  //       message: 'Unable to fetch data.',
+  //     })
+  //   }
+  //   this.loading = false
+  // },
   computed: {
     isFormValid() {
       return !this.$v.form.$invalid
     },
-    libelleErrors() {
-      const errors = []
+    // libelleErrors() {
+    //   const errors = []
 
-      if (!this.$v.form.libelle.$dirty) return errors
+    //   if (!this.$v.form.libelle.$dirty) return errors
 
-      !this.$v.form.libelle.required &&
-        errors.push(this.$t('validations.libelle.required'))
+    //   !this.$v.form.libelle.required &&
+    //     errors.push(this.$t('validations.libelle.required'))
 
-      !this.$v.form.libelle.minLength &&
-        errors.push(
-          this.$t('validations.libelle.min', {
-            length: this.$v.form.libelle.$params.minLength.min,
-          })
-        )
+    //   !this.$v.form.libelle.minLength &&
+    //     errors.push(
+    //       this.$t('validations.libelle.min', {
+    //         length: this.$v.form.libelle.$params.minLength.min,
+    //       })
+    //     )
 
-      !this.$v.form.libelle.maxLength &&
-        errors.push(
-          this.$t('validations.libelle.max', {
-            length: this.$v.form.libelle.$params.maxLength.max,
-          })
-        )
+    //   !this.$v.form.libelle.maxLength &&
+    //     errors.push(
+    //       this.$t('validations.libelle.max', {
+    //         length: this.$v.form.libelle.$params.maxLength.max,
+    //       })
+    //     )
 
-      return errors
-    },
+    //   return errors
+    // },
     montantDefiniErrors() {
       const errors = []
 
@@ -275,62 +275,74 @@ export default {
 
       return errors
     },
-    timeErrors() {
-      const errors = []
+    // timeErrors() {
+    //   const errors = []
 
-      if (!this.$v.form.time.$dirty) return errors
+    //   if (!this.$v.form.time.$dirty) return errors
 
-      !this.$v.form.time.required &&
-        errors.push(this.$t('validations.time.required'))
+    //   !this.$v.form.time.required &&
+    //     errors.push(this.$t('validations.time.required'))
 
-      !this.$v.form.time.minLength &&
-        errors.push(
-          this.$t('validations.time.min', {
-            length: this.$v.form.time.$params.minLength.min,
-          })
-        )
+    //   !this.$v.form.time.minLength &&
+    //     errors.push(
+    //       this.$t('validations.time.min', {
+    //         length: this.$v.form.time.$params.minLength.min,
+    //       })
+    //     )
 
-      !this.$v.form.time.maxLength &&
-        errors.push(
-          this.$t('validations.time.max', {
-            length: this.$v.form.time.$params.maxLength.max,
-          })
-        )
+    //   !this.$v.form.time.maxLength &&
+    //     errors.push(
+    //       this.$t('validations.time.max', {
+    //         length: this.$v.form.time.$params.maxLength.max,
+    //       })
+    //     )
 
-      return errors
-    },
-    caisseErrors() {
-      const errors = []
+    //   return errors
+    // },
+    // caisseErrors() {
+    //   const errors = []
 
-      if (!this.$v.form.caisse.$dirty) return errors
+    //   if (!this.$v.form.caisse.$dirty) return errors
 
-      !this.$v.form.caisse.required &&
-        errors.push(this.$t('validations.caisse.required'))
+    //   !this.$v.form.caisse.required &&
+    //     errors.push(this.$t('validations.caisse.required'))
 
-      return errors
-    },
+    //   return errors
+    // },
 
-    matchedCaisses() {
-      return this.caisses.map((caisse) => {
-        const caisses = caisse.libelle
-        return Object.assign({}, caisse, { caisses })
-      })
-    },
-    ...mapState({
-      caisses: (state) => state.caisse.allCaisses,
-    }),
+    // matchedCaisses() {
+    //   return this.caisses.map((caisse) => {
+    //     const caisses = caisse.libelle
+    //     return Object.assign({}, caisse, { caisses })
+    //   })
+    // },
+    // ...mapState({
+    //   caisses: (state) => state.caisse.allCaisses,
+    // }),
   },
   methods: {
+    openDialog() {
+      this.dialog = true
+
+      // this.$v.form.$reset()
+
+      // this.form = {
+      //   caisse: null,
+      //   libelle: '',
+      //   montantDefini: '',
+      //   time: null,
+      // }
+
+      // this.loading = false
+    },
+
     closeDialog() {
       this.dialog = false
 
       this.$v.form.$reset()
 
       this.form = {
-        caisse: null,
-        libelle: '',
         montantDefini: '',
-        time: null,
       }
 
       this.loading = false
@@ -343,11 +355,8 @@ export default {
         this.loading = true
 
         try {
-          await this.$api.saveReserve({
-            caisse: this.form.caisse.id,
-            libelle: this.form.libelle,
+          await this.$api.saveReserveJour({
             montantDefini: this.form.montantDefini,
-            heure: this.form.time,
           })
           this.$emit('refreshPage')
 

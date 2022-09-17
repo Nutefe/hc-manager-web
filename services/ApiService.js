@@ -1410,6 +1410,17 @@ export default ($axios, $auth) => ({
             },
         });
     },
+    montantPaiement() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/encaissement/montant`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
 
     selectAllPaiementDatePage(page, date) {
         if (!$auth.loggedIn) {
@@ -1432,17 +1443,17 @@ export default ($axios, $auth) => ({
         })
     },
 
-    // countFactureDay() {
-    //     if (!$auth.loggedIn) {
-    //         return;
-    //     }
+    selectEtatRecette(start, end) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/recette/etat/date/${start}/${end}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
 
-    //     return $axios.$get(`/encaissement/facture/day`, {
-    //         headers: {
-    //             Authorization: `Bearer ${$auth.token}`,
-    //         },
-    //     });
-    // },
 
     /**
      * end paiement axios api
@@ -1601,6 +1612,17 @@ export default ($axios, $auth) => ({
             },
         });
     },
+    getCaisseUtilisateur() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/caisse/utilisateur`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
     getAllCaisses() {
         if (!$auth.loggedIn) {
             return;
@@ -1663,7 +1685,7 @@ export default ($axios, $auth) => ({
             return;
         }
 
-        return $axios.$put(`/caisse/${id}`, caisse, {
+        return $axios.$put(`/ligne/caisse/${id}`, caisse, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
             },
@@ -1721,6 +1743,18 @@ export default ($axios, $auth) => ({
         })
     },
 
+
+    makeReserve(reserve) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/reserve/journaliere`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
     saveReserve(reserve) {
         if (!$auth.loggedIn) {
             return;
@@ -1745,6 +1779,41 @@ export default ($axios, $auth) => ({
         });
     },
 
+    montantReserve() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/reserve/montant`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    montantTodayReserve() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/reserve/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    montantDateReserve(date) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/reserve/date/${date}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
     /**
      * end reserve axios api
      */
@@ -1753,7 +1822,7 @@ export default ($axios, $auth) => ({
      * start depense reserve axios api
      */
 
-     getDepenseReserve(id) {
+    getDepenseReserve(id) {
         if (!$auth.loggedIn) {
             return;
         }
@@ -1808,6 +1877,18 @@ export default ($axios, $auth) => ({
         });
     },
 
+    saveReserveJour(reserve) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/reserve/jours`, reserve, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
     updateDepenseReserve(reserve, id) {
         if (!$auth.loggedIn) {
             return;
@@ -1831,7 +1912,7 @@ export default ($axios, $auth) => ({
             },
         });
     },
-    
+
     montantTodayDepenseReserve() {
         if (!$auth.loggedIn) {
             return;
@@ -1863,7 +1944,7 @@ export default ($axios, $auth) => ({
      * start decaissement axios api
      */
 
-     getDecaissement(id) {
+    getDecaissement(id) {
         if (!$auth.loggedIn) {
             return;
         }
@@ -1927,7 +2008,7 @@ export default ($axios, $auth) => ({
         })
     },
 
-    
+
     selectAllDecaissementDatePage(date, page) {
         if (!$auth.loggedIn) {
             return;
@@ -2046,7 +2127,7 @@ export default ($axios, $auth) => ({
             },
         });
     },
-    
+
     montantTodayDecaissement() {
         if (!$auth.loggedIn) {
             return;
@@ -2081,7 +2162,7 @@ export default ($axios, $auth) => ({
             },
         });
     },
-    
+
     montantTodayDecaissementCaisse() {
         if (!$auth.loggedIn) {
             return;
@@ -2108,4 +2189,116 @@ export default ($axios, $auth) => ({
     /**
      * end decaissement axios api
      */
+
+    /**
+     * start document axios api
+     */
+
+    getDocument(id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/assurance/${id}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    getAllDocument() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/documents`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    selectAllDocumentPage(page) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/documents/page/${page}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    searchAllDocumentPage(page, s) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+        return $axios.$get(`/documents/search/page/${page}/${s}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            }
+        })
+    },
+
+    saveDocument(document) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$post(`/document`, document, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    updateDocument(document, id) {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$put(`/document/${id}`, document, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+
+    async loardDocument(filename) {
+
+        await $axios.$get(`/downloadFile/${filename}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
+
+    async loardDocumentAtt(filename) {
+
+        await $axios.$get(`/downloadFile/attachment/${filename}`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
+    /**
+     * end document axios api
+     */
+
 });

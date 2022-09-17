@@ -1,6 +1,6 @@
 <template>
   <v-container class="text-center">
-    <v-row justify="center" align="center">
+    <v-row justify="center" align="center" class="mb-10">
       <v-col cols="10">
         <v-row>
           <v-col
@@ -16,6 +16,26 @@
         <v-row v-if="isDirecteur || isSys">
           <v-col
             v-for="stat in stats.second"
+            :key="`first-${stat.title}`"
+            cols="12"
+            sm="6"
+            md="6"
+          >
+            <StatCard :stat="stat" />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row justify="center" align="center" class="mt-10">
+      <v-col cols="10">
+        <v-divider v-if="isDirecteur || isSys" />
+      </v-col>
+    </v-row>
+    <v-row justify="center" align="center" class="mt-10">
+      <v-col cols="10">
+        <v-row v-if="isDirecteur || isSys">
+          <v-col
+            v-for="stat in stats.third"
             :key="`first-${stat.title}`"
             cols="12"
             sm="6"
@@ -50,6 +70,12 @@ export default {
         this.$store.dispatch('facture/fetchCountFacture'),
         this.$store.dispatch('facture/fetchCountFactureDay'),
         this.$store.dispatch('traitement/fetchCountTraitement'),
+        this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
+
+        this.$store.dispatch('paiement/fetchMontantPaiement'),
+        this.$store.dispatch('reserve/fetchMontantReserve'),
+        this.$store.dispatch('decaissement/fetchMontantDecaissement'),
+        this.$store.dispatch('depenseReserve/fetchMontantDepense'),
       ])
     } catch (err) {
       this.$nuxt.error({
@@ -86,27 +112,43 @@ export default {
             icon: 'mdi-account-group',
             to: '/secretariat/patients',
           },
-          // {
-          //   title: this.$t('dashboard.totalFactures'),
-          //   value: this.countFacture,
-          //   color: 'blue lighten-1',
-          //   icon: 'mdi-receipt-text-check',
-          //   to: '/secretariat/factures',
-          // },
           {
             title: this.$t('dashboard.montantEncaisse'),
             value: this.montantPaiementDay,
-            color: 'orange lighten-2',
+            color: 'purple lighten-2',
             icon: 'mdi-cash-multiple',
             to: '/paiement/factures',
           },
-          // {
-          //   title: this.$t('dashboard.totalTraitements'),
-          //   value: this.countTraitement,
-          //   color: 'red lighten-2',
-          //   icon: 'mdi-apps-box',
-          //   to: '/gestion/traitements',
-          // },
+        ],
+        third: [
+          {
+            title: this.$t('dashboard.totalRecette'),
+            value: this.montantPaiement,
+            color: 'orange lighten-2',
+            icon: 'mdi-cash-multiple',
+            to: '',
+          },
+          {
+            title: this.$t('dashboard.totalReserve'),
+            value: this.montantReserve,
+            color: 'yellow lighten-2',
+            icon: 'mdi-cash-multiple',
+            to: '',
+          },
+          {
+            title: this.$t('dashboard.totalDecaissement'),
+            value: this.montantDecaissement,
+            color: 'black lighten-2',
+            icon: 'mdi-cash-multiple',
+            to: '',
+          },
+          {
+            title: this.$t('dashboard.totalDepenseReserve'),
+            value: this.montantDepense,
+            color: 'grey lighten-2',
+            icon: 'mdi-cash-multiple',
+            to: '',
+          },
         ],
       }
 
@@ -121,6 +163,11 @@ export default {
       countPatient: (state) => state.patient.countPatient,
       countPatientDay: (state) => state.patient.countPatientDay,
       countFacture: (state) => state.facture.countFacture,
+
+      montantPaiement: (state) => state.paiement.montantPaiement,
+      montantReserve: (state) => state.reserve.montantReserve,
+      montantDecaissement: (state) => state.decaissement.montantDecaissement,
+      montantDepense: (state) => state.depenseReserve.montantDepense,
     }),
   },
 }

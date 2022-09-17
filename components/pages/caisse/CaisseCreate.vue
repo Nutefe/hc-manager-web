@@ -87,17 +87,19 @@
                   @blur="$v.form.montant.$touch()"
                 ></v-text-field>
               </v-col>
-
-              <v-col cols="12">
+              <v-col cols="12" sm="12">
                 <v-autocomplete
                   v-model.trim.lazy="form.utilisateur"
                   :items="matchedUtilisateurs"
+                  :label="$t('caisse.form.utilisateur')"
                   item-text="nom"
                   item-value="id"
                   autocomplete="off"
+                  multiple
                   autofocus
-                  :label="$t('caisse.form.utilisateur')"
                   return-object
+                  chips
+                  deletable-chips
                   :error-messages="utilisateurErrors"
                   @input="$v.form.utilisateur.$touch()"
                   @blur="$v.form.utilisateur.$touch()"
@@ -150,7 +152,7 @@ export default {
       form: {
         libelle: '',
         montant: '',
-        utilisateur: {},
+        utilisateur: [],
       },
     }
   },
@@ -265,7 +267,7 @@ export default {
       this.form = {
         libelle: '',
         montant: '',
-        utilisateur: {},
+        utilisateur: [],
       }
 
       this.loading = false
@@ -281,7 +283,7 @@ export default {
           await this.$api.saveCaisseLigne({
             libelle: this.form.libelle,
             montant: this.form.montant,
-            utilisateur: this.form.utilisateur.id,
+            utilisateurs: this.form.utilisateur,
           })
           this.$emit('refreshPage')
 

@@ -7,7 +7,9 @@ const initialState = () => ({
     paiement: null,
     countPaiementDay: 0,
     montantPaiementDay: 0,
+    montantPaiement: 0,
     countFactureDay: 0,
+    etatRecette: {},
 });
 
 export const state = initialState;
@@ -63,18 +65,24 @@ export const mutations = {
     SET_MONTANT_PAIEMENT_DAY(state, montantPaiementDay) {
         state.montantPaiementDay = montantPaiementDay;
     },
+    SET_MONTANT_PAIEMENT(state, montantPaiement) {
+        state.montantPaiement = montantPaiement;
+    },
     SET_COUNT_FACTURE_DAY(state, countFactureDay) {
         state.countFactureDay = countFactureDay;
     },
     SET_COUNT_DATE_PAIEMENTS(state, page) {
         state.paiementDates.current_page = page;
     },
-    
+
     SET_CURRENT_DAY_PAGE(state, page) {
         state.factures.current_page = page;
     },
     SET_CURRENT_SEARCH_DAY_PAGE(state, page) {
         state.factures.current_page = page;
+    },
+    SET_ETAT_RECETTE(state, etatRecette) {
+        state.etatRecette = etatRecette;
     },
 };
 
@@ -166,15 +174,6 @@ export const actions = {
             commit("SET_DATE_PAIEMENTS_NO", data);
         });
     },
-    //  SET_SEARCHED_DATE_PAIEMENTS(state, paiementDate) {
-    //     state.paiementDate = paiementDate;
-    // },
-    // SET_DATE_PAIEMENTS(state, paiementDate) {
-    //     state.paiementDate = paiementDate;
-    // },
-    // SET_DATE_PAIEMENTS_NO(state, paiementDate) {
-    //     state.paiementDate = paiementDate;
-    // },
 
     fetchPaiement({ commit, getters }, id) {
         const operation = getters.getPaiementById(id);
@@ -197,9 +196,20 @@ export const actions = {
             commit("SET_MONTANT_PAIEMENT_DAY", data);
         });
     },
+
+    fetchMontantPaiement({ commit }) {
+        return this.$api.montantPaiement().then((data) => {
+            commit("SET_MONTANT_PAIEMENT", data);
+        });
+    },
     fetchCountFactureDay({ commit }) {
         return this.$api.countFactureDay().then((data) => {
             commit("SET_COUNT_FACTURE_DAY", data);
+        });
+    },
+    fetchEtatPaiements({ commit }, { start, end }) {
+        return this.$api.selectEtatRecette(start, end).then((data) => {
+            commit("SET_ETAT_RECETTE", data);
         });
     },
 

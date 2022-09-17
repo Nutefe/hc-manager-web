@@ -2,6 +2,9 @@ const initialState = () => ({
     allReserves: [],
     reserves: {},
     reserve: null,
+    montantReserve: 0,
+    montantReserveToday: 0,
+    montantReserveDate: 0,
 });
 
 export const state = initialState;
@@ -27,6 +30,15 @@ export const mutations = {
     },
     SET_RESERVE(state, reserve) {
         state.reserve = reserve;
+    },
+    SET_MONTANT_RESERVE(state, montantReserve) {
+        state.montantReserve = montantReserve;
+    },
+    SET_MONTANT_RESERVE_TODAY(state, montantReserveToday) {
+        state.montantReserveToday = montantReserveToday;
+    },
+    SET_MONTANT_RESERVE_DATE(state, montantReserveDate) {
+        state.montantReserveDate = montantReserveDate;
     },
 };
 
@@ -65,6 +77,21 @@ export const actions = {
                 commit("SET_RESERVE", data);
             });
         }
+    },
+    fetchMontantReserve({ commit }) {
+        return this.$api.montantReserve().then((data) => {
+            commit("SET_MONTANT_RESERVE", data);
+        });
+    },
+    fetchMontantReserveToday({ commit }) {
+        return this.$api.montantTodayReserve().then((data) => {
+            commit("SET_MONTANT_RESERVE_TODAY", data);
+        });
+    },
+    fetchMontantReserveDate({ commit }, date) {
+        return this.$api.montantDateReserve(date).then((data) => {
+            commit("SET_MONTANT_RESERVE_DATE", data);
+        });
     },
 };
 

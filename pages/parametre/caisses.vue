@@ -44,6 +44,11 @@
         <template #[`item.num`]="{ item }">
           {{ itemPosition(item.id) }}
         </template>
+        <template #[`item.utilisateurs`]="{ item }">
+          <span v-for="p in item.utilisateurs" :key="p.id">
+            | {{ startCase(`${p.nom}`) }} {{ p.prenom }} </span
+          >|
+        </template>
         <template #[`item.action`]="{ item }">
           <!-- Edit -->
 
@@ -117,7 +122,7 @@ export default {
       headers: [
         {
           text: this.$t('caisse.table.num'),
-          value: 'id',
+          value: 'caisse.id',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
           width: 100,
@@ -125,14 +130,21 @@ export default {
         {
           text: this.$t('caisse.table.libelle'),
           align: 'start',
-          value: 'libelle',
+          value: 'caisse.libelle',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },
         {
           text: this.$t('caisse.table.montant'),
           align: 'start',
-          value: 'montant',
+          value: 'caisse.montant',
+          class: 'text-subtitle-2 text-uppercase font-weight-bold',
+          cellClass: 'py-3',
+        },
+        {
+          text: this.$t('caisse.table.utilisateur'),
+          align: 'start',
+          value: 'utilisateurs',
           class: 'text-subtitle-2 text-uppercase font-weight-bold',
           cellClass: 'py-3',
         },

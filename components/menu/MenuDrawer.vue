@@ -129,17 +129,92 @@
           </v-list-item-content>
         </template>
 
-        <v-list-item
-          v-for="child in parameterRoutes.paths"
-          :key="`${child.title}-drawer-route`"
-          :to="localePath(child.path)"
-          nuxt
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="item in parameterRoutes.paths">
+          <template v-if="!item.child">
+            <v-list-item
+              :key="`${item.title}-drawer-route`"
+              :to="localePath(item.path)"
+              nuxt
+            >
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+          <template v-else>
+            <v-menu
+              ref="setting"
+              :key="`${item.title}-drawer-route`"
+              transition="slide-x-transition"
+              open-on-click
+              offset-x
+              left
+            >
+              <template #activator="{ on, attrs }">
+                <v-list-item v-bind="attrs" :title="item.title" v-on="on">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ item.title }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-icon small> mdi-chevron-right </v-icon>
+                  </v-list-item-action>
+                </v-list-item>
+              </template>
+
+              <v-card>
+                <v-list outlined nav dense>
+                  <v-row dense no-gutters>
+                    <v-col
+                      v-for="n in item.child"
+                      :key="`${n.title}-drawer-route`"
+                      cols="12"
+                    >
+                      <v-list-item
+                        color="primary"
+                        :title="n.title"
+                        link
+                        :to="localePath(n.path)"
+                        @click="$refs.setting.isActive = false"
+                      >
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ n.title }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-col>
+                  </v-row>
+                </v-list>
+              </v-card>
+            </v-menu>
+          </template>
+        </template>
       </v-list-group>
+    </v-list>
+    <v-divider />
+
+    <v-list shaped>
+      <v-list-item :to="localePath(document.path)">
+        <v-list-item-icon class="mr-3">
+          <v-icon v-text="document.icon" />
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="document.title" />
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item :to="localePath(helpe.path)">
+        <v-list-item-icon class="mr-3">
+          <v-icon v-text="helpe.icon" />
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="helpe.title" />
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
     <v-divider />
 

@@ -42,6 +42,18 @@ export const mixinMenu = {
             default: null,
             required: true,
         },
+        
+        helpe: {
+            type: Object,
+            default: null,
+            required: true,
+        },
+        
+        document: {
+            type: Object,
+            default: null,
+            required: true,
+        },
     },
 
     computed: {

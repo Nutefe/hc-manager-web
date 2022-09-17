@@ -2,6 +2,7 @@ const initialState = () => ({
     allCaisses: [],
     caisses: {},
     caisse: null,
+    caisseUtilisateur: null,
 });
 
 export const state = initialState;
@@ -12,6 +13,9 @@ export const mutations = {
     },
     SET_ALL_CAISSES(state, allCaisses) {
         state.allCaisses = allCaisses;
+    },
+    SET_CAISSE_UTILISATEUR(state, caisseUtilisateur) {
+        state.caisseUtilisateur = caisseUtilisateur;
     },
     SET_SEARCHED_CAISSES(state, caisses) {
         state.caisses = caisses;
@@ -39,6 +43,13 @@ export const actions = {
             commit("SET_ALL_CAISSES", data);
         });
     },
+    
+    fetchCaisseUtilisateur({ commit }) {
+        return this.$api.getCaisseUtilisateur().then((data) => {
+            commit("SET_CAISSE_UTILISATEUR", data);
+        });
+    },
+    
     searchCaisses({ commit }, { page, s }) {
         if (!s) {
 
@@ -76,4 +87,5 @@ export const getters = {
         return caisses
             .find((art) => art.id === id);
     },
+    
 };

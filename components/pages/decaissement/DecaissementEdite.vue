@@ -13,7 +13,7 @@
             <v-row align="center">
               <v-col cols="9">
                 <span class="text-h6 text-md-h5 font-weight-regular">
-                  {{ $t('caisse.edit') }}
+                  {{ $t('decaissement.edit') }}
                 </span>
               </v-col>
 
@@ -38,14 +38,14 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  v-model.trim="form.libelle"
+                  v-model.trim="form.motif"
                   autofocus
-                  :label="$t('caisse.form.libelle')"
+                  :label="$t('decaissement.form.motif')"
                   autocomplete="off"
-                  :maxlength="$v.form.libelle.$params.maxLength.max"
-                  :error-messages="libelleErrors"
-                  @input="$v.form.libelle.$touch()"
-                  @blur="$v.form.libelle.$touch()"
+                  :maxlength="$v.form.motif.$params.maxLength.max"
+                  :error-messages="motifErrors"
+                  @input="$v.form.motif.$touch()"
+                  @blur="$v.form.motif.$touch()"
                 ></v-text-field>
               </v-col>
 
@@ -53,7 +53,7 @@
                 <v-text-field
                   v-model.trim="form.montant"
                   autofocus
-                  :label="$t('caisse.form.montant')"
+                  :label="$t('decaissement.form.montant')"
                   autocomplete="off"
                   type="number"
                   :maxlength="$v.form.montant.$params.maxLength.max"
@@ -61,25 +61,6 @@
                   @input="$v.form.montant.$touch()"
                   @blur="$v.form.montant.$touch()"
                 ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" sm="12">
-                <v-autocomplete
-                  v-model.trim.lazy="form.utilisateur"
-                  :items="matchedUtilisateurs"
-                  :label="$t('caisse.form.utilisateur')"
-                  item-text="nom"
-                  item-value="id"
-                  autocomplete="off"
-                  multiple
-                  autofocus
-                  return-object
-                  chips
-                  deletable-chips
-                  :error-messages="utilisateurErrors"
-                  @input="$v.form.utilisateur.$touch()"
-                  @blur="$v.form.utilisateur.$touch()"
-                ></v-autocomplete>
               </v-col>
             </v-row>
           </v-card-text>
@@ -114,7 +95,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 import { maxLength, minLength, required } from 'vuelidate/lib/validators'
 import { isEqual } from '~/helpers/helpers.js'
 
@@ -127,20 +108,18 @@ export default {
       isVisible: false,
       id: null,
       selectedItem: {
-        libelle: '',
+        motif: '',
         montant: '',
-        utilisateur: [],
       },
       form: {
-        libelle: '',
+        motif: '',
         montant: '',
-        utilisateur: [],
       },
     }
   },
   validations: {
     form: {
-      libelle: {
+      motif: {
         required,
         minLength: minLength(2),
         maxLength: maxLength(100),
@@ -150,24 +129,24 @@ export default {
         minLength: minLength(1),
         maxLength: maxLength(100),
       },
-      utilisateur: {
-        required,
-      },
+      // utilisateur: {
+      //   required,
+      // },
     },
   },
 
-  async fetch() {
-    this.loading = true
-    try {
-      await this.$store.dispatch('utilisateur/fetchAllUtilisateursCaisse')
-    } catch (err) {
-      this.$nuxt.error({
-        statusCode: 503,
-        message: 'Unable to fetch data.',
-      })
-    }
-    this.loading = false
-  },
+  // async fetch() {
+  //   this.loading = true
+  //   try {
+  //     await this.$store.dispatch('utilisateur/fetchAllUtilisateursCaisse')
+  //   } catch (err) {
+  //     this.$nuxt.error({
+  //       statusCode: 503,
+  //       message: 'Unable to fetch data.',
+  //     })
+  //   }
+  //   this.loading = false
+  // },
   computed: {
     isFormValid() {
       const isFormEdited = !isEqual(this.selectedItem, this.form)
@@ -175,25 +154,25 @@ export default {
       return isFormEdited && !this.$v.form.$invalid
     },
 
-    libelleErrors() {
+    motifErrors() {
       const errors = []
 
-      if (!this.$v.form.libelle.$dirty) return errors
+      if (!this.$v.form.motif.$dirty) return errors
 
-      !this.$v.form.libelle.required &&
-        errors.push(this.$t('validations.libelle.required'))
+      !this.$v.form.motif.required &&
+        errors.push(this.$t('validations.motif.required'))
 
-      !this.$v.form.libelle.minLength &&
+      !this.$v.form.motif.minLength &&
         errors.push(
-          this.$t('validations.libelle.min', {
-            length: this.$v.form.libelle.$params.minLength.min,
+          this.$t('validations.motif.min', {
+            length: this.$v.form.motif.$params.minLength.min,
           })
         )
 
-      !this.$v.form.libelle.maxLength &&
+      !this.$v.form.motif.maxLength &&
         errors.push(
-          this.$t('validations.libelle.max', {
-            length: this.$v.form.libelle.$params.maxLength.max,
+          this.$t('validations.motif.max', {
+            length: this.$v.form.motif.$params.maxLength.max,
           })
         )
 
@@ -223,35 +202,35 @@ export default {
 
       return errors
     },
-    utilisateurErrors() {
-      const errors = []
+    // utilisateurErrors() {
+    //   const errors = []
 
-      if (!this.$v.form.utilisateur.$dirty) return errors
+    //   if (!this.$v.form.utilisateur.$dirty) return errors
 
-      !this.$v.form.utilisateur.required &&
-        errors.push(this.$t('validations.utilisateur.required'))
+    //   !this.$v.form.utilisateur.required &&
+    //     errors.push(this.$t('validations.utilisateur.required'))
 
-      return errors
-    },
+    //   return errors
+    // },
 
-    matchedUtilisateurs() {
-      return this.utilisateurs.map((utilisateur) => {
-        const utilisateurs = utilisateur.nom
-        return Object.assign({}, utilisateur, { utilisateurs })
-      })
-    },
-    ...mapState({
-      utilisateurs: (state) => state.utilisateur.allUtilisateursCaisse,
-    }),
+    // matchedUtilisateurs() {
+    //   return this.utilisateurs.map((utilisateur) => {
+    //     const utilisateurs = utilisateur.nom
+    //     return Object.assign({}, utilisateur, { utilisateurs })
+    //   })
+    // },
+    // ...mapState({
+    //   utilisateurs: (state) => state.utilisateur.allUtilisateursCaisse,
+    // }),
   },
   methods: {
     openDialog(item) {
-      this.id = item.caisse.id
+      this.id = item.id
 
       this.form = {
-        libelle: item.caisse.libelle || '',
-        montant: item.caisse.montant || '',
-        utilisateur: item.utilisateurs || [],
+        motif: item.motif || '',
+        montant: item.montant || '',
+        // utilisateur: {},
       }
 
       this.selectedItem = Object.assign({}, this.form)
@@ -264,14 +243,14 @@ export default {
       this.$v.form.$reset()
       this.id = null
       this.form = {
-        libelle: '',
+        motif: '',
         montant: '',
-        utilisateur: [],
+        // utilisateur: {},
       }
       this.selectedItem = {
-        libelle: '',
+        motif: '',
         montant: '',
-        utilisateur: [],
+        // utilisateur: {},
       }
 
       this.loading = false
@@ -283,11 +262,10 @@ export default {
       if (this.isFormValid) {
         this.loading = true
         try {
-          await this.$api.updateCaisse(
+          await this.$api.updateDecaissement(
             {
-              libelle: this.form.libelle,
+              motif: this.form.motif,
               montant: this.form.montant,
-              utilisateurs: this.form.utilisateur,
             },
             this.id
           )

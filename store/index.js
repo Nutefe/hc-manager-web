@@ -41,6 +41,7 @@ export const actions = {
         dispatch("decaissement/resetState");
         dispatch("depenseReserve/resetState");
         dispatch("reserve/resetState");
+        dispatch("document/resetState");
         commit("RESET_STATE");
     },
 

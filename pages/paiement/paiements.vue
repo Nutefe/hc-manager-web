@@ -78,6 +78,7 @@
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
+                v-if="isCaissier"
                 v-bind="attrs"
                 class="mr-3"
                 small
@@ -140,13 +141,103 @@
         @loading="toggleLoading"
       />
     </v-card>
+    <div v-if="isCaissier" class="mb-10 mr-10">
+      <div>
+        <v-speed-dial
+          v-model="fab"
+          class="mb-15 mr-15"
+          bottom
+          right
+          direction="top"
+          open-on-hover
+          :transition="transition"
+        >
+          <template #activator>
+            <v-btn v-model="fab" color="secondary" dark fab>
+              <v-icon v-if="fab"> mdi-close </v-icon>
+              <v-icon v-else> mdi-text-box </v-icon>
+            </v-btn>
+          </template>
+
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="orange"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('paiement.addDec')"
+                @click.stop="createDecaissement"
+                v-on="on"
+              >
+                <v-icon>mdi-text-box-edit</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('paiement.addDec') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="blue"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('paiement.addDep')"
+                @click.stop="depenseReserve"
+                v-on="on"
+              >
+                <v-icon>mdi-text-box-edit-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('paiement.addDep') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="green"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('paiement.addRes')"
+                @click.stop="createReserve"
+                v-on="on"
+              >
+                <v-icon>mdi-text-box-edit-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('paiement.addRes') }}
+            </span>
+          </v-tooltip>
+        </v-speed-dial>
+      </div>
+    </div>
     <PaiementFacture ref="editFormDialog" @refreshPage="refreshPage" />
+    <CaisseDecCreate ref="decaissementFormDialog" />
+    <ReserveCreateJours ref="reserveFormDialog" />
+    <CaisseDepenseCreate ref="depenseFormDialog" />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import CaisseDecCreate from '~/components/pages/decaissement/CaisseDecCreate.vue'
+import CaisseDepenseCreate from '~/components/pages/depense/CaisseDepenseCreate.vue'
 import PaiementFacture from '~/components/pages/paiement/PaiementFacture.vue'
+import ReserveCreateJours from '~/components/pages/reserve/ReserveCreateJours.vue'
 import {
   debounce,
   startCase,
@@ -159,6 +250,9 @@ export default {
 
   components: {
     PaiementFacture,
+    CaisseDecCreate,
+    ReserveCreateJours,
+    CaisseDepenseCreate,
   },
 
   layout: 'default',
@@ -256,7 +350,10 @@ export default {
   async fetch() {
     this.loading = true
     try {
-      await this.$store.dispatch('facture/fetchNotSoldeFactures', 1)
+      await Promise.all([
+        this.$store.dispatch('facture/fetchNotSoldeFactures', 1),
+        this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
+      ])
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -293,8 +390,17 @@ export default {
       }
     },
 
+    isCaissier() {
+      if (this.caisseUser) {
+        return true
+      } else {
+        return false
+      }
+    },
+
     ...mapState({
       factures: (state) => state.facture.factures,
+      caisseUser: (state) => state.caisse.caisseUtilisateur,
     }),
   },
 
@@ -317,6 +423,17 @@ export default {
     async editItem(item) {
       await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
       this.$refs.editFormDialog.openDialog(item)
+    },
+
+    createDecaissement() {
+      this.$refs.decaissementFormDialog.openDialog()
+    },
+
+    createReserve() {
+      this.$refs.reserveFormDialog.openDialog()
+    },
+    depenseReserve() {
+      this.$refs.depenseFormDialog.openDialog()
     },
 
     startCase(str) {
@@ -360,6 +477,53 @@ export default {
           statusCode: 503,
           message: 'Unable to fetch data.',
         })
+      }
+    },
+
+    async makeReserve() {
+      const result = await this.$swal({
+        icon: 'question',
+        titleText: this.$t('paiement.reserve'),
+        confirmButtonText: this.$t('commoin.actions.yes'),
+        cancelButtonText: this.$t('commoin.actions.no'),
+        confirmButtonAriaLabel: this.$t('commoin.actions.yes'),
+        cancelButtonAriaLabel: this.$t('commoin.actions.no'),
+        showCancelButton: true,
+        allowOutsideClick: () => {
+          const popup = this.$swal.getPopup()
+          popup.classList.remove('swal2-show')
+          setTimeout(() => {
+            popup.classList.add('animate__animated', 'animate__headShake')
+          })
+          setTimeout(() => {
+            popup.classList.remove('animate__animated', 'animate__headShake')
+          }, 500)
+          return false
+        },
+      })
+
+      if (result.isConfirmed) {
+        this.submitForm()
+      } else if (this.$vuetify.breakpoint.smAndDown) {
+        this.$store.dispatch('toggleDrawer', true)
+      }
+    },
+
+    async submitForm() {
+      try {
+        await this.$api.makeReserve()
+        this.$toast.success(this.$t('commoin.saved'))
+      } catch (err) {
+        this.loading = false
+
+        if (err.response) {
+          this.$toast.error(this.$t('commoin.errorOccured'))
+        } else {
+          this.$nuxt.error({
+            statusCode: 503,
+            message: 'Unable to fetch data.',
+          })
+        }
       }
     },
 
