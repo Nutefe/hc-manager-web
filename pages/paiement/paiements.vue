@@ -222,6 +222,48 @@
               {{ $t('paiement.addRes') }}
             </span>
           </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="purple"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('paiement.printCaisse')"
+                @click.stop="etatCaisse"
+                v-on="on"
+              >
+                <v-icon>mdi-text-box-edit-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('paiement.printCaisse') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="black"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('paiement.printReserve')"
+                @click.stop="etatReserve"
+                v-on="on"
+              >
+                <v-icon>mdi-text-box-edit-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('paiement.printReserve') }}
+            </span>
+          </v-tooltip>
         </v-speed-dial>
       </div>
     </div>
@@ -264,6 +306,7 @@ export default {
       loading: false,
       direction: 'top',
       fab: false,
+      fab1: false,
       fling: false,
       hover: false,
       tabs: null,
@@ -271,6 +314,7 @@ export default {
       right: true,
       bottom: false,
       left: false,
+      rulesSp: '/[!@#$%^&*()_+\\-=\\[\\]{};\':"\\|,.<>\\/?]+/',
       transition: 'slide-y-reverse-transition',
       headers: [
         {
@@ -404,7 +448,17 @@ export default {
     }),
   },
 
+  watch: {
+    query(newValue) {
+      this.query = this.removeSpecialCharacters(newValue)
+    },
+  },
+
   methods: {
+    removeSpecialCharacters(charactersString) {
+      return charactersString.replace(/[#$%^&*.?()\d[\]{}_]/gi, '')
+      // return charactersString.replace(/[^\w\s]/gi, '')
+    },
     toggleLoading(value) {
       this.loading = value
     },
@@ -434,6 +488,42 @@ export default {
     },
     depenseReserve() {
       this.$refs.depenseFormDialog.openDialog()
+    },
+
+    async etatCaisse() {
+      try {
+        await this.$api.getEtatCaisse()
+        this.loading = false
+      } catch (err) {
+        this.loading = false
+
+        if (err.response) {
+          this.$toast.error(this.$t('commoin.errorOccured'))
+        } else {
+          this.$nuxt.error({
+            statusCode: 503,
+            message: 'Unable to fetch data.',
+          })
+        }
+      }
+    },
+
+    async etatReserve() {
+      try {
+        await this.$api.getEtatReserve()
+        this.loading = false
+      } catch (err) {
+        this.loading = false
+
+        if (err.response) {
+          this.$toast.error(this.$t('commoin.errorOccured'))
+        } else {
+          this.$nuxt.error({
+            statusCode: 503,
+            message: 'Unable to fetch data.',
+          })
+        }
+      }
     },
 
     startCase(str) {

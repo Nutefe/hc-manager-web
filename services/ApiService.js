@@ -1170,6 +1170,22 @@ export default ($axios, $auth) => ({
             });
     },
 
+    async saveFactureProforma(facture) {
+
+        await $axios.$post(`/facture/proforma`, facture, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
+    },
 
     updateFacture(facture, id) {
         if (!$auth.loggedIn) {
@@ -1385,8 +1401,6 @@ export default ($axios, $auth) => ({
         });
     },
 
-
-
     countPatientEncDay() {
         if (!$auth.loggedIn) {
             return;
@@ -1452,6 +1466,23 @@ export default ($axios, $auth) => ({
                 Authorization: `Bearer ${$auth.token}`,
             }
         })
+    },
+
+    async getEtatCaisse() {
+
+        await $axios.$get(`/etat/caisse`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
+            .catch({
+                // console.log(err)
+            });
     },
 
 
@@ -1936,6 +1967,22 @@ export default ($axios, $auth) => ({
         });
     },
 
+    async getEtatReserve() {
+
+        await $axios.$get(`/etat/reserve`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+            responseType: 'arraybuffer'
+        }).then(function (response) {
+            const blob = new Blob([response], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        }).catch({
+            // console.log(err)
+        });
+    },
+
     /**
      * end depense reserve axios api
      */
@@ -2007,7 +2054,6 @@ export default ($axios, $auth) => ({
             }
         })
     },
-
 
     selectAllDecaissementDatePage(date, page) {
         if (!$auth.loggedIn) {

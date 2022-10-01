@@ -215,6 +215,27 @@
               {{ $t('facture.add') }}
             </span>
           </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="black"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('facture.addProforma')"
+                @click.stop="createProforma"
+                v-on="on"
+              >
+                <v-icon>mdi-text-box-edit-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('facture.addProforma') }}
+            </span>
+          </v-tooltip>
         </v-speed-dial>
       </div>
     </div>
@@ -228,6 +249,7 @@
       ref="editAssurerFormDialog"
       @refreshPage="refreshPage"
     />
+    <FactureProformaCreate ref="proformaFormDialog" />
   </v-container>
 </template>
 
@@ -245,6 +267,7 @@ import {
   numberFormat,
   capitalize,
 } from '~/helpers/helpers.js'
+import FactureProformaCreate from '~/components/pages/facture/FactureProformaCreate.vue'
 
 export default {
   name: 'FacturesPage',
@@ -254,6 +277,7 @@ export default {
     FactureAssurerCreate,
     FactureEdit,
     FactureAssurerEdit,
+    FactureProformaCreate,
   },
 
   mixins: [mixinProfils],
@@ -395,7 +419,17 @@ export default {
     }),
   },
 
+  watch: {
+    query(newValue) {
+      this.query = this.removeSpecialCharacters(newValue)
+    },
+  },
+
   methods: {
+    removeSpecialCharacters(charactersString) {
+      return charactersString.replace(/[#$%^&*.?()\d[\]{}_]/gi, '')
+      // return charactersString.replace(/[^\w\s]/gi, '')
+    },
     toggleLoading(value) {
       this.loading = value
     },
@@ -430,6 +464,9 @@ export default {
     },
     editPassItem(item) {
       this.$refs.editPassFormDialog.openDialog(item)
+    },
+    createProforma() {
+      this.$refs.proformaFormDialog.openDialog()
     },
 
     startCase(str) {

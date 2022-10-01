@@ -197,8 +197,6 @@ export default {
 
   data() {
     return {
-      search: '',
-      query: '',
       loading: false,
       dialog: false,
       direction: 'top',

@@ -1,26 +1,26 @@
 <template>
   <v-container class="pt-0" fluid>
-    <v-card class="mt-5 mb-10 pb-3 pt-5  justify-space-around">
+    <v-card class="mt-5 mb-10 pb-3 pt-5 justify-space-around">
       <v-row class="mt-3 mb-7">
         <v-col cols="12" sm="3"></v-col>
         <v-col cols="12" sm="6">
           <v-text-field
-          v-model.lazy.trim="query"
-          append-icon="mdi-magnify"
-          :placeholder="$t('user.search')"
-          autocomplete="off"
-          type="search"
-          clearable
-          single-line
-          hide-details
-          rounded
-          outlined
-          filled
-          solo
-          dense
-          @input="filter"
-          @click:append="filter"
-        ></v-text-field>
+            v-model.lazy.trim="query"
+            append-icon="mdi-magnify"
+            :placeholder="$t('user.search')"
+            autocomplete="off"
+            type="search"
+            clearable
+            single-line
+            hide-details
+            rounded
+            outlined
+            filled
+            solo
+            dense
+            @input="filter"
+            @click:append="filter"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3"></v-col>
       </v-row>
@@ -186,8 +186,16 @@ export default {
       profils: (state) => state.profil.profils,
     }),
   },
-
+watch: {
+    query(newValue) {
+      this.query = this.removeSpecialCharacters(newValue)
+    },
+  },
   methods: {
+    removeSpecialCharacters(charactersString) {
+      return charactersString.replace(/[#$%^&*.?()\d[\]{}_]/gi, '')
+      // return charactersString.replace(/[^\w\s]/gi, '')
+    },
     toggleLoading(value) {
       this.loading = value
     },

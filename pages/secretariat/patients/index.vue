@@ -200,6 +200,7 @@
         </v-speed-dial>
       </div>
     </div>
+    
     <PatientCreate ref="createFormDialog" @refreshPage="refreshPage" />
     <PatientAssurerCreate
       ref="createAssurerFormDialog"
@@ -240,6 +241,7 @@ export default {
       loading: false,
       direction: 'top',
       fab: false,
+      fab1: false,
       fling: false,
       hover: false,
       tabs: null,
@@ -361,8 +363,16 @@ export default {
       patients: (state) => state.patient.patients,
     }),
   },
-
+watch: {
+    query(newValue) {
+      this.query = this.removeSpecialCharacters(newValue)
+    },
+  },
   methods: {
+    removeSpecialCharacters(charactersString) {
+      return charactersString.replace(/[#$%^&*.?()\d[\]{}_]/gi, '')
+      // return charactersString.replace(/[^\w\s]/gi, '')
+    },
     toggleLoading(value) {
       this.loading = value
     },
