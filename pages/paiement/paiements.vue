@@ -222,7 +222,7 @@
               {{ $t('paiement.addRes') }}
             </span>
           </v-tooltip>
-          <v-tooltip left>
+          <!-- <v-tooltip left>
             <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
@@ -263,7 +263,7 @@
             <span>
               {{ $t('paiement.printReserve') }}
             </span>
-          </v-tooltip>
+          </v-tooltip> -->
         </v-speed-dial>
       </div>
     </div>

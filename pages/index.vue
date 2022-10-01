@@ -121,13 +121,13 @@ export default {
           },
         ],
         third: [
-          {
-            title: this.$t('dashboard.totalRecette'),
-            value: this.montantPaiement,
-            color: 'orange lighten-2',
-            icon: 'mdi-cash-multiple',
-            to: '',
-          },
+          // {
+          //   title: this.$t('dashboard.totalRecette'),
+          //   value: this.montantPaiement,
+          //   color: 'orange lighten-2',
+          //   icon: 'mdi-cash-multiple',
+          //   to: '',
+          // },
           {
             title: this.$t('dashboard.totalReserve'),
             value: this.montantReserve,
