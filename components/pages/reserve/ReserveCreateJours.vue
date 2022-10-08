@@ -102,6 +102,25 @@
                   @blur="$v.form.montantDefini.$touch()"
                 ></v-text-field>
               </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-model.trim="form.jours"
+                  autofocus
+                  :label="$t('reserve.form.jours')"
+                  autocomplete="off"
+                  type="number"
+                  :maxlength="$v.form.jours.$params.maxLength.max"
+                  :error-messages="joursErrors"
+                  @input="$v.form.jours.$touch()"
+                  @blur="$v.form.jours.$touch()"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-switch
+                  v-model="form.finale"
+                  :label="$t('reserve.form.finale')"
+                ></v-switch>
+              </v-col>
 
               <!-- <v-col cols="12">
                 <v-menu
@@ -184,8 +203,8 @@ export default {
       form: {
         libelle: '',
         montantDefini: '',
-        time: null,
-        caisse: null,
+        jours: 1,
+        finale: false,
       },
     }
   },
@@ -201,11 +220,11 @@ export default {
         minLength: minLength(1),
         maxLength: maxLength(100),
       },
-      // time: {
-      //   required,
-      //   minLength: minLength(1),
-      //   maxLength: maxLength(6),
-      // },
+      jours: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(6),
+      },
       // caisse: {
       //   required,
       // },
@@ -275,30 +294,30 @@ export default {
 
       return errors
     },
-    // timeErrors() {
-    //   const errors = []
+    joursErrors() {
+      const errors = []
 
-    //   if (!this.$v.form.time.$dirty) return errors
+      if (!this.$v.form.jours.$dirty) return errors
 
-    //   !this.$v.form.time.required &&
-    //     errors.push(this.$t('validations.time.required'))
+      !this.$v.form.jours.required &&
+        errors.push(this.$t('validations.jours.required'))
 
-    //   !this.$v.form.time.minLength &&
-    //     errors.push(
-    //       this.$t('validations.time.min', {
-    //         length: this.$v.form.time.$params.minLength.min,
-    //       })
-    //     )
+      !this.$v.form.jours.minLength &&
+        errors.push(
+          this.$t('validations.jours.min', {
+            length: this.$v.form.jours.$params.minLength.min,
+          })
+        )
 
-    //   !this.$v.form.time.maxLength &&
-    //     errors.push(
-    //       this.$t('validations.time.max', {
-    //         length: this.$v.form.time.$params.maxLength.max,
-    //       })
-    //     )
+      !this.$v.form.jours.maxLength &&
+        errors.push(
+          this.$t('validations.jours.max', {
+            length: this.$v.form.jours.$params.maxLength.max,
+          })
+        )
 
-    //   return errors
-    // },
+      return errors
+    },
     // caisseErrors() {
     //   const errors = []
 
@@ -343,6 +362,8 @@ export default {
 
       this.form = {
         montantDefini: '',
+        jours: 1,
+        finally: false,
       }
 
       this.loading = false
@@ -353,10 +374,11 @@ export default {
 
       if (this.isFormValid) {
         this.loading = true
-
         try {
           await this.$api.saveReserveJour({
             montantDefini: this.form.montantDefini,
+            jours: this.form.jours,
+            finale: this.form.finale,
           })
           this.$emit('refreshPage')
 

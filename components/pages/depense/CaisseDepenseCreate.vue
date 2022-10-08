@@ -88,21 +88,13 @@
                 ></v-text-field>
               </v-col>
 
-              <!-- <v-col cols="12">
-                <v-autocomplete
-                  v-model.trim.lazy="form.utilisateur"
-                  :items="matchedUtilisateurs"
-                  item-text="nom"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('caisse.form.utilisateur')"
-                  return-object
-                  :error-messages="utilisateurErrors"
-                  @input="$v.form.utilisateur.$touch()"
-                  @blur="$v.form.utilisateur.$touch()"
-                ></v-autocomplete>
-              </v-col> -->
+              <v-col cols="12">
+                <v-switch
+                  v-model="form.total"
+                  :label="isTotal"
+                ></v-switch>
+              </v-col>
+
             </v-row>
           </v-card-text>
 
@@ -150,6 +142,7 @@ export default {
       form: {
         motif: '',
         montant: '',
+        total: false,
         // utilisateur: {},
       },
     }
@@ -186,6 +179,13 @@ export default {
   computed: {
     isFormValid() {
       return !this.$v.form.$invalid
+    },
+    isTotal() {
+      if (this.form.total) {
+        return this.$t('depenseReserve.form.total')
+      } else {
+        return this.$t('depenseReserve.form.partiel')
+      }
     },
     motifErrors() {
       const errors = []
@@ -279,6 +279,7 @@ export default {
       this.form = {
         motif: '',
         montant: '',
+        total: false,
         // utilisateur: {},
       }
 
@@ -295,6 +296,7 @@ export default {
           await this.$api.saveDepenseReserve({
             motif: this.form.motif,
             montant: this.form.montant,
+            total: this.form.total,
             // utilisateur: this.form.utilisateur.id,
           })
           this.$emit('refreshPage')

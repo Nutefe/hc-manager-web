@@ -71,10 +71,10 @@ export default {
         this.$store.dispatch('facture/fetchCountFactureDay'),
         this.$store.dispatch('traitement/fetchCountTraitement'),
         this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
+        this.$store.dispatch('decaissement/fetchMontantDecaissementToday'),
 
         this.$store.dispatch('paiement/fetchMontantPaiement'),
         this.$store.dispatch('reserve/fetchMontantReserve'),
-        this.$store.dispatch('decaissement/fetchMontantDecaissement'),
         this.$store.dispatch('depenseReserve/fetchMontantDepense'),
       ])
     } catch (err) {
@@ -163,10 +163,11 @@ export default {
       countPatient: (state) => state.patient.countPatient,
       countPatientDay: (state) => state.patient.countPatientDay,
       countFacture: (state) => state.facture.countFacture,
+      montantDecaissement: (state) =>
+        state.decaissement.montantTodayDecaissementCaisse,
 
       montantPaiement: (state) => state.paiement.montantPaiement,
       montantReserve: (state) => state.reserve.montantReserve,
-      montantDecaissement: (state) => state.decaissement.montantDecaissement,
       montantDepense: (state) => state.depenseReserve.montantDepense,
     }),
   },

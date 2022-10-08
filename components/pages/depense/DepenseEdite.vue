@@ -62,22 +62,10 @@
                   @blur="$v.form.montant.$touch()"
                 ></v-text-field>
               </v-col>
-              <!-- 
+
               <v-col cols="12">
-                <v-autocomplete
-                  v-model.trim.lazy="form.utilisateur"
-                  :items="matchedUtilisateurs"
-                  item-text="nom"
-                  item-value="id"
-                  autocomplete="off"
-                  autofocus
-                  :label="$t('caisse.form.utilisateur')"
-                  return-object
-                  :error-messages="utilisateurErrors"
-                  @input="$v.form.utilisateur.$touch()"
-                  @blur="$v.form.utilisateur.$touch()"
-                ></v-autocomplete>
-              </v-col> -->
+                <v-switch v-model="form.total" :label="isTotal"></v-switch>
+              </v-col>
             </v-row>
           </v-card-text>
 
@@ -126,12 +114,12 @@ export default {
       selectedItem: {
         motif: '',
         montant: '',
-        // utilisateur: {},
+        total: false,
       },
       form: {
         motif: '',
         montant: '',
-        // utilisateur: {},
+        total: false,
       },
     }
   },
@@ -171,7 +159,13 @@ export default {
 
       return isFormEdited && !this.$v.form.$invalid
     },
-
+    isTotal() {
+      if (this.form.total) {
+        return this.$t('depenseReserve.form.total')
+      } else {
+        return this.$t('depenseReserve.form.partiel')
+      }
+    },
     motifErrors() {
       const errors = []
 
@@ -248,6 +242,8 @@ export default {
       this.form = {
         motif: item.motif || '',
         montant: item.montant || '',
+        total: item.total || false,
+
         // utilisateur: {},
       }
 
@@ -263,11 +259,13 @@ export default {
       this.form = {
         motif: '',
         montant: '',
+        total: false,
         // utilisateur: {},
       }
       this.selectedItem = {
         motif: '',
         montant: '',
+        total: false,
         // utilisateur: {},
       }
 
@@ -284,7 +282,7 @@ export default {
             {
               motif: this.form.motif,
               montant: this.form.montant,
-              // utilisateur: this.form.utilisateur.id,
+              total: this.form.total,
             },
             this.id
           )

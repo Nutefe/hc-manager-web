@@ -582,6 +582,8 @@ export default {
             motif: "Motif",
             montant: "Montant",
             dateDepense: "Date depense",
+            total:"Retrait total de la reserve",
+            partiel:"Retrait parciel de la reserve",
         },
         table: {
             num: "N°",
@@ -609,6 +611,8 @@ export default {
             montantSuivant: "Montant Suivant",
             dateReserve: "Date reserve",
             time: "Heure declanchement",
+            jours: "Nombre de jours prelever",
+            finale: "Reserve de la fin pour cloture la reserve du mois",
         },
         table: {
             num: "N°",
@@ -895,6 +899,11 @@ export default {
             max: "Le motif doit contenir au plus {length} caractères.",
             equalmore: "Le motif doit etre  superieur ou egale a l'acompte",
             equal: "Le motif doit etre  superieur ou egale a l'acompte",
+        },
+        jours: {
+            required: "Le nombre de jours est obligatoire.",
+            min: "Le nombre de jours doit contenir au moins {length} caractères.",
+            max: "Le nombre de jours doit contenir au plus {length} caractères.",
         },
     },
 }
