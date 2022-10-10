@@ -119,6 +119,20 @@ export default {
             icon: 'mdi-cash-multiple',
             to: '/paiement/factures',
           },
+          {
+            title: this.$t('dashboard.totalDecaissement'),
+            value: this.montantDecaissement,
+            color: 'black lighten-2',
+            icon: 'mdi-cash-multiple',
+            to: '',
+          },
+          {
+            title: this.$t('dashboard.resteEncaisse'),
+            value: this.montantPaiementDay - this.montantDecaissement,
+            color: 'green lighten-2',
+            icon: 'mdi-cash-multiple',
+            to: '',
+          },
         ],
         third: [
           // {
@@ -132,13 +146,6 @@ export default {
             title: this.$t('dashboard.totalReserve'),
             value: this.montantReserve,
             color: 'yellow lighten-2',
-            icon: 'mdi-cash-multiple',
-            to: '',
-          },
-          {
-            title: this.$t('dashboard.totalDecaissement'),
-            value: this.montantDecaissement,
-            color: 'black lighten-2',
             icon: 'mdi-cash-multiple',
             to: '',
           },
