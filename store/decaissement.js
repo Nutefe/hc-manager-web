@@ -85,7 +85,7 @@ export const mutations = {
         state.decaissementsCaisse.current_page = page;
     },
     SET_CAISSE_CURRENT_PAGE(state, page) {
-    state.decaissementsCaisse.current_page = page;
+        state.decaissementsCaisse.current_page = page;
     },
     SET_SEARCH_CAISSE_TODAY_CURRENT_PAGE(state, page) {
         state.decaissementsCaisseToday.current_page = page;
@@ -175,7 +175,7 @@ export const actions = {
             commit("SET_SEARCHED_DECAISSEMENTS_DATE", data);
         });
     },
-    fetchDecaissementsDate({ commit }, {date, page}) {
+    fetchDecaissementsDate({ commit }, { date, page }) {
         return this.$api.selectAllDecaissementDatePage(date, page).then((data) => {
             commit("SET_DECAISSEMENTS_DATE", data);
         });
@@ -223,7 +223,7 @@ export const actions = {
             commit("SET_SEARCHED_DECAISSEMENTS_CAISSE_DATE", data);
         });
     },
-    fetchDecaissementsCaisseDate({ commit }, {date, page}) {
+    fetchDecaissementsCaisseDate({ commit }, { date, page }) {
         return this.$api.selectAllDecaissementCaisseDatePage(date, page).then((data) => {
             commit("SET_DECAISSEMENTS_CAISSE_DATE", data);
         });

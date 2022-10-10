@@ -72,6 +72,9 @@ export default {
         this.$store.dispatch('traitement/fetchCountTraitement'),
         this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
         this.$store.dispatch('decaissement/fetchMontantDecaissementToday'),
+        this.$store.dispatch(
+          'decaissement/fetchMontantDecaissementCaisseToday'
+        ),
 
         this.$store.dispatch('paiement/fetchMontantPaiement'),
         this.$store.dispatch('reserve/fetchMontantReserve'),
