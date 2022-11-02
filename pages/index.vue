@@ -26,7 +26,7 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row justify="center" align="center" class="mt-10">
+    <!-- <v-row justify="center" align="center" class="mt-10">
       <v-col cols="10">
         <v-divider v-if="isDirecteur || isSys" />
       </v-col>
@@ -45,7 +45,7 @@
           </v-col>
         </v-row>
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
@@ -137,29 +137,29 @@ export default {
             to: '',
           },
         ],
-        third: [
-          // {
-          //   title: this.$t('dashboard.totalRecette'),
-          //   value: this.montantPaiement,
-          //   color: 'orange lighten-2',
-          //   icon: 'mdi-cash-multiple',
-          //   to: '',
-          // },
-          {
-            title: this.$t('dashboard.totalReserve'),
-            value: this.montantReserve,
-            color: 'yellow lighten-2',
-            icon: 'mdi-cash-multiple',
-            to: '',
-          },
-          {
-            title: this.$t('dashboard.totalDepenseReserve'),
-            value: this.montantDepense,
-            color: 'grey lighten-2',
-            icon: 'mdi-cash-multiple',
-            to: '',
-          },
-        ],
+        // third: [
+        //   // {
+        //   //   title: this.$t('dashboard.totalRecette'),
+        //   //   value: this.montantPaiement,
+        //   //   color: 'orange lighten-2',
+        //   //   icon: 'mdi-cash-multiple',
+        //   //   to: '',
+        //   // },
+        //   {
+        //     title: this.$t('dashboard.totalReserve'),
+        //     value: this.montantReserve,
+        //     color: 'yellow lighten-2',
+        //     icon: 'mdi-cash-multiple',
+        //     to: '',
+        //   },
+        //   {
+        //     title: this.$t('dashboard.totalDepenseReserve'),
+        //     value: this.montantDepense,
+        //     color: 'grey lighten-2',
+        //     icon: 'mdi-cash-multiple',
+        //     to: '',
+        //   },
+        // ],
       }
 
       return stats
