@@ -176,9 +176,9 @@ export default {
     }),
   },
 watch: {
-    query(newValue) {
-      this.query = this.removeSpecialCharacters(newValue)
-    },
+    // query(newValue) {
+    //   this.query = this.removeSpecialCharacters(newValue)
+    // },
   },
   methods: {
     removeSpecialCharacters(charactersString) {

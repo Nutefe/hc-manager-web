@@ -558,9 +558,9 @@ export default {
     dateCalcul() {
       this.form.dateEtat = this.formatDate(this.dateCalcul)
     },
-    query(newValue) {
-      this.query = this.removeSpecialCharacters(newValue)
-    },
+    // query(newValue) {
+    //   this.query = this.removeSpecialCharacters(newValue)
+    // },
   },
 
 
