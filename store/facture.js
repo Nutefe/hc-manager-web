@@ -19,6 +19,7 @@ export const mutations = {
     SET_ALL_FACTURES(state, allFactures) {
         state.allFactures = allFactures;
     },
+    
     SET_ALL_FICHES(state, fiches) {
         state.fiches = fiches;
     },

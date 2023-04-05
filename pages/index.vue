@@ -124,13 +124,13 @@ export default {
             icon: 'mdi-account-group',
             to: '/dashboard/factures',
           },
-          {
-            title: this.$t('dashboard.acompteFacture'),
-            value: this.acompteFacture,
-            color: 'orange lighten-2',
-            icon: 'mdi-account-group',
-            to: '/dashboard/factures',
-          },
+          // {
+          //   title: this.$t('dashboard.acompteFacture'),
+          //   value: this.acompteFacture,
+          //   color: 'orange lighten-2',
+          //   icon: 'mdi-account-group',
+          //   to: '/dashboard/factures',
+          // },
           {
             title: this.$t('dashboard.montantEncaisse'),
             value: this.montantPaiementDay,
