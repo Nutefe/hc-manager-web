@@ -69,6 +69,8 @@ export default {
         this.$store.dispatch('patient/fetchCountPatientDay'),
         this.$store.dispatch('facture/fetchCountFacture'),
         this.$store.dispatch('facture/fetchCountFactureDay'),
+        this.$store.dispatch('facture/fetchMontantFactureDay'),
+        this.$store.dispatch('facture/fetchAcompteFactureDay'),
         this.$store.dispatch('traitement/fetchCountTraitement'),
         this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
         this.$store.dispatch('decaissement/fetchMontantDecaissementToday'),
@@ -114,6 +116,20 @@ export default {
             color: 'orange lighten-2',
             icon: 'mdi-account-group',
             to: '/secretariat/patients',
+          },
+          {
+            title: this.$t('dashboard.montantFacture'),
+            value: this.montantFacture,
+            color: 'orange lighten-2',
+            icon: 'mdi-account-group',
+            to: '/dashboard/factures',
+          },
+          {
+            title: this.$t('dashboard.acompteFacture'),
+            value: this.acompteFacture,
+            color: 'orange lighten-2',
+            icon: 'mdi-account-group',
+            to: '/dashboard/factures',
           },
           {
             title: this.$t('dashboard.montantEncaisse'),
@@ -179,6 +195,8 @@ export default {
       montantPaiement: (state) => state.paiement.montantPaiement,
       montantReserve: (state) => state.reserve.montantReserve,
       montantDepense: (state) => state.depenseReserve.montantDepense,
+      montantFacture: (state) => state.facture.montantFacture,
+      acompteFacture: (state) => state.facture.acompteFacture,
     }),
   },
 }

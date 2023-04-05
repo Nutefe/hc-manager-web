@@ -153,6 +153,8 @@ export default {
         encaissements: "Encaissements/Jrs",
         patients: "Patients",
         totalFactures: "Factures Au Total",
+        montantFacture: "Montant facture",
+        acompteFacture: "Acompte facture",
         montantEncaisse: "Montant encaisser",
         resteEncaisse: "Reste encaisser",
         totalPatients: "Patients au total",

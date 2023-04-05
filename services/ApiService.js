@@ -1255,8 +1255,29 @@ export default ($axios, $auth) => ({
                 Authorization: `Bearer ${$auth.token}`,
             },
         });
-    },
+    },// 
+    acompteFacture() {
+        if (!$auth.loggedIn) {
+            return;
+        }
 
+        return $axios.$get(`/facture/acompte/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
+    montantFacture() {
+        if (!$auth.loggedIn) {
+            return;
+        }
+
+        return $axios.$get(`/facture/montant/day`, {
+            headers: {
+                Authorization: `Bearer ${$auth.token}`,
+            },
+        });
+    },
     /**
      * end facture axios api
      */

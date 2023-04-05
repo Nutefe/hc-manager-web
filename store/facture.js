@@ -6,6 +6,8 @@ const initialState = () => ({
     fiches: [],
     countFacture: 0,
     countFactureDay: 0,
+    montantFacture: 0,
+    acompteFacture: 0,
 });
 
 export const state = initialState;
@@ -64,6 +66,12 @@ export const mutations = {
     },
     SET_COUNT_FACTURE_DAY(state, countFactureDay) {
         state.countFactureDay = countFactureDay;
+    },
+    SET_MONTANT_FACTURE_DAY(state, montantFacture) {
+        state.montantFacture = montantFacture;
+    },
+    SET_ACOMPTE_FACTURE_DAY(state, acompteFacture) {
+        state.acompteFacture = acompteFacture;
     },
 
     SET_CURRENT_DAY_PAGE(state, page) {
@@ -193,6 +201,16 @@ export const actions = {
     fetchCountFactureDay({ commit }) {
         return this.$api.countFactureDay().then((data) => {
             commit("SET_COUNT_FACTURE_DAY", data);
+        });
+    },
+    fetchMontantFactureDay({ commit }) {
+        return this.$api.montantFacture().then((data) => {
+            commit("SET_MONTANT_FACTURE_DAY", data);
+        });
+    },
+    fetchAcompteFactureDay({ commit }) {
+        return this.$api.acompteFacture().then((data) => {
+            commit("SET_ACOMPTE_FACTURE_DAY", data);
         });
     },
 };
