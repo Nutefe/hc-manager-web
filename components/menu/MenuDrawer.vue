@@ -30,11 +30,11 @@
       <v-list-item-group color="primary">
         <v-list-item :to="localePath(dashboardRoutes.path)" nuxt>
           <v-list-item-action class="mr-3">
-            <v-icon left v-text="dashboardRoutes.icon" />
+            <v-icon left text-content="dashboardRoutes.icon" />
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title v-text="dashboardRoutes.title" />
+            <v-list-item-title text-content="dashboardRoutes.title" />
           </v-list-item-content>
         </v-list-item>
         <v-list-item
@@ -43,11 +43,11 @@
           nuxt
         >
           <v-list-item-action class="mr-3">
-            <v-icon left v-text="facturesRoutes.icon" />
+            <v-icon left text-content="facturesRoutes.icon" />
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title v-text="facturesRoutes.title" />
+            <v-list-item-title text-content="facturesRoutes.title" />
           </v-list-item-content>
         </v-list-item>
         <v-list-item
@@ -56,11 +56,11 @@
           nuxt
         >
           <v-list-item-action class="mr-3">
-            <v-icon left v-text="patientsRoutes.icon" />
+            <v-icon left text-content="patientsRoutes.icon" />
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title v-text="patientsRoutes.title" />
+            <v-list-item-title text-content="patientsRoutes.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -73,7 +73,7 @@
         <template slot="activator">
           <v-list-item-content>
             <v-list-item-title
-              v-text="paiementsRoutes.title"
+              text-content="paiementsRoutes.title"
             ></v-list-item-title>
           </v-list-item-content>
         </template>
@@ -85,7 +85,7 @@
           nuxt
         >
           <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
+            <v-list-item-title text-content="child.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
@@ -100,7 +100,7 @@
       >
         <template slot="activator">
           <v-list-item-content>
-            <v-list-item-title v-text="gestionRoutes.title"></v-list-item-title>
+            <v-list-item-title text-content="gestionRoutes.title"></v-list-item-title>
           </v-list-item-content>
         </template>
 
@@ -111,7 +111,7 @@
           nuxt
         >
           <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
+            <v-list-item-title text-content="child.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
@@ -124,7 +124,7 @@
         <template slot="activator">
           <v-list-item-content>
             <v-list-item-title
-              v-text="parameterRoutes.title"
+              text-content="parameterRoutes.title"
             ></v-list-item-title>
           </v-list-item-content>
         </template>
@@ -137,7 +137,7 @@
               nuxt
             >
               <v-list-item-content>
-                <v-list-item-title v-text="item.title"></v-list-item-title>
+                <v-list-item-title text-content="item.title"></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -199,20 +199,20 @@
     <v-list shaped>
       <v-list-item :to="localePath(document.path)">
         <v-list-item-icon class="mr-3">
-          <v-icon v-text="document.icon" />
+          <v-icon text-content="document.icon" />
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="document.title" />
+          <v-list-item-title text-content="document.title" />
         </v-list-item-content>
       </v-list-item>
       <v-list-item :to="localePath(helpe.path)">
         <v-list-item-icon class="mr-3">
-          <v-icon v-text="helpe.icon" />
+          <v-icon text-content="helpe.icon" />
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="helpe.title" />
+          <v-list-item-title text-content="helpe.title" />
         </v-list-item-content>
       </v-list-item>
     </v-list>

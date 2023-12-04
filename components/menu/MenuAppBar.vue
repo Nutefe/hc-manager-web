@@ -39,7 +39,7 @@
           active-class="yello"
           :to="localePath(dashboardRoutes.path)"
         >
-          <v-icon left v-text="dashboardRoutes.icon" />
+          <v-icon left text-content="dashboardRoutes.icon" />
           {{ dashboardRoutes.title }}
         </v-btn>
         <v-btn
@@ -51,7 +51,7 @@
           active-class="yello"
           :to="localePath(facturesRoutes.path)"
         >
-          <v-icon left v-text="facturesRoutes.icon" />
+          <v-icon left text-content="facturesRoutes.icon" />
           {{ facturesRoutes.title }}
         </v-btn>
         <v-btn
@@ -63,7 +63,7 @@
           active-class="yello"
           :to="localePath(patientsRoutes.path)"
         >
-          <v-icon left v-text="patientsRoutes.icon" />
+          <v-icon left text-content="patientsRoutes.icon" />
           {{ patientsRoutes.title }}
         </v-btn>
         <v-btn
@@ -75,7 +75,7 @@
           active-class="yello"
           :to="localePath('')"
         >
-          <v-icon left v-text="paiementsRoutes.icon" />
+          <v-icon left text-content="paiementsRoutes.icon" />
           {{ paiementsRoutes.title }}
         </v-btn>
         <v-menu
@@ -96,7 +96,7 @@
               link
               color="primary"
             >
-              <v-list-item-title v-text="item.title"></v-list-item-title>
+              <v-list-item-title text-content="item.title"></v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -109,7 +109,7 @@
           active-class="yello"
           :to="localePath('')"
         >
-          <v-icon left v-text="gestionRoutes.icon" />
+          <v-icon left text-content="gestionRoutes.icon" />
           {{ gestionRoutes.title }}
         </v-btn>
         <v-menu
@@ -130,7 +130,7 @@
               link
               color="primary"
             >
-              <v-list-item-title v-text="item.title"></v-list-item-title>
+              <v-list-item-title text-content="item.title"></v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -143,7 +143,7 @@
           active-class="yello"
           :to="localePath('')"
         >
-          <v-icon left v-text="parameterRoutes.icon" />
+          <v-icon left text-content="parameterRoutes.icon" />
           {{ parameterRoutes.title }}
         </v-btn>
         <v-menu
@@ -166,7 +166,7 @@
                   link
                   color="primary"
                 >
-                  <v-list-item-title v-text="item.title"></v-list-item-title>
+                  <v-list-item-title text-content="item.title"></v-list-item-title>
                 </v-list-item>
               </template>
               <template v-else>
@@ -177,7 +177,7 @@
                 link
                 color="primary"
               > -->
-                <!-- <v-list-item-title v-text="item.title"></v-list-item-title> -->
+                <!-- <v-list-item-title text-content="item.title"></v-list-item-title> -->
                 <v-menu
                   :key="`${item.title}-drawer-route`"
                   transition="slide-x-transition"
@@ -297,10 +297,10 @@
                 <v-list-item-content>
                   <v-list-item-title
                     class="text-subtitle-1 font-weight-medium my-1"
-                    v-text="fullname"
+                    text-content="fullname"
                   />
 
-                  <v-list-item-subtitle v-text="profileRoute.subtitle" />
+                  <v-list-item-subtitle text-content="profileRoute.subtitle" />
                 </v-list-item-content>
               </v-list-item>
 
@@ -308,31 +308,31 @@
 
               <v-list-item :to="localePath(document.path)">
                 <v-list-item-icon class="mr-3">
-                  <v-icon v-text="document.icon" />
+                  <v-icon text-content="document.icon" />
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title v-text="document.title" />
+                  <v-list-item-title text-content="document.title" />
                 </v-list-item-content>
               </v-list-item>
               <v-list-item :to="localePath(helpe.path)">
                 <v-list-item-icon class="mr-3">
-                  <v-icon v-text="helpe.icon" />
+                  <v-icon text-content="helpe.icon" />
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title v-text="helpe.title" />
+                  <v-list-item-title text-content="helpe.title" />
                 </v-list-item-content>
               </v-list-item>
               <v-divider class="my-2" />
 
               <v-list-item @click="logoutUser">
                 <v-list-item-icon class="mr-3">
-                  <v-icon v-text="logout.icon" />
+                  <v-icon text-content="logout.icon" />
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title v-text="logout.title" />
+                  <v-list-item-title text-content="logout.title" />
                 </v-list-item-content>
               </v-list-item>
             </v-list>

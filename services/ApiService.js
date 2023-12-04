@@ -1217,7 +1217,6 @@ export default ($axios, $auth) => ({
     },
 
     async loardFacture(filename) {
-
         await $axios.$get(`/downloadFile/facture/${filename}`, {
             headers: {
                 Authorization: `Bearer ${$auth.token}`,
