@@ -138,6 +138,27 @@
             <template #activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
+                color="red"
+                elevation="10"
+                small
+                dark
+                fab
+                :aria-label="$t('patient.addAssAmu')"
+                @click.stop="createItemAssurerAmu"
+                v-on="on"
+              >
+                <v-icon>mdi-card-account-details-star</v-icon>
+              </v-btn>
+            </template>
+
+            <span>
+              {{ $t('patient.addAssAmu') }}
+            </span>
+          </v-tooltip>
+          <v-tooltip left>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
                 color="blue"
                 elevation="10"
                 small
@@ -200,8 +221,12 @@
         </v-speed-dial>
       </div>
     </div>
-    
+
     <PatientCreate ref="createFormDialog" @refreshPage="refreshPage" />
+    <PatientAssurerAmuCreate
+      ref="createAssurerAmuFormDialog"
+      @refreshPage="refreshPage"
+    />
     <PatientAssurerCreate
       ref="createAssurerFormDialog"
       @refreshPage="refreshPage"
@@ -219,6 +244,7 @@ import { mapState } from 'vuex'
 import { debounce, startCase } from '~/helpers/helpers.js'
 import PatientCreate from '~/components/pages/patient/PatientCreate.vue'
 import PatientAssurerCreate from '~/components/pages/patient/PatientAssurerCreate.vue'
+import PatientAssurerAmuCreate from '~/components/pages/patient/PatientAssurerAmuCreate.vue'
 import PatientAssurerAutreCreate from '~/components/pages/patient/PatientAssurerAutreCreate.vue'
 import PatientEdit from '~/components/pages/patient/PatientEdit.vue'
 
@@ -228,6 +254,7 @@ export default {
   components: {
     PatientCreate,
     PatientAssurerCreate,
+    PatientAssurerAmuCreate,
     PatientAssurerAutreCreate,
     PatientEdit,
   },
@@ -363,7 +390,7 @@ export default {
       patients: (state) => state.patient.patients,
     }),
   },
-watch: {
+  watch: {
     // query(newValue) {
     //   this.query = this.removeSpecialCharacters(newValue)
     // },
@@ -384,6 +411,9 @@ watch: {
     },
     createItemAssurer() {
       this.$refs.createAssurerFormDialog.openDialog()
+    },
+    createItemAssurerAmu() {
+      this.$refs.createAssurerAmuFormDialog.openDialog()
     },
     createItemAssurerAutre() {
       this.$refs.createAssurerAutreFormDialog.openDialog()

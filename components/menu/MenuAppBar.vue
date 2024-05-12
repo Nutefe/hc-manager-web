@@ -96,7 +96,9 @@
               link
               color="primary"
             >
-              <v-list-item-title text-content="item.title"></v-list-item-title>
+              <v-list-item-title text-content="item.title">{{
+                item.title
+              }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -130,7 +132,7 @@
               link
               color="primary"
             >
-              <v-list-item-title text-content="item.title"></v-list-item-title>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -166,7 +168,9 @@
                   link
                   color="primary"
                 >
-                  <v-list-item-title text-content="item.title"></v-list-item-title>
+                  <v-list-item-title text-content="item.title">{{
+                    item.title
+                  }}</v-list-item-title>
                 </v-list-item>
               </template>
               <template v-else>
@@ -297,10 +301,12 @@
                 <v-list-item-content>
                   <v-list-item-title
                     class="text-subtitle-1 font-weight-medium my-1"
-                    text-content="fullname"
-                  />
+                    >{{ fullname }}</v-list-item-title
+                  >
 
-                  <v-list-item-subtitle text-content="profileRoute.subtitle" />
+                  <v-list-item-subtitle>{{
+                    profileRoute.subtitle
+                  }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -308,31 +314,31 @@
 
               <v-list-item :to="localePath(document.path)">
                 <v-list-item-icon class="mr-3">
-                  <v-icon text-content="document.icon" />
+                  <v-icon>{{ document.icon }}</v-icon>
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title text-content="document.title" />
+                  <v-list-item-title>{{ document.title }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item :to="localePath(helpe.path)">
                 <v-list-item-icon class="mr-3">
-                  <v-icon text-content="helpe.icon" />
+                  <v-icon>{{ helpe.icon }}</v-icon>
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title text-content="helpe.title" />
+                  <v-list-item-title>{{ helpe.title }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-divider class="my-2" />
 
               <v-list-item @click="logoutUser">
                 <v-list-item-icon class="mr-3">
-                  <v-icon text-content="logout.icon" />
+                  <v-icon>{{ logout.icon }}</v-icon>
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title text-content="logout.title" />
+                  <v-list-item-title>{{ logout.title }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>

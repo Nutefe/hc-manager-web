@@ -2,19 +2,17 @@
   <v-card hover outlined>
     <v-list-item two-line>
       <v-list-item-avatar :color="stat.color" size="55">
-        <v-icon dark size="25" text-content="stat.icon" />
+        <v-icon dark size="25" >{{ stat.icon }}</v-icon>
       </v-list-item-avatar>
 
       <v-list-item-content>
         <v-list-item-title
           class="text-h5 font-weight-medium text--primary"
-          text-content="stat.value"
-        />
+        >{{ stat.value }}</v-list-item-title>
 
         <v-list-item-subtitle
           class="text-subtitle-1 text-uppercase text--secondary font-weight-medium"
-          text-content="stat.title"
-        />
+        >{{ stat.title }}</v-list-item-subtitle>
       </v-list-item-content>
 
       <v-list-item-action>

@@ -54,7 +54,7 @@
               </v-col>
               <v-col cols="12" sm="12" class="pb-0">
                 <v-autocomplete
-                  v-model.trim.lazy="form1.traitement"
+                  v-model.trim.lazy="form1.traintemet"
                   :items="matchedTraitements"
                   :label="$t('facture.form.traitement')"
                   item-text="libelle"

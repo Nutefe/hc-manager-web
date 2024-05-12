@@ -30,11 +30,11 @@
       <v-list-item-group color="primary">
         <v-list-item :to="localePath(dashboardRoutes.path)" nuxt>
           <v-list-item-action class="mr-3">
-            <v-icon left text-content="dashboardRoutes.icon" />
+            <v-icon left >{{dashboardRoutes.icon}}</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title text-content="dashboardRoutes.title" />
+            <v-list-item-title >{{ dashboardRoutes.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item
@@ -43,11 +43,11 @@
           nuxt
         >
           <v-list-item-action class="mr-3">
-            <v-icon left text-content="facturesRoutes.icon" />
+            <v-icon left >{{ facturesRoutes.icon }}</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title text-content="facturesRoutes.title" />
+            <v-list-item-title >{{ facturesRoutes.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item
@@ -56,11 +56,11 @@
           nuxt
         >
           <v-list-item-action class="mr-3">
-            <v-icon left text-content="patientsRoutes.icon" />
+            <v-icon left >{{ patientsRoutes.icon }}</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title text-content="patientsRoutes.title" />
+            <v-list-item-title >{{ patientsRoutes.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -73,8 +73,7 @@
         <template slot="activator">
           <v-list-item-content>
             <v-list-item-title
-              text-content="paiementsRoutes.title"
-            ></v-list-item-title>
+            >{{ paiementsRoutes.title }}</v-list-item-title>
           </v-list-item-content>
         </template>
 
@@ -85,7 +84,7 @@
           nuxt
         >
           <v-list-item-content>
-            <v-list-item-title text-content="child.title"></v-list-item-title>
+            <v-list-item-title >{{ child.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
@@ -100,7 +99,7 @@
       >
         <template slot="activator">
           <v-list-item-content>
-            <v-list-item-title text-content="gestionRoutes.title"></v-list-item-title>
+            <v-list-item-title >{{ gestionRoutes.title }}</v-list-item-title>
           </v-list-item-content>
         </template>
 
@@ -111,7 +110,7 @@
           nuxt
         >
           <v-list-item-content>
-            <v-list-item-title text-content="child.title"></v-list-item-title>
+            <v-list-item-title >{{ child.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
@@ -124,8 +123,7 @@
         <template slot="activator">
           <v-list-item-content>
             <v-list-item-title
-              text-content="parameterRoutes.title"
-            ></v-list-item-title>
+            >{{ parameterRoutes.title }}</v-list-item-title>
           </v-list-item-content>
         </template>
 
@@ -137,7 +135,7 @@
               nuxt
             >
               <v-list-item-content>
-                <v-list-item-title text-content="item.title"></v-list-item-title>
+                <v-list-item-title >{{ item.title }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -199,20 +197,20 @@
     <v-list shaped>
       <v-list-item :to="localePath(document.path)">
         <v-list-item-icon class="mr-3">
-          <v-icon text-content="document.icon" />
+          <v-icon >{{ document.icon }}</v-icon>
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title text-content="document.title" />
+          <v-list-item-title >{{ document.title }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item :to="localePath(helpe.path)">
         <v-list-item-icon class="mr-3">
-          <v-icon text-content="helpe.icon" />
+          <v-icon>{{ helpe.icon }}</v-icon>
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title text-content="helpe.title" />
+          <v-list-item-title >{{ helpe.title }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
