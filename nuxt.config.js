@@ -1,6 +1,6 @@
 // import colors from 'vuetify/es5/util/colors'
-const BASE_URL = "http://localhost:8687/api";
-// const BASE_URL = "http://192.168.1.153:8080/hc-manager/api";
+// const BASE_URL = "http://localhost:8687/api";
+const BASE_URL = 'http://192.168.1.153:8080/hc-manager/api'
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -16,34 +16,30 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link:
-      [
-        { rel: 'icon', type: 'image/x-icon', href: '/icon.png' },
-        {
-          rel: "stylesheet",
-          href: "https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css",
-        },
-        {
-          rel: "stylesheet",
-          href: "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css",
-        },
-      ],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/icon.png' },
+      {
+        rel: 'stylesheet',
+        href: 'https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css',
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css',
+      },
+    ],
   },
 
   loading: {
-    color: "#0b7557",
-    failedColor: "#FF5252",
-    height: "3px",
+    color: '#0b7557',
+    failedColor: '#FF5252',
+    height: '3px',
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["~/assets/css/styles.css"],
+  css: ['~/assets/css/styles.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    "~/plugins/vuelidate.js",
-    "~/plugins/vmask.js",
-  ],
+  plugins: ['~/plugins/vuelidate.js', '~/plugins/vmask.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -52,7 +48,7 @@ export default {
   buildModules: [
     '@nuxt/typescript-build',
     '@nuxtjs/vuetify',
-    "@nuxtjs/moment",
+    '@nuxtjs/moment',
     '@nuxtjs/google-fonts',
   ],
 
@@ -62,19 +58,19 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/i18n',
     '@nuxtjs/auth-next',
-    "vue-toastification/nuxt",
-    "vue-sweetalert2/nuxt",
+    'vue-toastification/nuxt',
+    'vue-sweetalert2/nuxt',
   ],
 
   // Nuxt-i18n module
   i18n: {
-    baseUrl: "/",
-    locales: [{ code: "fr", iso: "fr", name: "Français", file: "fr.js" }],
+    baseUrl: '/',
+    locales: [{ code: 'fr', iso: 'fr', name: 'Français', file: 'fr.js' }],
     lazy: true,
-    langDir: "lang/",
-    defaultLocale: "fr",
+    langDir: 'lang/',
+    defaultLocale: 'fr',
     vueI18n: {
-      fallbackLocale: "fr",
+      fallbackLocale: 'fr',
     },
     detectBrowserLanguage: false,
   },
@@ -85,8 +81,8 @@ export default {
     timeout: 10000,
     headers: {
       common: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
     },
   },
@@ -95,7 +91,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/scss/variables.scss'],
     defaultAssets: false,
-    optionsPath: "~/vuetify/options.js",
+    optionsPath: '~/vuetify/options.js',
     treeShake: true,
     // theme: {
     //   light: true,
@@ -128,24 +124,24 @@ export default {
 
   // Auth module
   auth: {
-    plugins: ["~/plugins/api.js", "~/plugins/auth.js"],
+    plugins: ['~/plugins/api.js', '~/plugins/auth.js'],
     redirect: {
-      login: "/connexion",
-      logout: "/connexion",
-      callback: "/connexion",
-      home: "/",
+      login: '/connexion',
+      logout: '/connexion',
+      callback: '/connexion',
+      home: '/',
     },
     strategies: {
       local: {
-        scheme: "refresh",
+        scheme: 'refresh',
         token: {
-          property: "accessToken",
+          property: 'accessToken',
           maxAge: 900,
-          type: "Bearer",
+          type: 'Bearer',
         },
         refreshToken: {
-          property: "refreshToken",
-          data: "refreshToken",
+          property: 'refreshToken',
+          data: 'refreshToken',
           maxAge: 60 * 60 * 24 * 30,
         },
         user: {
@@ -153,9 +149,9 @@ export default {
           autoFetch: true,
         },
         endpoints: {
-          login: { url: "/auth/signin", method: "post" },
-          refresh: { url: "/auth/refreshtoken", method: "post" },
-          user: { url: "/utilisateur/me", method: "get" },
+          login: { url: '/auth/signin', method: 'post' },
+          refresh: { url: '/auth/refreshtoken', method: 'post' },
+          user: { url: '/utilisateur/me', method: 'get' },
           logout: false,
         },
         autoLogout: false,
@@ -178,7 +174,7 @@ export default {
   // Vue Toastification
   toast: {
     maxToasts: 5,
-    transition: "Vue-Toastification__fade",
+    transition: 'Vue-Toastification__fade',
     timeout: 3000,
     closeOnClick: false,
     draggable: false,
@@ -188,15 +184,15 @@ export default {
 
   // SweetAlert
   sweetalert: {
-    confirmButtonColor: "#0fa379",
-    denyButtonColor: "#FF5252",
+    confirmButtonColor: '#0fa379',
+    denyButtonColor: '#FF5252',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
   router: {
-    middleware: ["auth"],
+    middleware: ['auth'],
   },
 
   server: {
