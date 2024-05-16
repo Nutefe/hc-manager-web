@@ -700,7 +700,13 @@ export default {
       this.loading = true
 
       if (this.form.patient) {
-        if (isEqual(this.form.patient.typePatient.libelle, 'ASSURER INAM')) {
+        if (
+          isEqual(this.form.patient.typePatient.libelle, 'ASSURER INAM') ||
+          isEqual(
+            this.form.patient.typePatient.libelle,
+            'ASSURANCE MALADIE UNIVERSELLE (AMU)'
+          )
+        ) {
           this.disable = true
           // this.form1.kota = '00'
           this.form.unite = {

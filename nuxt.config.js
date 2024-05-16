@@ -1,5 +1,5 @@
 // import colors from 'vuetify/es5/util/colors'
-// const BASE_URL = "http://localhost:8687/api";
+// const BASE_URL = 'http://localhost:8687/api'
 const BASE_URL = 'http://192.168.1.153:8080/hc-manager/api'
 
 export default {
