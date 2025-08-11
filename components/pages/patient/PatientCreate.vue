@@ -61,8 +61,14 @@
                   autocomplete="off"
                   :maxlength="$v.form.nom.$params.maxLength.max"
                   :error-messages="nomErrors"
-                  @input="$v.form.nom.$touch()"
-                  @blur="$v.form.nom.$touch()"
+                  @input="
+                    $v.form.nom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
+                  @blur="
+                    $v.form.nom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
@@ -72,8 +78,14 @@
                   autocomplete="off"
                   :maxlength="$v.form.prenom.$params.maxLength.max"
                   :error-messages="prenomErrors"
-                  @input="$v.form.prenom.$touch()"
-                  @blur="$v.form.prenom.$touch()"
+                  @input="
+                    $v.form.prenom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
+                  @blur="
+                    $v.form.prenom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
@@ -268,9 +280,11 @@ export default {
       },
       isUnique: {
         codeDossier: false,
+        nomAndPrenom: false,
       },
       isPending: {
         codeDossier: false,
+        nomAndPrenom: false,
       },
     }
   },
@@ -317,7 +331,8 @@ export default {
       return (
         !this.$v.form.$invalid &&
         !this.$v.form.$pending &&
-        this.isUnique.codeDossier
+        this.isUnique.codeDossier &&
+        this.isUnique.nomAndPrenom
       )
     },
 
@@ -377,6 +392,11 @@ export default {
           })
         )
 
+      this.form.nom &&
+        !this.isPending.nomAndPrenom &&
+        !this.isUnique.nomAndPrenom &&
+        errors.push(this.$t('validations.nomcomplet.unique'))
+
       return errors
     },
     prenomErrors() {
@@ -400,6 +420,11 @@ export default {
             length: this.$v.form.prenom.$params.maxLength.max,
           })
         )
+
+      this.form.prenom &&
+        !this.isPending.nomAndPrenom &&
+        !this.isUnique.nomAndPrenom &&
+        errors.push(this.$t('validations.nomcomplet.unique'))
 
       return errors
     },
@@ -527,6 +552,14 @@ export default {
       this.isPending.codeDossier = true
       this.isUnique.codeDossier = false
     },
+    'form.nom'() {
+      this.isPending.nomAndPrenom = true
+      this.isUnique.nomAndPrenom = false
+    },
+    'form.prenom'() {
+      this.isPending.nomAndPrenom = true
+      this.isUnique.nomAndPrenom = false
+    },
 
     dateNais() {
       this.form.dateNaiss = this.formatDate(this.dateNais)
@@ -568,13 +601,51 @@ export default {
       -1
     ),
 
+    checkUniqueNomandPrenom: debounce(
+      async function () {
+        if (
+          this.form.nom === '' ||
+          this.form.nom === null ||
+          this.$v.form.nom.$invalid ||
+          this.form.prenom === '' ||
+          this.form.prenom === null ||
+          this.$v.form.prenom.$invalid
+        ) {
+          return
+        }
+
+        try {
+          const result = await this.$api.checkNomAndPrenom({
+            nom: this.form.nom,
+            prenom: this.form.prenom,
+          })
+          this.isUnique.nomAndPrenom = !result
+        } catch (err) {
+          this.isUnique.nomAndPrenom = false
+
+          if (!err.response) {
+            this.$nuxt.error({
+              statusCode: 503,
+              message: 'Unable to fetch data.',
+            })
+          }
+        }
+
+        this.isPending.nomAndPrenom = false
+      },
+      500,
+      -1
+    ),
+
     closeDialog() {
       this.dialog = false
       this.isUnique = {
         codeDossier: false,
+        nomAndPrenom: false,
       }
       this.isPending = {
         codeDossier: false,
+        nomAndPrenom: false,
       }
       this.$v.form.$reset()
 

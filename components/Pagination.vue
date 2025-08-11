@@ -108,6 +108,8 @@ export default {
           easing: 'easeInOutQuad',
         })
 
+        console.log('search', this.search)
+
         if (this.search) {
           if (this.store) {
             await this.$store.dispatch(`${this.store}/${this.action}`, {

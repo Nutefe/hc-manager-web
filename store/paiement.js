@@ -1,226 +1,223 @@
 const initialState = () => ({
-    allPaiements: [],
-    paiements: {},
-    factures: {},
-    paiementDates: {},
-    paiementDate: {},
-    paiement: null,
-    countPaiementDay: 0,
-    montantPaiementDay: 0,
-    montantPaiement: 0,
-    countFactureDay: 0,
-    etatRecette: {},
-});
+  allPaiements: [],
+  allPaiementsFacture: [],
+  paiements: {},
+  factures: {},
+  paiementDates: {},
+  paiementDate: {},
+  paiement: null,
+  countPaiementDay: 0,
+  montantPaiementDay: 0,
+  montantPaiement: 0,
+  countFactureDay: 0,
+  etatRecette: {},
+})
 
-export const state = initialState;
+export const state = initialState
 
 export const mutations = {
-    RESET_STATE(state) {
-        Object.assign(state, initialState());
-    },
-    SET_ALL_PAIEMENTS(state, allPaiements) {
-        state.allPaiements = allPaiements;
-    },
-    SET_SEARCHED_PAIEMENTS(state, paiements) {
-        state.paiements = paiements;
-    },
-    SET_PAIEMENTS(state, paiements) {
-        state.paiements = paiements;
-    },
-    SET_SEARCHED_DAY_PAIEMENTS(state, paiements) {
-        state.paiements = paiements;
-    },
-    SET_DAY_PAIEMENTS(state, paiements) {
-        state.paiements = paiements;
-    },
-    SET_SEARCHED_DAY_FACTURES(state, factures) {
-        state.factures = factures;
-    },
-    SET_DAY_FACTURES(state, factures) {
-        state.factures = factures;
-    },
+  RESET_STATE(state) {
+    Object.assign(state, initialState())
+  },
+  SET_ALL_PAIEMENTS(state, allPaiements) {
+    state.allPaiements = allPaiements
+  },
+  SET_ALL_PAIEMENTS_FACTURE(state, allPaiementsFacture) {
+    state.allPaiementsFacture = allPaiementsFacture
+  },
+  SET_SEARCHED_PAIEMENTS(state, paiements) {
+    state.paiements = paiements
+  },
+  SET_PAIEMENTS(state, paiements) {
+    state.paiements = paiements
+  },
+  SET_SEARCHED_DAY_PAIEMENTS(state, paiements) {
+    state.paiements = paiements
+  },
+  SET_DAY_PAIEMENTS(state, paiements) {
+    state.paiements = paiements
+  },
+  SET_SEARCHED_DAY_FACTURES(state, factures) {
+    state.factures = factures
+  },
+  SET_DAY_FACTURES(state, factures) {
+    state.factures = factures
+  },
 
-    SET_SEARCHED_DATE_PAIEMENTS(state, paiementDates) {
-        state.paiementDates = paiementDates;
-    },
-    SET_DATE_PAIEMENTS(state, paiementDates) {
-        state.paiementDates = paiementDates;
-    },
-    SET_DATE_PAIEMENTS_NO(state, paiementDate) {
-        state.paiementDate = paiementDate;
-    },
+  SET_SEARCHED_DATE_PAIEMENTS(state, paiementDates) {
+    state.paiementDates = paiementDates
+  },
+  SET_DATE_PAIEMENTS(state, paiementDates) {
+    state.paiementDates = paiementDates
+  },
+  SET_DATE_PAIEMENTS_NO(state, paiementDate) {
+    state.paiementDate = paiementDate
+  },
 
-    SET_SEARCH_CURRENT_PAGE(state, page) {
-        state.paiements.current_page = page;
-    },
-    SET_CURRENT_PAGE(state, page) {
-        state.paiements.current_page = page;
-    },
-    SET_PAIEMENT(state, paiement) {
-        state.paiement = paiement;
-    },
-    SET_COUNT_PAIEMENT_DAY(state, countPaiementDay) {
-        state.countPaiementDay = countPaiementDay;
-    },
-    SET_MONTANT_PAIEMENT_DAY(state, montantPaiementDay) {
-        state.montantPaiementDay = montantPaiementDay;
-    },
-    SET_MONTANT_PAIEMENT(state, montantPaiement) {
-        state.montantPaiement = montantPaiement;
-    },
-    SET_COUNT_FACTURE_DAY(state, countFactureDay) {
-        state.countFactureDay = countFactureDay;
-    },
-    SET_COUNT_DATE_PAIEMENTS(state, page) {
-        state.paiementDates.current_page = page;
-    },
+  SET_SEARCH_CURRENT_PAGE(state, page) {
+    state.paiements.current_page = page
+  },
+  SET_CURRENT_PAGE(state, page) {
+    state.paiements.current_page = page
+  },
+  SET_PAIEMENT(state, paiement) {
+    state.paiement = paiement
+  },
+  SET_COUNT_PAIEMENT_DAY(state, countPaiementDay) {
+    state.countPaiementDay = countPaiementDay
+  },
+  SET_MONTANT_PAIEMENT_DAY(state, montantPaiementDay) {
+    state.montantPaiementDay = montantPaiementDay
+  },
+  SET_MONTANT_PAIEMENT(state, montantPaiement) {
+    state.montantPaiement = montantPaiement
+  },
+  SET_COUNT_FACTURE_DAY(state, countFactureDay) {
+    state.countFactureDay = countFactureDay
+  },
+  SET_COUNT_DATE_PAIEMENTS(state, page) {
+    state.paiementDates.current_page = page
+  },
 
-    SET_CURRENT_DAY_PAGE(state, page) {
-        state.factures.current_page = page;
-    },
-    SET_CURRENT_SEARCH_DAY_PAGE(state, page) {
-        state.factures.current_page = page;
-    },
-    SET_ETAT_RECETTE(state, etatRecette) {
-        state.etatRecette = etatRecette;
-    },
-};
+  SET_CURRENT_DAY_PAGE(state, page) {
+    state.factures.current_page = page
+  },
+  SET_CURRENT_SEARCH_DAY_PAGE(state, page) {
+    state.factures.current_page = page
+  },
+  SET_ETAT_RECETTE(state, etatRecette) {
+    state.etatRecette = etatRecette
+  },
+}
 
 export const actions = {
-    resetState({ commit }) {
-        commit("RESET_STATE");
-    },
-    fetchAllPaiements({ commit }) {
-        return this.$api.getAllPaiement().then((data) => {
-            commit("SET_ALL_PAIEMENTS", data);
-        });
-    },
+  resetState({ commit }) {
+    commit('RESET_STATE')
+  },
+  fetchAllPaiements({ commit }) {
+    return this.$api.getAllPaiement().then((data) => {
+      commit('SET_ALL_PAIEMENTS', data)
+    })
+  },
+  fetchAllPaiementsFacture({ commit }, id) {
+    return this.$api.getPaiementFacture(id).then((data) => {
+      commit('SET_ALL_PAIEMENTS_FACTURE', data)
+    })
+  },
+  searchPaiements({ commit }, { page, s }) {
+    if (!s) {
+      commit('SET_SEARCHED_PAIEMENTS', {})
+      return
+    }
 
-    searchPaiements({ commit }, { page, s }) {
-        if (!s) {
+    return this.$api.searchAllPaiementPage(page, s).then((data) => {
+      commit('SET_SEARCHED_PAIEMENTS', data)
+    })
+  },
+  fetchPaiements({ commit }, { page }) {
+    return this.$api.selectAllPaiementPage(page).then((data) => {
+      commit('SET_PAIEMENTS', data)
+    })
+  },
+  searchDayPaiements({ commit }, { page, s }) {
+    if (!s) {
+      commit('SET_SEARCHED_DAY_PAIEMENTS', {})
+      return
+    }
 
-            commit("SET_SEARCHED_PAIEMENTS", {});
-            return;
-        }
+    return this.$api.searchAllDayPaiementPage(page, s).then((data) => {
+      commit('SET_SEARCHED_DAY_PAIEMENTS', data)
+    })
+  },
+  fetchDayPaiements({ commit }, { page }) {
+    return this.$api.selectAllDayPaiementPage(page).then((data) => {
+      commit('SET_DAY_PAIEMENTS', data)
+    })
+  },
+  searchDayFactures({ commit }, { page, s }) {
+    if (!s) {
+      commit('SET_SEARCHED_DAY_FACTURES', {})
+      return
+    }
 
-        return this.$api.searchAllPaiementPage(page, s).then((data) => {
+    return this.$api.searchAllDayFacturePage(page, s).then((data) => {
+      commit('SET_SEARCHED_DAY_FACTURES', data)
+    })
+  },
+  fetchDayFactures({ commit }, page) {
+    return this.$api.selectAllDayFacturePage(page).then((data) => {
+      commit('SET_DAY_FACTURES', data)
+    })
+  },
 
-            commit("SET_SEARCHED_PAIEMENTS", data);
-        });
-    },
-    fetchPaiements({ commit }, { page }) {
-        return this.$api.selectAllPaiementPage(page).then((data) => {
-            commit("SET_PAIEMENTS", data);
-        });
-    },
-    searchDayPaiements({ commit }, { page, s }) {
-        if (!s) {
+  searchDatePaiement({ commit }, { date, page, s }) {
+    if (!s) {
+      commit('SET_SEARCHED_DATE_PAIEMENTS', {})
+      commit('SET_DATE_PAIEMENTS_NO', {})
 
-            commit("SET_SEARCHED_DAY_PAIEMENTS", {});
-            return;
-        }
+      return
+    }
 
-        return this.$api.searchAllDayPaiementPage(page, s).then((data) => {
+    return this.$api.searchAllPaiementDatePage(page, date, s).then((data) => {
+      commit('SET_SEARCHED_DATE_PAIEMENTS', data.page)
 
-            commit("SET_SEARCHED_DAY_PAIEMENTS", data);
-        });
-    },
-    fetchDayPaiements({ commit }, { page }) {
-        return this.$api.selectAllDayPaiementPage(page).then((data) => {
-            commit("SET_DAY_PAIEMENTS", data);
-        });
-    },
-    searchDayFactures({ commit }, { page, s }) {
-        if (!s) {
+      commit('SET_DATE_PAIEMENTS_NO', data)
+    })
+  },
+  fetchDatePaiement({ commit }, { date, page }) {
+    // console.log("test")
+    return this.$api.selectAllPaiementDatePage(page, date).then((data) => {
+      // console.log(data)
 
-            commit("SET_SEARCHED_DAY_FACTURES", {});
-            return;
-        }
+      commit('SET_DATE_PAIEMENTS', data.page)
+      commit('SET_DATE_PAIEMENTS_NO', data)
+    })
+  },
 
-        return this.$api.searchAllDayFacturePage(page, s).then((data) => {
+  fetchPaiement({ commit, getters }, id) {
+    const operation = getters.getPaiementById(id)
 
-            commit("SET_SEARCHED_DAY_FACTURES", data);
-        });
-    },
-    fetchDayFactures({ commit }, page) {
-        return this.$api.selectAllDayFacturePage(page).then((data) => {
-            commit("SET_DAY_FACTURES", data);
-        });
-    },
+    if (operation) {
+      return commit('SET_PAIEMENT', operation)
+    } else {
+      return this.$api.getPaiement(id).then((data) => {
+        commit('SET_PAIEMENT', data)
+      })
+    }
+  },
+  fetchCountPaiementDay({ commit }) {
+    return this.$api.countPaiementDay().then((data) => {
+      commit('SET_COUNT_PAIEMENT_DAY', data)
+    })
+  },
+  fetchMontantPaiementDay({ commit }) {
+    return this.$api.montantPaiementDay().then((data) => {
+      commit('SET_MONTANT_PAIEMENT_DAY', data)
+    })
+  },
 
-    searchDatePaiement({ commit }, { date, page, s }) {
-        if (!s) {
-
-            commit("SET_SEARCHED_DATE_PAIEMENTS", {});
-            commit("SET_DATE_PAIEMENTS_NO", {});
-
-            return;
-        }
-
-        return this.$api.searchAllPaiementDatePage(page, date, s).then((data) => {
-
-            commit("SET_SEARCHED_DATE_PAIEMENTS", data.page);
-
-            commit("SET_DATE_PAIEMENTS_NO", data);
-
-        });
-    },
-    fetchDatePaiement({ commit }, { date, page }) {
-        // console.log("test")
-        return this.$api.selectAllPaiementDatePage(page, date).then((data) => {
-            // console.log(data)
-
-            commit("SET_DATE_PAIEMENTS", data.page);
-            commit("SET_DATE_PAIEMENTS_NO", data);
-        });
-    },
-
-    fetchPaiement({ commit, getters }, id) {
-        const operation = getters.getPaiementById(id);
-
-        if (operation) {
-            return commit("SET_PAIEMENT", operation);
-        } else {
-            return this.$api.getPaiement(id).then((data) => {
-                commit("SET_PAIEMENT", data);
-            });
-        }
-    },
-    fetchCountPaiementDay({ commit }) {
-        return this.$api.countPaiementDay().then((data) => {
-            commit("SET_COUNT_PAIEMENT_DAY", data);
-        });
-    },
-    fetchMontantPaiementDay({ commit }) {
-        return this.$api.montantPaiementDay().then((data) => {
-            commit("SET_MONTANT_PAIEMENT_DAY", data);
-        });
-    },
-
-    fetchMontantPaiement({ commit }) {
-        return this.$api.montantPaiement().then((data) => {
-            commit("SET_MONTANT_PAIEMENT", data);
-        });
-    },
-    fetchCountFactureDay({ commit }) {
-        return this.$api.countFactureDay().then((data) => {
-            commit("SET_COUNT_FACTURE_DAY", data);
-        });
-    },
-    fetchEtatPaiements({ commit }, { start, end }) {
-        return this.$api.selectEtatRecette(start, end).then((data) => {
-            commit("SET_ETAT_RECETTE", data);
-        });
-    },
-
-};
+  fetchMontantPaiement({ commit }) {
+    return this.$api.montantPaiement().then((data) => {
+      commit('SET_MONTANT_PAIEMENT', data)
+    })
+  },
+  fetchCountFactureDay({ commit }) {
+    return this.$api.countFactureDay().then((data) => {
+      commit('SET_COUNT_FACTURE_DAY', data)
+    })
+  },
+  fetchEtatPaiements({ commit }, { start, end }) {
+    return this.$api.selectEtatRecette(start, end).then((data) => {
+      commit('SET_ETAT_RECETTE', data)
+    })
+  },
+}
 
 export const getters = {
-    paiementsTotal: (state) => state.paiements?.total || 0,
-    getPaiementById: (state) => (id) => {
-        const paiements = state.paiements.data || [];
+  paiementsTotal: (state) => state.paiements?.total || 0,
+  getPaiementById: (state) => (id) => {
+    const paiements = state.paiements.data || []
 
-        return paiements
-            .find((art) => art.id === id);
-    },
-};
+    return paiements.find((art) => art.id === id)
+  },
+}

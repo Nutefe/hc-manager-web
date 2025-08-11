@@ -464,6 +464,21 @@ export default {
       action: 'Action',
       per_page: 'Facture par page',
       page_text: 'de',
+      detail: {
+        titre: 'Détails de la facture',
+        num: 'N°',
+        traitement: 'Traitement',
+        prix: 'Prix',
+        baseRembour: 'Base remboursemnt',
+        prix_paye_assurance: 'Prix à payé par l’assurance',
+        prix_paye_beneficiaire: 'Prix à payé par le bénéficiaire',
+        paye: 'Les paiements effectuer',
+        totalFacture: 'Montant total de la facture à payer par le patient',
+        remise: 'Remise',
+        total: 'Somme total payer par le patient',
+        reste: 'Reste à payer par le patient',
+        acompte: 'Acompte payer par le patient',
+      },
     },
     solde: {
       yes: 'Oui',
@@ -745,6 +760,9 @@ export default {
       unique: "Ce code n'est pas disponible.",
       min: 'Le code doit contenir au moins {length} caractères.',
       max: 'Le code doit contenir au plus {length} caractères.',
+    },
+    nomcomplet: {
+      unique: 'Ce patient avec ce nom ou prenom exist déjà.',
     },
 
     libelle: {

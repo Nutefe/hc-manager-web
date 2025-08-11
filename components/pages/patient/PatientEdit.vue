@@ -61,8 +61,14 @@
                   autocomplete="off"
                   :maxlength="$v.form.nom.$params.maxLength.max"
                   :error-messages="nomErrors"
-                  @input="$v.form.nom.$touch()"
-                  @blur="$v.form.nom.$touch()"
+                  @input="
+                    $v.form.nom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
+                  @blur="
+                    $v.form.nom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
@@ -72,8 +78,14 @@
                   autocomplete="off"
                   :maxlength="$v.form.prenom.$params.maxLength.max"
                   :error-messages="prenomErrors"
-                  @input="$v.form.prenom.$touch()"
-                  @blur="$v.form.prenom.$touch()"
+                  @input="
+                    $v.form.prenom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
+                  @blur="
+                    $v.form.prenom.$touch()
+                    checkUniqueNomandPrenom()
+                  "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
@@ -331,12 +343,15 @@ export default {
       },
       isUnique: {
         codeDossier: false,
+        nomAndPrenom: false,
       },
       isPending: {
         codeDossier: false,
+        nomAndPrenom: false,
       },
       isLoaded: {
         codeDossier: false,
+        nomAndPrenom: false,
       },
     }
   },
@@ -385,7 +400,7 @@ export default {
     try {
       await Promise.all([
         this.$store.dispatch('typePatient/fetchAllTypes'),
-        this.$store.dispatch('assurance/fetchAllAssurances'),
+        this.$store.dispatch('assurance/fetchAllAssurancesAutre'),
         this.$store.dispatch('entreprise/fetchAllEntreprises'),
       ])
     } catch (err) {
@@ -399,12 +414,22 @@ export default {
   computed: {
     isFormValid() {
       const isFormEdited = !isEqual(this.selectedItem, this.form)
+      console.log(isFormEdited)
+      console.log(this.isUnique.nomAndPrenom)
+      console.log(
+        isFormEdited &&
+          !this.$v.form.$invalid &&
+          !this.$v.form.$pending &&
+          this.isUnique.codeDossier &&
+          this.isUnique.nomAndPrenom
+      )
 
       return (
         isFormEdited &&
         !this.$v.form.$invalid &&
         !this.$v.form.$pending &&
-        this.isUnique.codeDossier
+        this.isUnique.codeDossier &&
+        this.isUnique.nomAndPrenom
       )
     },
 
@@ -448,6 +473,10 @@ export default {
             length: this.$v.form.nom.$params.maxLength.max,
           })
         )
+      this.form.nom &&
+        !this.isPending.nomAndPrenom &&
+        !this.isUnique.nomAndPrenom &&
+        errors.push(this.$t('validations.nomcomplet.unique'))
       return errors
     },
     prenomErrors() {
@@ -467,6 +496,10 @@ export default {
             length: this.$v.form.prenom.$params.maxLength.max,
           })
         )
+      this.form.prenom &&
+        !this.isPending.nomAndPrenom &&
+        !this.isUnique.nomAndPrenom &&
+        errors.push(this.$t('validations.nomcomplet.unique'))
       return errors
     },
     dateNaissErrors() {
@@ -560,7 +593,7 @@ export default {
     },
     ...mapState({
       typePatients: (state) => state.typePatient.allTypes,
-      assurances: (state) => state.assurance.allAssurances,
+      assurances: (state) => state.assurance.allAssuranceAutres,
       entreprises: (state) => state.entreprise.allEntreprises,
     }),
   },
@@ -571,6 +604,20 @@ export default {
         this.isUnique.codeDossier = false
       }
       this.isLoaded.codeDossier = true
+    },
+    'form.nom'() {
+      if (this.isLoaded.nomAndPrenom) {
+        this.isPending.nomAndPrenom = true
+        this.isUnique.nomAndPrenom = false
+      }
+      this.isLoaded.nomAndPrenom = true
+    },
+    'form.prenom'() {
+      if (this.isLoaded.nomAndPrenom) {
+        this.isPending.nomAndPrenom = true
+        this.isUnique.nomAndPrenom = false
+      }
+      this.isLoaded.nomAndPrenom = true
     },
     dateNais() {
       this.form.dateNaiss = this.formatDate(this.dateNais)
@@ -605,6 +652,45 @@ export default {
           }
         }
         this.isPending.codeDossier = false
+      },
+      500,
+      -1
+    ),
+
+    checkUniqueNomandPrenom: debounce(
+      async function () {
+        if (
+          this.form.nom === '' ||
+          this.form.nom === null ||
+          this.$v.form.nom.$invalid ||
+          this.form.prenom === '' ||
+          this.form.prenom === null ||
+          this.$v.form.prenom.$invalid
+        ) {
+          return
+        }
+
+        try {
+          const result = await this.$api.checkNomAndPrenomUpdate(
+            {
+              nom: this.form.nom,
+              prenom: this.form.prenom,
+            },
+            this.id
+          )
+          this.isUnique.nomAndPrenom = !result
+        } catch (err) {
+          this.isUnique.nomAndPrenom = false
+
+          if (!err.response) {
+            this.$nuxt.error({
+              statusCode: 503,
+              message: 'Unable to fetch data.',
+            })
+          }
+        }
+
+        this.isPending.nomAndPrenom = false
       },
       500,
       -1
@@ -647,9 +733,11 @@ export default {
 
       this.isUnique = {
         codeDossier: !!this.form.codeDossier,
+        nomAndPrenom: !!this.form.nom && !!this.form.prenom,
       }
       this.isLoaded = {
         codeDossier: false,
+        nomAndPrenom: false,
       }
 
       this.dialog = true
@@ -659,12 +747,15 @@ export default {
       this.dialog = false
       this.isUnique = {
         codeDossier: false,
+        nomAndPrenom: false,
       }
       this.isPending = {
         codeDossier: false,
+        nomAndPrenom: false,
       }
       this.isLoaded = {
         codeDossier: false,
+        nomAndPrenom: false,
       }
       this.$v.form.$reset()
       this.form = {

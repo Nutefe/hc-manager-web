@@ -96,7 +96,7 @@
       <v-divider v-if="isDividerVisible" />
       <Pagination
         v-if="query"
-        :by-id="query"
+        :search="query"
         store="patient"
         collection="patients"
         action="searchPatients"
@@ -445,6 +445,8 @@ export default {
       this.loading = true
       try {
         if (this.query) {
+          console.log('searching', this.query)
+
           await this.$store.dispatch('patient/searchPatients', {
             page,
             s: this.replace(this.query),

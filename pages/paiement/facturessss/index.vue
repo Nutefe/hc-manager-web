@@ -74,27 +74,6 @@
           <v-chip v-if="item" color="primary"> {{ isEncaisser(item) }} </v-chip>
         </template>
         <template #[`item.action`]="{ item }">
-          <!-- Edit -->
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-if="isCaissier"
-                v-bind="attrs"
-                class="mr-3"
-                small
-                icon
-                :aria-label="$t('commoin.actions.paid')"
-                v-on="on"
-                @click.stop="editItem(item)"
-              >
-                <v-icon color="cashIcone" small> mdi-cash-register </v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('commoin.actions.paid') }}
-            </span>
-          </v-tooltip>
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
@@ -114,6 +93,7 @@
               {{ $t('commoin.actions.show') }}
             </span>
           </v-tooltip>
+
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
@@ -122,8 +102,8 @@
                 small
                 icon
                 :aria-label="$t('commoin.actions.detail')"
+                :to="localePath(`/paiement/factures/${item.id}`)"
                 v-on="on"
-                @click.stop="detailItem(item)"
               >
                 <v-icon color="editIcone" small> mdi-account-eye </v-icon>
               </v-btn>
@@ -140,9 +120,10 @@
       <Pagination
         v-if="query"
         :search="query"
-        store="facture"
+        store="paiement"
         collection="factures"
-        action="searchNotSoldeFactures"
+        action="searchDayFactures"
+        page-mutation="SET_CURRENT_SEARCH_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
@@ -151,156 +132,21 @@
 
       <Pagination
         v-else
-        store="facture"
+        store="paiement"
         collection="factures"
-        action="fetchNotSoldeFactures"
+        action="fetchDayFactures"
+        page-mutation="SET_CURRENT_DAY_PAGE"
         :disabled="loading"
         class="mb-2 mt-2"
         align="right"
         @loading="toggleLoading"
       />
     </v-card>
-    <div v-if="isCaissier" class="mb-10 mr-10">
-      <div>
-        <v-speed-dial
-          v-model="fab"
-          class="mb-15 mr-15"
-          bottom
-          right
-          direction="top"
-          open-on-hover
-          :transition="transition"
-        >
-          <template #activator>
-            <v-btn v-model="fab" color="secondary" dark fab>
-              <v-icon v-if="fab"> mdi-close </v-icon>
-              <v-icon v-else> mdi-text-box </v-icon>
-            </v-btn>
-          </template>
-
-          <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                color="orange"
-                elevation="10"
-                small
-                dark
-                fab
-                :aria-label="$t('paiement.addDec')"
-                @click.stop="createDecaissement"
-                v-on="on"
-              >
-                <v-icon>mdi-text-box-edit</v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('paiement.addDec') }}
-            </span>
-          </v-tooltip>
-          <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                color="blue"
-                elevation="10"
-                small
-                dark
-                fab
-                :aria-label="$t('paiement.addDep')"
-                @click.stop="depenseReserve"
-                v-on="on"
-              >
-                <v-icon>mdi-text-box-edit-outline</v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('paiement.addDep') }}
-            </span>
-          </v-tooltip>
-          <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                color="green"
-                elevation="10"
-                small
-                dark
-                fab
-                :aria-label="$t('paiement.addRes')"
-                @click.stop="createReserve"
-                v-on="on"
-              >
-                <v-icon>mdi-text-box-edit-outline</v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('paiement.addRes') }}
-            </span>
-          </v-tooltip>
-          <!-- <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                color="purple"
-                elevation="10"
-                small
-                dark
-                fab
-                :aria-label="$t('paiement.printCaisse')"
-                @click.stop="etatCaisse"
-                v-on="on"
-              >
-                <v-icon>mdi-text-box-edit-outline</v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('paiement.printCaisse') }}
-            </span>
-          </v-tooltip>
-          <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                color="black"
-                elevation="10"
-                small
-                dark
-                fab
-                :aria-label="$t('paiement.printReserve')"
-                @click.stop="etatReserve"
-                v-on="on"
-              >
-                <v-icon>mdi-text-box-edit-outline</v-icon>
-              </v-btn>
-            </template>
-
-            <span>
-              {{ $t('paiement.printReserve') }}
-            </span>
-          </v-tooltip> -->
-        </v-speed-dial>
-      </div>
-    </div>
-    <PaiementFacture ref="editFormDialog" @refreshPage="refreshPage" />
-    <DetailFacture ref="detailDialog" @refreshPage="refreshPage" />
-    <CaisseDecCreate ref="decaissementFormDialog" />
-    <ReserveCreateJours ref="reserveFormDialog" />
-    <CaisseDepenseCreate ref="depenseFormDialog" />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import CaisseDecCreate from '~/components/pages/decaissement/CaisseDecCreate.vue'
-import CaisseDepenseCreate from '~/components/pages/depense/CaisseDepenseCreate.vue'
-import DetailFacture from '~/components/pages/paiement/DetailFacture.vue'
-import PaiementFacture from '~/components/pages/paiement/PaiementFacture.vue'
-import ReserveCreateJours from '~/components/pages/reserve/ReserveCreateJours.vue'
 import {
   debounce,
   startCase,
@@ -309,15 +155,7 @@ import {
 } from '~/helpers/helpers.js'
 
 export default {
-  name: 'PaiementPage',
-
-  components: {
-    PaiementFacture,
-    DetailFacture,
-    CaisseDecCreate,
-    ReserveCreateJours,
-    CaisseDepenseCreate,
-  },
+  name: 'FacturesPage',
 
   layout: 'default',
 
@@ -328,7 +166,6 @@ export default {
       loading: false,
       direction: 'top',
       fab: false,
-      fab1: false,
       fling: false,
       hover: false,
       tabs: null,
@@ -336,7 +173,6 @@ export default {
       right: true,
       bottom: false,
       left: false,
-      rulesSp: '/[!@#$%^&*()_+\\-=\\[\\]{};\':"\\|,.<>\\/?]+/',
       transition: 'slide-y-reverse-transition',
       headers: [
         {
@@ -416,10 +252,7 @@ export default {
   async fetch() {
     this.loading = true
     try {
-      await Promise.all([
-        this.$store.dispatch('facture/fetchNotSoldeFactures', 1),
-        this.$store.dispatch('caisse/fetchCaisseUtilisateur'),
-      ])
+      await this.$store.dispatch('paiement/fetchDayFactures', 1)
     } catch (err) {
       this.$nuxt.error({
         statusCode: 503,
@@ -456,17 +289,8 @@ export default {
       }
     },
 
-    isCaissier() {
-      if (this.caisseUser) {
-        return true
-      } else {
-        return false
-      }
-    },
-
     ...mapState({
-      factures: (state) => state.facture.factures,
-      caisseUser: (state) => state.caisse.caisseUtilisateur,
+      factures: (state) => state.paiement.factures,
     }),
   },
 
@@ -496,74 +320,6 @@ export default {
     itemPosition(itemId) {
       return this.itemsList.findIndex((elm) => elm.id === itemId) + 1
     },
-    async editItem(item) {
-      await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
-      this.$refs.editFormDialog.openDialog(item)
-    },
-
-    async detailItem(item) {
-      // await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
-      await Promise.all([
-        await this.$store.dispatch('facture/fetchFacture', item.id),
-        await this.$store.dispatch(
-          'traitement/fetchAllTraitementFiche',
-          item.id
-        ),
-        await this.$store.dispatch(
-          'paiement/fetchAllPaiementsFacture',
-          item.id
-        ),
-      ])
-      this.$refs.detailDialog.openDialog(item)
-    },
-
-    createDecaissement() {
-      this.$refs.decaissementFormDialog.openDialog()
-    },
-
-    createReserve() {
-      this.$refs.reserveFormDialog.openDialog()
-    },
-    depenseReserve() {
-      this.$refs.depenseFormDialog.openDialog()
-    },
-
-    async etatCaisse() {
-      try {
-        await this.$api.getEtatCaisse()
-        this.loading = false
-      } catch (err) {
-        this.loading = false
-
-        if (err.response) {
-          this.$toast.error(this.$t('commoin.errorOccured'))
-        } else {
-          this.$nuxt.error({
-            statusCode: 503,
-            message: 'Unable to fetch data.',
-          })
-        }
-      }
-    },
-
-    async etatReserve() {
-      try {
-        await this.$api.getEtatReserve()
-        this.loading = false
-      } catch (err) {
-        this.loading = false
-
-        if (err.response) {
-          this.$toast.error(this.$t('commoin.errorOccured'))
-        } else {
-          this.$nuxt.error({
-            statusCode: 503,
-            message: 'Unable to fetch data.',
-          })
-        }
-      }
-    },
-
     startCase(str) {
       if (str) {
         return startCase(str)
@@ -571,7 +327,6 @@ export default {
         return 'n/a'
       }
     },
-
     capitalize(str) {
       if (str) {
         return capitalize(str)
@@ -608,76 +363,16 @@ export default {
       }
     },
 
-    async makeReserve() {
-      const result = await this.$swal({
-        icon: 'question',
-        titleText: this.$t('paiement.reserve'),
-        confirmButtonText: this.$t('commoin.actions.yes'),
-        cancelButtonText: this.$t('commoin.actions.no'),
-        confirmButtonAriaLabel: this.$t('commoin.actions.yes'),
-        cancelButtonAriaLabel: this.$t('commoin.actions.no'),
-        showCancelButton: true,
-        allowOutsideClick: () => {
-          const popup = this.$swal.getPopup()
-          popup.classList.remove('swal2-show')
-          setTimeout(() => {
-            popup.classList.add('animate__animated', 'animate__headShake')
-          })
-          setTimeout(() => {
-            popup.classList.remove('animate__animated', 'animate__headShake')
-          }, 500)
-          return false
-        },
-      })
-
-      if (result.isConfirmed) {
-        this.submitForm()
-      } else if (this.$vuetify.breakpoint.smAndDown) {
-        this.$store.dispatch('toggleDrawer', true)
-      }
-    },
-
-    async submitForm() {
-      try {
-        await this.$api.makeReserve()
-        this.$toast.success(this.$t('commoin.saved'))
-      } catch (err) {
-        this.loading = false
-
-        if (err.response) {
-          this.$toast.error(this.$t('commoin.errorOccured'))
-        } else {
-          this.$nuxt.error({
-            statusCode: 503,
-            message: 'Unable to fetch data.',
-          })
-        }
-      }
-    },
-
-    async fetchFiche(id) {
-      this.loading = true
-      try {
-        await this.$store.dispatch('facture/fetchAllFiches', id)
-      } catch (err) {
-        this.$nuxt.error({
-          statusCode: 503,
-          message: 'Unable to fetch data.',
-        })
-      }
-      this.loading = false
-    },
-
     async fetchData(page) {
       this.loading = true
       try {
         if (this.query) {
-          await this.$store.dispatch('facture/searchNotSoldeFactures', {
+          await this.$store.dispatch('paiement/searchDayFactures', {
             page,
             s: this.replace(this.query),
           })
         } else {
-          await this.$store.dispatch('facture/fetchNotSoldeFactures', page)
+          await this.$store.dispatch('paiement/fetchDayFactures', page)
         }
       } catch (err) {
         this.$nuxt.error({

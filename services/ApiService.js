@@ -894,6 +894,28 @@ export default ($axios, $auth) => ({
     })
   },
 
+  checkNomAndPrenom(patient) {
+    if (!$auth.loggedIn) {
+      return
+    }
+    return $axios.$post(`/check/nom/prenom`, patient, {
+      headers: {
+        Authorization: `Bearer ${$auth.token}`,
+      },
+    })
+  },
+
+  checkNomAndPrenomUpdate(patient, id) {
+    if (!$auth.loggedIn) {
+      return
+    }
+    return $axios.$post(`/check/nom/prenom/update/${id}`, patient, {
+      headers: {
+        Authorization: `Bearer ${$auth.token}`,
+      },
+    })
+  },
+
   countPatient() {
     if (!$auth.loggedIn) {
       return
@@ -1309,6 +1331,17 @@ export default ($axios, $auth) => ({
       },
     })
   },
+  getPaiementFacture(id) {
+    if (!$auth.loggedIn) {
+      return
+    }
+
+    return $axios.$get(`/encaissement/facture/${id}`, {
+      headers: {
+        Authorization: `Bearer ${$auth.token}`,
+      },
+    })
+  },
   getAllPaiement() {
     if (!$auth.loggedIn) {
       return
@@ -1543,6 +1576,17 @@ export default ($axios, $auth) => ({
     })
   },
 
+  getTraitementByFiche(id) {
+    if (!$auth.loggedIn) {
+      return
+    }
+
+    return $axios.$get(`/fiche/traitement/facture/${id}`, {
+      headers: {
+        Authorization: `Bearer ${$auth.token}`,
+      },
+    })
+  },
   /**
    * end fiche axios api
    */

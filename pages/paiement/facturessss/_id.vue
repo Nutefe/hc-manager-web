@@ -127,61 +127,9 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
-              <!-- <v-card-actions>
-                <v-btn color="orange lighten-2" text>
-                  {{ $t('traitement.title') }}
-                </v-btn>
-
-                <v-spacer></v-spacer>
-
-                <v-btn icon @click="show = !show">
-                  <v-icon>{{
-                    show ? 'mdi-chevron-up' : 'mdi-chevron-down'
-                  }}</v-icon>
-                </v-btn>
-              </v-card-actions>
-              <v-expand-transition>
-                <div v-show="show">
-                  <v-divider></v-divider>
-
-                  <v-card-text>
-                    I'm a thing. But, like most politicians, he promised more
-                    than he could deliver. You won't have time for sleeping,
-                    soldier, not with all the bed making you'll be doing. Then
-                    we'll go with that data file! Hey, you add a one and two
-                    zeros to that or we walk! You're going to do his laundry?
-                    I've got to find a way to escape.
-                  </v-card-text>
-                </div>
-              </v-expand-transition> -->
             </div>
           </v-timeline-item>
         </v-timeline>
-
-        <PaginationDetail
-          v-if="query"
-          :id="patientId"
-          :search="query"
-          store="fiche"
-          collection="fiches"
-          action="searchFiches"
-          :disabled="loading"
-          class="mb-2 mt-2"
-          align="right"
-          @loading="toggleLoading"
-        />
-
-        <PaginationDetail
-          v-else
-          :id="patientId"
-          store="fiche"
-          collection="fiches"
-          action="fetchFiches"
-          :disabled="loading"
-          class="mb-2 mt-2"
-          align="right"
-          @loading="toggleLoading"
-        />
       </v-col>
     </v-row>
   </v-container>
@@ -189,7 +137,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { debounce, startCase } from '~/helpers/helpers.js'
+import { startCase } from '~/helpers/helpers.js'
 import { yaer } from '~/helpers/customValidators.js'
 
 export default {
@@ -210,6 +158,7 @@ export default {
         },
       ],
       id: 0,
+      id_fiche: 0,
     }
   },
 
@@ -217,11 +166,8 @@ export default {
     try {
       //   this.id = params.id
       await Promise.all([
-        await store.dispatch('patient/fetchPatient', params.id),
-        await store.dispatch('fiche/fetchFiches', {
-          id: params.id,
-          page: 1,
-        }),
+        await store.dispatch('facture/fetchFacture', params.id),
+        await store.dispatch('traitement/fetchAllTraitementFiche', params.id),
       ])
     } catch (err) {
       error({
@@ -233,50 +179,51 @@ export default {
 
   computed: {
     itemsList() {
-      if (this.fiches && this.fiches.data) {
-        return this.fiches.data
+      if (this.traitements && this.traitements.data) {
+        return this.traitements.data
       } else {
         return []
       }
     },
 
     patientId() {
-      if (this.patient && this.patient.id) {
-        return this.patient.id
+      if (this.facture?.patient && this.facture?.patient.id) {
+        return this.facture?.patient.id
       } else {
         return 0
       }
     },
 
-    currentPage() {
-      if (this.fiches) {
-        return this.fiches.current_page || 1
-      } else {
-        return 1
-      }
-    },
+    // currentPage() {
+    //   if (this.fiches) {
+    //     return this.fiches.current_page || 1
+    //   } else {
+    //     return 1
+    //   }
+    // },
 
-    isDividerVisible() {
-      if (this.fiches) {
-        const total = this.fiches.total || 0
-        const perPage = this.fiches.per_page || 0
-        return total > perPage
-      } else {
-        return false
-      }
-    },
+    // isDividerVisible() {
+    //   if (this.fiches) {
+    //     const total = this.fiches.total || 0
+    //     const perPage = this.fiches.per_page || 0
+    //     return total > perPage
+    //   } else {
+    //     return false
+    //   }
+    // },
 
     bithday() {
-      if (this.patient) {
-        return parseInt(yaer(this.patient.dateNaiss))
+      if (this.facture?.patient) {
+        return parseInt(yaer(this.facture?.patient.dateNaiss))
       } else {
         return 0
       }
     },
 
     ...mapState({
-      patient: (state) => state.patient.patient || {},
-      fiches: (state) => state.fiche.fiches || {},
+      facture: (state) => state.facture || {},
+      patient: (state) => state.facture?.patient || {},
+      traitements: (state) => state.traitement.allTraitementsFiche || {},
     }),
   },
   watch: {
@@ -309,42 +256,42 @@ export default {
         return 'n/a'
       }
     },
-    async fetchData(page) {
-      this.loading = true
+    // async fetchData(page) {
+    //   this.loading = true
 
-      try {
-        if (this.query) {
-          await this.$store.dispatch('fiche/searchFiches', {
-            id: this.patientId,
-            page,
-            s: this.replace(this.query),
-          })
-        } else {
-          await this.$store.dispatch('fiche/fetchFiches', {
-            id: this.patientId,
-            page,
-          })
-        }
-      } catch (err) {
-        this.$nuxt.error({
-          statusCode: 503,
-          message: 'Unable to fetch data.',
-        })
-      }
-      this.loading = false
-    },
+    //   try {
+    //     if (this.query) {
+    //       await this.$store.dispatch('fiche/searchFiches', {
+    //         id: this.patientId,
+    //         page,
+    //         s: this.replace(this.query),
+    //       })
+    //     } else {
+    //       await this.$store.dispatch('fiche/fetchFiches', {
+    //         id: this.patientId,
+    //         page,
+    //       })
+    //     }
+    //   } catch (err) {
+    //     this.$nuxt.error({
+    //       statusCode: 503,
+    //       message: 'Unable to fetch data.',
+    //     })
+    //   }
+    //   this.loading = false
+    // },
 
-    refreshPage(payload) {
-      let page = 1
-      if (payload === 1) {
-        page = this.currentPage
-      }
-      this.fetchData(page)
-    },
+    // refreshPage(payload) {
+    //   let page = 1
+    //   if (payload === 1) {
+    //     page = this.currentPage
+    //   }
+    //   this.fetchData(page)
+    // },
 
-    filter: debounce(function () {
-      this.fetchData(1)
-    }),
+    // filter: debounce(function () {
+    //   this.fetchData(1)
+    // }),
   },
 }
 </script>

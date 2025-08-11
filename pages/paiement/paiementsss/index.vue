@@ -114,6 +114,7 @@
               {{ $t('commoin.actions.show') }}
             </span>
           </v-tooltip>
+
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
@@ -122,8 +123,8 @@
                 small
                 icon
                 :aria-label="$t('commoin.actions.detail')"
+                :to="localePath(`/paiement/paiements/${item.id}`)"
                 v-on="on"
-                @click.stop="detailItem(item)"
               >
                 <v-icon color="editIcone" small> mdi-account-eye </v-icon>
               </v-btn>
@@ -287,7 +288,6 @@
       </div>
     </div>
     <PaiementFacture ref="editFormDialog" @refreshPage="refreshPage" />
-    <DetailFacture ref="detailDialog" @refreshPage="refreshPage" />
     <CaisseDecCreate ref="decaissementFormDialog" />
     <ReserveCreateJours ref="reserveFormDialog" />
     <CaisseDepenseCreate ref="depenseFormDialog" />
@@ -298,7 +298,6 @@
 import { mapState } from 'vuex'
 import CaisseDecCreate from '~/components/pages/decaissement/CaisseDecCreate.vue'
 import CaisseDepenseCreate from '~/components/pages/depense/CaisseDepenseCreate.vue'
-import DetailFacture from '~/components/pages/paiement/DetailFacture.vue'
 import PaiementFacture from '~/components/pages/paiement/PaiementFacture.vue'
 import ReserveCreateJours from '~/components/pages/reserve/ReserveCreateJours.vue'
 import {
@@ -313,7 +312,6 @@ export default {
 
   components: {
     PaiementFacture,
-    DetailFacture,
     CaisseDecCreate,
     ReserveCreateJours,
     CaisseDepenseCreate,
@@ -499,22 +497,6 @@ export default {
     async editItem(item) {
       await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
       this.$refs.editFormDialog.openDialog(item)
-    },
-
-    async detailItem(item) {
-      // await this.$store.dispatch('facture/fetchAllFiches', item.fiche.id)
-      await Promise.all([
-        await this.$store.dispatch('facture/fetchFacture', item.id),
-        await this.$store.dispatch(
-          'traitement/fetchAllTraitementFiche',
-          item.id
-        ),
-        await this.$store.dispatch(
-          'paiement/fetchAllPaiementsFacture',
-          item.id
-        ),
-      ])
-      this.$refs.detailDialog.openDialog(item)
     },
 
     createDecaissement() {

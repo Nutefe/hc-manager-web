@@ -1,116 +1,114 @@
 const initialState = () => ({
-    allPatients: [],
-    allPatientsAssurer: [],
-    allPatientsNonAssurer: [],
-    patients: {},
-    patient: null,
-    countPatient: 0,
-    countPatientDay: 0,
-});
+  allPatients: [],
+  allPatientsAssurer: [],
+  allPatientsNonAssurer: [],
+  patients: {},
+  patient: null,
+  countPatient: 0,
+  countPatientDay: 0,
+})
 
-export const state = initialState;
+export const state = initialState
 
 export const mutations = {
-    RESET_STATE(state) {
-        Object.assign(state, initialState());
-    },
-    SET_ALL_PATIENTS(state, allPatients) {
-        state.allPatients = allPatients;
-    },
-    SET_ALL_PATIENT_NON_ASSURER(state, allPatientsNonAssurer) {
-        state.allPatientsNonAssurer = allPatientsNonAssurer;
-    },
-    SET_ALL_PATIENT_ASSURER(state, allPatientsAssurer) {
-        state.allPatientsAssurer = allPatientsAssurer;
-    },
-    SET_SEARCHED_PATIENTS(state, patients) {
-        state.patients = patients;
-    },
-    SET_PATIENTS(state, patients) {
-        state.patients = patients;
-    },
-    SET_SEARCH_CURRENT_PAGE(state, page) {
-        state.patients.current_page = page;
-    },
-    SET_CURRENT_PAGE(state, page) {
-        state.patients.current_page = page;
-    },
-    SET_PATIENT(state, patient) {
-        state.patient = patient;
-    },
-    SET_COUNT_PATIENT(state, countPatient) {
-        state.countPatient = countPatient;
-    },
-    SET_COUNT_PATIENT_DAY(state, countPatientDay) {
-        state.countPatientDay = countPatientDay;
-    },
-};
+  RESET_STATE(state) {
+    Object.assign(state, initialState())
+  },
+  SET_ALL_PATIENTS(state, allPatients) {
+    state.allPatients = allPatients
+  },
+  SET_ALL_PATIENT_NON_ASSURER(state, allPatientsNonAssurer) {
+    state.allPatientsNonAssurer = allPatientsNonAssurer
+  },
+  SET_ALL_PATIENT_ASSURER(state, allPatientsAssurer) {
+    state.allPatientsAssurer = allPatientsAssurer
+  },
+  SET_SEARCHED_PATIENTS(state, patients) {
+    state.patients = patients
+  },
+  SET_PATIENTS(state, patients) {
+    state.patients = patients
+  },
+  SET_SEARCH_CURRENT_PAGE(state, page) {
+    state.patients.current_page = page
+  },
+  SET_CURRENT_PAGE(state, page) {
+    state.patients.current_page = page
+  },
+  SET_PATIENT(state, patient) {
+    state.patient = patient
+  },
+  SET_COUNT_PATIENT(state, countPatient) {
+    state.countPatient = countPatient
+  },
+  SET_COUNT_PATIENT_DAY(state, countPatientDay) {
+    state.countPatientDay = countPatientDay
+  },
+}
 
 export const actions = {
-    resetState({ commit }) {
-        commit("RESET_STATE");
-    },
-    fetchAllPatients({ commit }) {
-        return this.$api.getAllPatient().then((data) => {
-            commit("SET_ALL_PATIENTS", data);
-        });
-    },
-    fetchAllPatientsAssurer({ commit }) {
-        return this.$api.getAllPatientAssurer().then((data) => {
-            commit("SET_ALL_PATIENT_ASSURER", data);
-        });
-    },
-    fetchAllPatientsNonAssurer({ commit }) {
-        return this.$api.getAllPatientNonAssurer().then((data) => {
-            commit("SET_ALL_PATIENT_NON_ASSURER", data);
-        });
-    },
-    searchPatients({ commit }, { page, s }) {
-        if (!s) {
+  resetState({ commit }) {
+    commit('RESET_STATE')
+  },
+  fetchAllPatients({ commit }) {
+    return this.$api.getAllPatient().then((data) => {
+      commit('SET_ALL_PATIENTS', data)
+    })
+  },
+  fetchAllPatientsAssurer({ commit }) {
+    return this.$api.getAllPatientAssurer().then((data) => {
+      commit('SET_ALL_PATIENT_ASSURER', data)
+    })
+  },
+  fetchAllPatientsNonAssurer({ commit }) {
+    return this.$api.getAllPatientNonAssurer().then((data) => {
+      commit('SET_ALL_PATIENT_NON_ASSURER', data)
+    })
+  },
+  searchPatients({ commit }, { page, s }) {
+    if (!s) {
+      commit('SET_SEARCHED_PATIENTS', {})
+      return
+    }
 
-            commit("SET_SEARCHED_PATIENTS", {});
-            return;
-        }
+    return this.$api.searchAllPatientPage(page, s).then((data) => {
+      commit('SET_SEARCHED_PATIENTS', data)
+    })
+  },
+  fetchPatients({ commit }, page) {
+    return this.$api.selectAllPatientPage(page).then((data) => {
+      commit('SET_PATIENTS', data)
+    })
+  },
+  fetchPatient({ commit, getters }, id) {
+    const operation = getters.getPatientById(id)
 
-        return this.$api.searchAllPatientPage(page, s).then((data) => {
-            commit("SET_SEARCHED_PATIENTS", data);
-        });
-    },
-    fetchPatients({ commit }, page) {
-        return this.$api.selectAllPatientPage(page).then((data) => {
-            commit("SET_PATIENTS", data);
-        });
-    },
-    fetchPatient({ commit, getters }, id) {
-        const operation = getters.getPatientById(id);
-
-        if (operation) {
-            return commit("SET_PATIENT", operation);
-        } else {
-            return this.$api.getPatient(id).then((data) => {
-                commit("SET_PATIENT", data);
-            });
-        }
-    },
-    fetchCountPatient({ commit }) {
-        return this.$api.countPatient().then((data) => {
-            commit("SET_COUNT_PATIENT", data);
-        });
-    },
-    fetchCountPatientDay({ commit }) {
-        return this.$api.countPatientDay().then((data) => {
-            // console.log(data)
-            commit("SET_COUNT_PATIENT_DAY", data);
-        });
-    },
-};
+    if (operation) {
+      return commit('SET_PATIENT', operation)
+    } else {
+      return this.$api.getPatient(id).then((data) => {
+        commit('SET_PATIENT', data)
+      })
+    }
+  },
+  fetchCountPatient({ commit }) {
+    return this.$api.countPatient().then((data) => {
+      commit('SET_COUNT_PATIENT', data)
+    })
+  },
+  fetchCountPatientDay({ commit }) {
+    return this.$api.countPatientDay().then((data) => {
+      // console.log(data)
+      commit('SET_COUNT_PATIENT_DAY', data)
+    })
+  },
+}
 
 export const getters = {
-    patientsTotal: (state) => state.patients?.total || 0,
-    getPatientById: (state) => (id) => {
-        const patients = state.patients.data || [];
+  patientsTotal: (state) => state.patients?.total || 0,
+  getPatientById: (state) => (id) => {
+    const patients = state.patients.data || []
 
-        return patients
-            .find((art) => art.id === id);
-    },
-};
+    return patients.find((art) => art.id === id)
+  },
+}
