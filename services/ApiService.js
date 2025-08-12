@@ -887,7 +887,7 @@ export default ($axios, $auth) => ({
       return
     }
 
-    return $axios.$get(`/check/code/update/${id}`, codeDossier, {
+    return $axios.$post(`/check/code/update/${id}`, codeDossier, {
       headers: {
         Authorization: `Bearer ${$auth.token}`,
       },
